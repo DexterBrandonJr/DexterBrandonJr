@@ -20,7 +20,12 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-semibold">Health Tracker</h1>
           <p className="text-sm text-gray-500">{session.email}</p>
         </div>
-        <LogoutButton />
+        <div className="flex items-center gap-4">
+          <a href="/api/export" className="text-sm underline">
+            Export CSV
+          </a>
+          <LogoutButton />
+        </div>
       </header>
 
       <section className="flex flex-col gap-3">
