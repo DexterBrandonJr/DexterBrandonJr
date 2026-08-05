@@ -10,12 +10,30 @@
 | Body fat | ~35% | Aug 3, 2026 (est.) |
 | Squat 1RM | ~275 lb | Aug 3, 2026 |
 | Bench 1RM | ~245 lb | Aug 3, 2026 |
+| Deadlift 3RM | 305 lb (~330 est. 1RM) | Aug 5, 2026 |
+| Power clean 1RM | 240 lb | Aug 5, 2026 |
 | VO₂ max | 35.8 | (Apple Health) |
 | Resting HR | 78 bpm | Aug 5, 2026 |
 
 ---
 
 ## Workout Log
+
+### Aug 5, 2026 — Deadlift + Power Clean (station, informal)
+- **Deadlift: 305 lb × 3** — reported "no struggle" (reps left in reserve)
+  - Estimated 1RM: ~325–335 by formula (Epley/Brzycki), **likely higher** —
+    the formulas assume a set taken near failure, and this wasn't
+- **Power clean: 240 lb × 1**
+- Untimed, unprogrammed — done at the fire station "for shits and giggles"
+
+**Why it counts:** two stated gaps closed at once. The card listed *"a deadlift
+1RM"* as the open input for Strength, and *"vertical jump or broad jump"* as the
+open input for Power — the power clean is a better explosive test than either,
+because it measures rate of force development under real load. 240 lb at 262 lb
+bodyweight (~0.92× BW, ~1.4× estimated lean mass) is a legitimately strong
+number for a 32-year-old detrained lifter. The deadlift-to-squat ratio
+(~330:275, i.e. 1.2:1) is textbook normal, which means neither lift looks
+out of place.
 
 ### Aug 4, 2026 — "Muscle Up Annie" · Beginner · **15:45** (SCORED)
 Prevail CrossFit. For time. Single workout — warm-up flowed into the scored piece.
