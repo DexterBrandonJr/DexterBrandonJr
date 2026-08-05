@@ -17,6 +17,13 @@
 
 ## Workout Log
 
+### Aug 4, 2026 — Muscle Up Annie (Prevail CrossFit)
+- **Workout:** Benchmark CrossFit WOD — "FOR TIME"
+  - Possible levels: RX (50-40-30-20-10 Double Unders + Abmat Sit Ups + Strict Ring Muscle Ups), Intermediate, or Beginner (30-20-10 Single Unders + Anchored Sit Ups + Ring Rows + Dips)
+- **Warm-up:** 2 sets × (:30 each) Single Unders, Inchworm + Push Up, Power Single Unders, Hollow Rocks, Single Single Doubles, AbMat Sit Ups, Double Unders
+- **Skill Work:** EMOM 10 (Odd: :20 Ring Support Hold, Even: :20 Plank Shoulder Taps)
+- **⏱️ NEED: Completion time and which level completed (RX/Int/Beginner)**
+
 ### Aug 3, 2026 — Test Day (VERIFIED)
 - **Squat 1RM:** ~275 lb (Smith machine, video-verified, plates + ~15 lb estimated bar)
 - **Bench 1RM:** ~245 lb (Smith machine, video-verified)
