@@ -1,6 +1,20 @@
 # Training Log — D. Brandon
 
-**Last updated:** Aug 5, 2026 · sessions logged this week: 3 (Aug 1, Aug 3, Aug 4)
+**Last updated:** Aug 5, 2026
+
+> **Training load flag:** five consecutive days (Aug 1 WOD → HIIT → Aug 3 strength
+> + run → Aug 4 Annie 70 min → Aug 5 deadlift + clean), on ~6 h sleep, in a
+> caloric deficit, on a GLP-1. Consistency is excellent; recovery is the thing
+> that's under-resourced. See the lean-mass note in the Combine Card.
+
+### How to get a clean heart-rate recovery number
+HRR is one of the best free markers of aerobic progress, but the Aug 4 reading
+(122 → 115 → 119) is confounded — the session ended at 122, already well down
+from the 182 peak, and HR *rose* in minute two, meaning movement continued.
+To get a scoreable one: at the end of a hard interval, **stop and sit still**,
+note HR immediately, then note it again at exactly 60 seconds. The drop is the
+number. A fall of >12 bpm is normal; >20 is a good aerobic base. Repeat it the
+same way each time and it becomes a trend line.
 
 ## Quick Stats
 
@@ -14,6 +28,7 @@
 | Power clean 1RM | 240 lb | Aug 5, 2026 |
 | VO₂ max | 35.8 | (Apple Health) |
 | Resting HR | 78 bpm | Aug 5, 2026 |
+| Max HR observed | 182 bpm | Aug 4, 2026 |
 
 ---
 
@@ -48,6 +63,45 @@ Prevail CrossFit. For time. Single workout — warm-up flowed into the scored pi
   - Round 2 — 4 pullups, 16 ring rows
   - Round 3 — 10 ring rows
 - **Time: 15:45**
+
+**Apple Watch data for this session** (06:10–07:20, logged as "High Intensity
+Interval Training" — the watch categorizes CrossFit that way). This is the *same*
+session as Annie above, not a separate workout: 70 minutes covers warm-up, the
+EMOM 10, the 15:45 scored piece, and cooldown.
+
+| | |
+|---|---|
+| Duration | 1:10:22 |
+| Active calories | 848 |
+| Total calories | 1,027 |
+| Avg HR | 135 bpm |
+| HR range | 87–182 bpm |
+| Self-rated effort | 7 / 10 ("Hard") |
+| Conditions | 70°F, **95% humidity**, AQI 40 |
+
+**Heart-rate zones:**
+
+| Zone | Range | Time | Share |
+|---|---|---|---|
+| 1 | <134 | 29:51 | 42.5% |
+| 2 | 135–147 | 17:21 | 24.7% |
+| 3 | 148–159 | 14:44 | 21.0% |
+| 4 | 160–172 | 07:05 | 10.1% |
+| 5 | 173+ | 01:14 | 1.8% |
+
+**Post-workout HR:** 122 bpm at cessation → 115 (1 min) → 119 (2 min).
+*Not a clean recovery measurement* — see note below.
+
+**Reads:**
+- **182 bpm peak** is the highest observed to date (prior best 177). Age-predicted
+  max is ~186 (Tanaka), so true max is likely 185–190. Zones are well calibrated.
+- **42.5% of the session sat in Zone 1.** He wasn't redlining — this was sustained
+  work, not a series of near-failures, which is what 70 minutes at 262 lb should
+  look like.
+- **95% humidity inflates HR** by roughly 5–10 bpm for identical work. These
+  numbers slightly *overstate* cardiovascular strain relative to work performed.
+- **HR curve shape is healthy** — builds through the session, peaks ~06:57, comes
+  down. No runaway cardiac drift.
 
 **Why it counts:** first *gymnastics/bodyweight* data on the board. 60 single unders,
 60 anchored sit-ups, 46 ring rows and 10 pullups at 262 lb, held together for 15:45 —
