@@ -1,6 +1,6 @@
 # Training Log — D. Brandon
 
-**Last updated:** Aug 5, 2026
+**Last updated:** Aug 5, 2026 · sessions logged this week: 3 (Aug 1, Aug 3, Aug 4)
 
 ## Quick Stats
 
@@ -17,15 +17,25 @@
 
 ## Workout Log
 
-### Aug 4, 2026 — Ring Rows + Pullups (3-2-1 Ladder)
-- **Workout:** Descending ladder for time
-  - Warm-up: -30-20-10 descending (Single Unders, Abmat Sit Ups)
-  - Main: 
-    - Round 1: 6 pullups, 20 Ring Rows
-    - Round 2: 4 pullups, 16 Ring Rows
-    - Round 3: 10 Ring Rows
-- **⏱️ Time: 15:46** ✓
-- **Movement quality:** Ring rows demand core stability + coordination; pullups show upper-body pulling strength-endurance
+### Aug 4, 2026 — "Muscle Up Annie" · Beginner · **15:45** (SCORED)
+Prevail CrossFit. For time. Single workout — warm-up flowed into the scored piece.
+
+- **Warm-up (2 sets, :30 each):** Single Unders · Inchworm + Push Up · Power Single
+  Unders · Hollow Rocks · Single-Single-Doubles · AbMat Sit Ups · Double Unders
+- **Skill work:** EMOM 10 — odd :20 Ring Support Hold / even :20 Plank Shoulder Taps
+- **Scored piece (Beginner track):** 30-20-10 Single Unders + feet-anchored AbMat
+  Sit Ups, with 3-2-1 Ring Rows + Dips
+- **As performed** (per whiteboard):
+  - Round 1 — 6 pullups, 20 ring rows
+  - Round 2 — 4 pullups, 16 ring rows
+  - Round 3 — 10 ring rows
+- **Time: 15:45**
+
+**Why it counts:** first *gymnastics/bodyweight* data on the board. 60 single unders,
+60 anchored sit-ups, 46 ring rows and 10 pullups at 262 lb, held together for 15:45 —
+plus ring support holds under the EMOM. Coordination and Stamina had been running on
+inference; this is a scored skill-based WOD, which was the stated upgrade trigger for
+Coordination.
 
 ### Aug 3, 2026 — Test Day (VERIFIED)
 - **Squat 1RM:** ~275 lb (Smith machine, video-verified, plates + ~15 lb estimated bar)
