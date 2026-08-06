@@ -3,9 +3,10 @@
 **Last updated:** Aug 5, 2026
 
 > **Training load flag:** five consecutive days (Aug 1 WOD → HIIT → Aug 3 strength
-> + run → Aug 4 Annie 70 min → Aug 5 deadlift + clean), on ~6 h sleep, in a
-> caloric deficit, on a GLP-1. Consistency is excellent; recovery is the thing
-> that's under-resourced. See the lean-mass note in the Combine Card.
+> + run → Aug 4 Annie 70 min → Aug 5 deadlift + clean), in a caloric deficit, on a
+> GLP-1. Consistency is excellent. Recovery is the open question — and sleep, the
+> input that matters most for it, has the least reliable data of anything tracked
+> here. See the sleep note under Labs.
 
 ### How to get a clean heart-rate recovery number
 HRR is one of the best free markers of aerobic progress, but the Aug 4 reading
@@ -127,7 +128,10 @@ Coordination.
 - **Blood pressure:** 120/80 (clinic)
 - **eGFR / liver:** Normal
 - **Resting HR:** 78 bpm
-- **Sleep:** ~6 hours (avg)
+- **Sleep:** ~6 hours — **sampled, not average.** The watch isn't worn every
+  night, so this reflects only the nights it was. Bias direction unknown.
+  *To fix:* wear it 5–7 consecutive nights once, covering both shift and off
+  nights. That single stretch beats months of sporadic wear.
 
 ### Orthopedic Notes
 - **R knee:** Symptomatic (2012 injury, likely MCL/LCL sprain)
