@@ -1,12 +1,12 @@
 # Training Log — D. Brandon
 
-**Last updated:** Aug 5, 2026
+**Last updated:** Aug 13, 2026
 
-> **Training load flag:** five consecutive days (Aug 1 WOD → HIIT → Aug 3 strength
-> + run → Aug 4 Annie 70 min → Aug 5 deadlift + clean), in a caloric deficit, on a
-> GLP-1. Consistency is excellent. Recovery is the open question — and sleep, the
-> input that matters most for it, has the least reliable data of anything tracked
-> here. See the sleep note under Labs.
+> **Training load flag:** a demanding stretch — Aug 1 WOD → HIIT → Aug 3 strength
+> + run → Aug 4 Annie 70 min → Aug 5 deadlift + clean → Aug 13 EMOM 28, in a
+> caloric deficit, on a GLP-1. Consistency is excellent. Recovery is the open
+> question — and sleep, the input that matters most for it, has the least
+> reliable data of anything tracked here. See the sleep note under Labs.
 
 ### How to get a clean heart-rate recovery number
 HRR is one of the best free markers of aerobic progress, but the Aug 4 reading
@@ -34,6 +34,37 @@ same way each time and it becomes a trend line.
 ---
 
 ## Workout Log
+
+### Aug 13, 2026 — EMOM 28 (Prevail CrossFit)
+True EMOM format — station switches on the buzzer at each minute mark
+regardless of completion, so the score is total work capacity in a fixed
+28 minutes (7 rounds of a 4-station cycle), not a race time. Logged in-app
+as **Intermediate** (28:00, full completion, no missed rounds).
+
+Blended scaling — reps mostly matched the Beginner track, but weight and
+movement selection were self-upscaled mid-workout:
+
+| Min | Movement | Per-round (R1→R7) | Total |
+|---|---|---|---|
+| 1 | Echo Bike, cal | 8, 4, 3, 2, 3, 5, 5 | **30 cal** |
+| 2 | Alternating V-ups | 10 every round | 70 |
+| 3 | Rope pulls* + ring-row backup | 1, 2, 1, 1, 3, 2, 1 (rope) | **11 partial ascents** |
+| 3b | Ring rows (fallback rounds only) | R2: 8 · R3: 6 · R6: 6 | 20 |
+| 4 | KB swings, self-scaled to **35 lb** | 10, 10, 10, 8, 6, 8, 10 | **62 reps** |
+
+\* **Partial pulls/ascents, not full climbs** — never touched the top beam.
+Closest attempt was the 3rd marker, on round 5 (the round that also produced
+3 ascents). Logged as pulls, not climbs, to keep this honest.
+
+**Why it counts:** third full-completion conditioning session in under two
+weeks (Aug 1, Aug 4, Aug 13), each one finished start to finish with no
+scaling down. The self-selected upgrades — 35 lb KB instead of the 26 lb
+Beginner weight, and rope pulls instead of assisted pull-ups — show more
+about training judgment than any single number does: reading the room
+mid-workout and loading up where there was more in the tank, then falling
+back to ring rows (not no-repping) when the rope legitimately ran out.
+The bike's fade-then-rally pattern (8→4→3→2→3→5→5) is a normal EMOM
+fatigue curve, not a red flag.
 
 ### Aug 5, 2026 — Deadlift + Power Clean (station, informal)
 - **Deadlift: 305 lb × 3** — reported "no struggle" (reps left in reserve)
