@@ -1,0 +1,584 @@
+<title>D. BRANDON — Combine Card</title>
+<style>
+  :root {
+    --ground: #15181c; --surface: #1e2329; --surface-2: #262c33; --line: #2c3238;
+    --ink: #eee9df; --ink-2: #9aa3ab; --ink-3: #656e76;
+    --now: #e8562a; --ceil: #159db5; --proj: #b8871f;
+    --good:#3ec93e; --warn:#fab219; --crit:#ff6b5e;
+    color-scheme: dark light;
+  }
+  :root[data-theme="light"] {
+    --ground: #f2ede0; --surface: #ffffff; --surface-2: #eee7d6; --line: #ddd2b6;
+    --ink: #221d15; --ink-2: #6b6252; --ink-3: #948a76;
+    --now: #c8451e; --ceil: #0d8fa8; --proj: #96690a;
+    --good:#0ca30c; --warn:#c9840a; --crit:#b5392f;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --ground: #f2ede0; --surface: #ffffff; --surface-2: #eee7d6; --line: #ddd2b6;
+      --ink: #221d15; --ink-2: #6b6252; --ink-3: #948a76;
+      --now: #c8451e; --ceil: #0d8fa8; --proj: #96690a;
+      --good:#0ca30c; --warn:#c9840a; --crit:#b5392f;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: radial-gradient(1100px 620px at 50% -8%, color-mix(in srgb, var(--now) 10%, transparent), transparent 60%), var(--ground);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 940px; margin: 0 auto; padding: 34px 20px 90px; }
+  .jersey { font-family: "Arial Black","Helvetica Neue",Impact,sans-serif; font-weight: 900; letter-spacing: -0.02em; }
+  .mono { font-family: ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-variant-numeric: tabular-nums; }
+  .eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; }
+
+  .plate { border:1px solid var(--line); border-radius:16px; background:var(--surface); padding:26px clamp(18px,4vw,34px); position:relative; overflow:hidden; }
+  .plate::before { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(135deg,color-mix(in srgb,var(--now) 8%,transparent),transparent 40%); }
+  .plate-top { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap; }
+  .id .num-badge { font-size:11px; color:var(--ink-3); }
+  .id h1 { margin:2px 0 2px; font-size:clamp(30px,5vw,44px); line-height:.98; }
+  .id .role { color:var(--ink-2); font-size:13.5px; }
+  .id .role b { color:var(--now); }
+  .ratings { display:flex; gap:10px; }
+  .rate-box { text-align:center; border:1px solid var(--line); border-radius:12px; padding:10px 16px; background:var(--surface-2); min-width:92px; }
+  .rate-box .lbl { font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-bottom:2px; }
+  .rate-box .num { font-size:34px; line-height:1; }
+  .rate-box.live .num { color:var(--now); }
+  .rate-box.ceil .num { color:var(--ceil); }
+  .vitals-strip { display:flex; gap:22px; flex-wrap:wrap; margin-top:20px; padding-top:16px; border-top:1px solid var(--line); }
+  .vitals-strip .item { font-size:12.5px; color:var(--ink-2); }
+  .vitals-strip .item b { color:var(--ink); font-family:ui-monospace,monospace; }
+
+  .block { margin-top:26px; }
+  .block-head { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+  .block-head h2 { font-size:15px; margin:0; letter-spacing:.04em; text-transform:uppercase; }
+  .block-head .hint { font-size:12px; color:var(--ink-3); }
+  .panel { border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:20px clamp(16px,3vw,26px); }
+
+  .scrub { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
+  .scrub button { flex:1; min-width:96px; background:var(--surface-2); border:1px solid var(--line); color:var(--ink-2); border-radius:10px; padding:10px 8px; cursor:pointer; font-family:inherit; font-size:12px; font-weight:600; transition:all .18s; text-align:center; }
+  .scrub button .t { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-bottom:3px; }
+  .scrub button:hover { border-color:var(--now); color:var(--ink); }
+  .scrub button[aria-pressed="true"] { background:color-mix(in srgb,var(--now) 18%,var(--surface-2)); border-color:var(--now); color:var(--ink); }
+  .scrub button:focus-visible { outline:2px solid var(--now); outline-offset:2px; }
+  .scrub-caption { font-size:12.5px; color:var(--ink-2); margin:10px 0 0; line-height:1.55; }
+  .scrub-caption b { color:var(--ink); }
+
+  .radar-wrap { display:grid; grid-template-columns:minmax(0,1fr) 232px; gap:18px; align-items:center; }
+  @media (max-width:700px){ .radar-wrap{grid-template-columns:1fr;} }
+  .radar-legend { display:flex; flex-direction:column; gap:9px; }
+  .radar-legend .row { display:flex; align-items:center; gap:8px; font-size:12.5px; }
+  .radar-legend i { width:12px; height:12px; border-radius:3px; flex:none; }
+  .radar-legend .row.now i { background:var(--now); }
+  .radar-legend .row.proj i { background:var(--proj); }
+  .radar-legend .row.ceil i { background:var(--ceil); }
+  .radar-legend .foot { font-size:11.5px; color:var(--ink-3); line-height:1.5; margin-top:4px; }
+  svg.radar text { font-family:ui-monospace,monospace; font-size:10px; fill:var(--ink-2); }
+  svg.radar .ring { fill:none; stroke:var(--line); stroke-width:1; }
+  svg.radar .spoke { stroke:var(--line); stroke-width:1; }
+
+  .attr-row { display:grid; grid-template-columns:128px 1fr 92px 34px; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); }
+  .attr-row:last-child { border-bottom:none; }
+  .attr-name { font-size:13px; font-weight:600; }
+  .attr-track { position:relative; height:8px; border-radius:99px; background:var(--surface-2); }
+  .attr-fill { position:absolute; left:0; top:0; height:100%; border-radius:99px; background:var(--now); transition:width .4s cubic-bezier(.4,0,.2,1); }
+  .attr-gain { position:absolute; top:0; height:100%; background:color-mix(in srgb,var(--proj) 55%,transparent); transition:all .4s cubic-bezier(.4,0,.2,1); }
+  .attr-ceil-mark { position:absolute; top:-3px; width:2px; height:14px; background:var(--ceil); border-radius:1px; }
+  .attr-then-mark { position:absolute; top:-2px; width:2px; height:12px; background:var(--ink-3); border-radius:1px; opacity:.9; }
+  .attr-nums .d.beat { color:var(--good); }
+  .attr-nums .d.beat::after { content:'▲'; font-size:8px; margin-left:2px; }
+  .attr-nums { font-size:12px; text-align:right; }
+  .attr-nums .n { color:var(--now); font-weight:700; }
+  .attr-nums .d { color:var(--proj); font-weight:700; }
+  .attr-nums .p { color:var(--ceil); }
+  .conf { text-align:center; font-size:10px; font-weight:700; letter-spacing:.04em; }
+  .conf.hi{color:var(--good);} .conf.med{color:var(--warn);} .conf.lo{color:var(--ink-3);}
+  .attr-legend-row { display:grid; grid-template-columns:128px 1fr 92px 34px; gap:10px; font-size:10.5px; color:var(--ink-3); text-transform:uppercase; letter-spacing:.06em; padding-bottom:8px; border-bottom:1px solid var(--line); }
+
+  .ms-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  @media (max-width:700px){ .ms-grid{grid-template-columns:repeat(2,1fr);} }
+  .ms { border:1px solid var(--line); border-radius:10px; padding:14px; background:var(--surface-2); }
+  .ms.active { border-color:var(--now); background:color-mix(in srgb,var(--now) 10%,var(--surface-2)); }
+  .ms .when { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); }
+  .ms .wt { font-size:24px; margin:5px 0 2px; }
+  .ms .wt .u { font-size:12px; color:var(--ink-2); }
+  .ms ul { list-style:none; margin:8px 0 0; padding:0; }
+  .ms li { font-size:11.5px; color:var(--ink-2); padding:2.5px 0; display:flex; justify-content:space-between; gap:6px; }
+  .ms li b { color:var(--ink); font-family:ui-monospace,monospace; }
+
+  .table-wrap { overflow-x:auto; }
+  table.proj { width:100%; border-collapse:collapse; font-size:13px; min-width:520px; }
+  table.proj th { text-align:left; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); padding:8px 10px; border-bottom:1px solid var(--line); }
+  table.proj td { padding:8px 10px; border-bottom:1px solid var(--line); font-family:ui-monospace,monospace; font-variant-numeric:tabular-nums; }
+  table.proj td:first-child { font-family:inherit; font-weight:600; }
+  table.proj tr:last-child td { border-bottom:none; }
+  .up { color:var(--good); }
+
+  /* index */
+  .idx-head { display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+  .idx-meter { flex:1; min-width:200px; }
+  .idx-bar { height:10px; border-radius:99px; background:var(--surface-2); position:relative; overflow:hidden; }
+  .idx-bar i { position:absolute; left:0; top:0; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--crit),var(--warn),var(--good)); }
+  .idx-score { font-size:30px; line-height:1; }
+  .idx-note { font-size:12px; color:var(--ink-3); margin-top:6px; }
+  table.idx { width:100%; border-collapse:collapse; font-size:12.5px; min-width:640px; }
+  table.idx th { text-align:left; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); padding:8px 10px; border-bottom:1px solid var(--line); }
+  table.idx td { padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--ink-2); }
+  table.idx td:first-child { font-weight:600; color:var(--ink); }
+  table.idx tr:last-child td { border-bottom:none; }
+  .tag { display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.05em; padding:2px 6px; border-radius:4px; text-transform:uppercase; }
+  .tag.hi { color:var(--good); background:color-mix(in srgb,var(--good) 15%,transparent); }
+  .tag.med { color:var(--warn); background:color-mix(in srgb,var(--warn) 15%,transparent); }
+  .tag.lo { color:var(--crit); background:color-mix(in srgb,var(--crit) 15%,transparent); }
+
+  .link-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+  @media (max-width:640px){ .link-grid{grid-template-columns:1fr;} }
+  .link-card { border:1px solid var(--line); border-radius:10px; padding:14px 16px; background:var(--surface-2); }
+  .link-card h3 { margin:0 0 6px; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--now); }
+  .link-card p { margin:0; font-size:12.5px; color:var(--ink-2); line-height:1.55; }
+  .link-card b { color:var(--ink); }
+
+  .notes { display:flex; flex-direction:column; gap:10px; }
+  .note-line { display:flex; gap:10px; font-size:13.5px; color:var(--ink-2); line-height:1.5; }
+  .note-line .mk { color:var(--now); flex:none; }
+  .note-line b { color:var(--ink); }
+  .note-line.crit .mk { color:var(--crit); }
+
+  .method { font-size:12px; color:var(--ink-3); line-height:1.7; }
+  .method b { color:var(--ink-2); }
+  .theme-toggle { position:fixed; right:18px; bottom:18px; background:var(--surface); border:1px solid var(--line); border-radius:99px; padding:8px 14px; font-size:12px; color:var(--ink-2); cursor:pointer; }
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+</style>
+
+<div class="wrap">
+
+  <div class="plate">
+    <div class="plate-top">
+      <div class="id">
+        <div class="num-badge mono">#2‑21‑94 &nbsp;·&nbsp; ENGINE CO. &nbsp;·&nbsp; GREENVILLE, SC</div>
+        <h1 class="jersey">D. BRANDON</h1>
+        <div class="role">Firefighter &nbsp;/&nbsp; <b>Former DL — Allatoona HS ’12</b> &nbsp;/&nbsp; Age 32</div>
+      </div>
+      <div class="ratings">
+        <div class="rate-box" style="opacity:.72"><div class="lbl">Then · ’11</div><div class="num jersey mono" style="color:var(--ink-2)">68</div></div>
+        <div class="rate-box live"><div class="lbl" id="ovrLabel">Current OVR</div><div class="num jersey mono" id="ovrNum">57</div></div>
+        <div class="rate-box ceil"><div class="lbl">Ceiling</div><div class="num jersey mono">84</div></div>
+      </div>
+    </div>
+    <div class="vitals-strip" id="vitals"></div>
+  </div>
+
+  <!-- VERIFIED RECORD -->
+  <div class="block">
+    <div class="block-head"><h2>Verified Athletic Record</h2><div class="hint">MaxPreps + Allatoona Athletics · confirmed</div></div>
+    <div class="panel">
+      <div style="display:flex; gap:26px; flex-wrap:wrap; align-items:baseline;">
+        <div><span class="eyebrow">Position</span><div class="mono" style="font-size:16px;font-weight:700;">DL &nbsp;<span style="color:var(--ink-3);font-size:12px;">#97</span></div></div>
+        <div><span class="eyebrow">Playing weight</span><div class="mono" style="font-size:16px;font-weight:700;">240 lb</div></div>
+        <div><span class="eyebrow">Season</span><div class="mono" style="font-size:16px;font-weight:700;">2011–12 · 9 G</div></div>
+        <div><span class="eyebrow">Total tackles</span><div class="mono" style="font-size:16px;font-weight:700;">52 <span style="color:var(--ink-3);font-size:12px;">(28 solo / 24 ast)</span></div></div>
+        <div><span class="eyebrow">Per game</span><div class="mono" style="font-size:16px;font-weight:700;">5.8</div></div>
+        <div><span class="eyebrow">TFL</span><div class="mono" style="font-size:16px;font-weight:700;">3.0</div></div>
+        <div><span class="eyebrow">FF</span><div class="mono" style="font-size:16px;font-weight:700;">1</div></div>
+      </div>
+      <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--line); display:flex; gap:10px; flex-wrap:wrap;">
+        <span class="tag hi" style="font-size:10.5px; padding:4px 9px;">2011 · All-Region 7AAA — 2nd Team Defense</span>
+        <span class="tag med" style="font-size:10.5px; padding:4px 9px;">2011 · Cobb All-Star Senior Bowl Nominee</span>
+        <span class="tag" style="font-size:10.5px; padding:4px 9px; color:var(--ink-3); background:var(--surface-2);">Univ. of Mount Union — freshman yr · self-reported</span>
+      </div>
+      <p class="method" style="margin-top:14px;">Defensive line is the most power-dependent position on the field — first-step explosiveness, hip extension under load, and hand-fighting precision. 3.0 tackles for loss across 9 games means real penetration, not just gap-holding, and All-Region recognition means that production was graded against every other lineman in the region. <b>This is hard evidence that your Power and Accuracy ratings sit on a trained foundation, not just potential.</b> Same height then as now; you're currently 22 lb above your playing weight.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><h2>Projection Timeline</h2><div class="hint">tap a checkpoint — the whole card moves with it</div></div>
+    <div class="panel">
+      <div class="scrub" id="scrub"></div>
+      <p class="scrub-caption" id="scrubCaption"></p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><h2>Combine Profile — 10 Domains</h2><div class="hint" id="radarHint"></div></div>
+    <div class="panel radar-wrap">
+      <div id="radar"></div>
+      <div class="radar-legend">
+        <div class="row now"><i></i> <span id="legNow">Current — Aug 2026</span></div>
+        <div class="row proj" id="legProjRow"><i></i> <span id="legProj">Projected</span></div>
+        <div class="row" id="legThenRow" style="color:var(--ink-3)"><i style="background:none;border:1.5px dashed var(--ink-3)"></i> Then — 2011 (age 18)</div>
+        <div class="row ceil"><i></i> Ceiling</div>
+        <div class="foot"><b style="color:var(--ink-2)">Ceiling</b> exceeds your 2011 peak in all ten domains — biggest margins in conditioning and flexibility, exactly where a lineman's build was weakest.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><h2>Attribute Ratings</h2><div class="hint">0–99 · gold band = projected gain · tick = ceiling</div></div>
+    <div class="panel">
+      <div class="attr-legend-row"><span>Domain</span><span></span><span style="text-align:right">Now → Proj</span><span style="text-align:center">Conf</span></div>
+      <div id="attrList"></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><h2>Milestone Ladder</h2><div class="hint">262 lb → 185 lb over ~18 months</div></div>
+    <div class="ms-grid" id="msGrid"></div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><h2>Expected Progression</h2><div class="hint">consistent training + protein floor + 2.5mg tirzepatide held</div></div>
+    <div class="panel table-wrap">
+      <table class="proj">
+        <thead><tr><th>Marker</th><th>Now</th><th>3 mo</th><th>6 mo</th><th>12 mo</th><th>18 mo</th></tr></thead>
+        <tbody>
+          <tr><td>Bodyweight</td><td>262 lb</td><td>243 lb</td><td>228 lb</td><td>202 lb</td><td class="up">185 lb</td></tr>
+          <tr><td>Body fat</td><td>~35%</td><td>~32%</td><td>~28%</td><td>~22%</td><td class="up">~16%</td></tr>
+          <tr><td>Back squat</td><td>~275 lb*</td><td>280 lb</td><td>300 lb</td><td>325 lb</td><td class="up">355 lb</td></tr>
+          <tr><td>Bench press</td><td>~245 lb*</td><td>250 lb</td><td>260 lb</td><td>270 lb</td><td class="up">280 lb</td></tr>
+          <tr><td>Deadlift</td><td>~330 lb‡</td><td>345 lb</td><td>365 lb</td><td>390 lb</td><td class="up">415 lb</td></tr>
+          <tr><td>Power clean</td><td>240 lb‡</td><td>250 lb</td><td>260 lb</td><td>275 lb</td><td class="up">290 lb</td></tr>
+          <tr><td>VO₂ max</td><td>35.8</td><td>38</td><td>41</td><td>44</td><td class="up">47</td></tr>
+          <tr><td>Resting HR</td><td>78</td><td>74</td><td>70</td><td>64</td><td class="up">58</td></tr>
+          <tr><td>Hemoglobin</td><td>13.6</td><td>13.8</td><td>14.0</td><td>14.2</td><td class="up">14.5</td></tr>
+          <tr><td>LDL cholesterol</td><td>151</td><td>~119†</td><td>~115</td><td>&lt;110</td><td class="up">&lt;100</td></tr>
+          <tr><td>Overall rating</td><td>57</td><td>60</td><td>65</td><td>72</td><td class="up">77</td></tr>
+        </tbody>
+      </table>
+      <p class="method" style="margin-top:12px;">* Updated Aug 3, 2026 — real 1RM test on a Smith machine (plates counted + ~15 lb estimated bar weight, video-verified). Both numbers landed ahead of the original 3-month projection, so the path to 6/12/18-month targets is compressed rather than reset. &nbsp;‡ Added Aug 5, 2026 — power clean 240 lb for a single, deadlift 305 lb × 3 with reps in reserve. The deadlift figure is an <b>estimated</b> 1RM from that triple; because the set wasn't taken near failure, the formula probably <i>understates</i> it. &nbsp;† Zetia moves the LDL row only; it has no bodyweight mechanism.</p>
+    </div>
+  </div>
+
+  <!-- PREDICTION INDEX -->
+  <div class="block">
+    <div class="block-head"><h2>Prediction Index</h2><div class="hint">how much of this card is measured vs. inferred</div></div>
+    <div class="panel">
+      <div class="idx-head">
+        <div>
+          <div class="eyebrow">Profile Confidence</div>
+          <div class="idx-score jersey mono" id="idxScore">66%</div>
+        </div>
+        <div class="idx-meter">
+          <div class="idx-bar"><i id="idxBar" style="width:66%"></i></div>
+          <div class="idx-note" id="idxNote">5 measured · 1 partly measured · 4 inferred</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="idx">
+          <thead><tr><th>Domain</th><th>Basis today</th><th>What raises confidence</th><th>Conf</th></tr></thead>
+          <tbody id="idxBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEALTH INPUTS -->
+  <div class="block">
+    <div class="block-head"><h2>Health Inputs Feeding These Ratings</h2><div class="hint">your labs and vitals are not separate from your fitness — they set the caps</div></div>
+    <div class="panel">
+      <div class="table-wrap">
+        <table class="idx">
+          <thead><tr><th>Marker</th><th>Current</th><th>What it caps</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td>VO₂ max</td><td class="mono">35.8</td><td>Cardio Endurance — directly sets it</td><td><span class="tag lo">limiting</span></td></tr>
+            <tr><td>Hemoglobin</td><td class="mono">13.6 g/dL</td><td>Oxygen carrying → Endurance, Stamina ceiling</td><td><span class="tag med">borderline</span></td></tr>
+            <tr><td>Body fat</td><td class="mono">~35%</td><td>Flexibility, Agility, Speed — mechanical restriction</td><td><span class="tag lo">limiting</span></td></tr>
+            <tr><td>Sleep</td><td class="mono">~6 h <span style="color:var(--ink-3)">(sampled)</span></td><td>Accuracy, recovery, motor precision — and it gates every other row in this table</td><td><span class="tag med">unreliable sample</span></td></tr>
+            <tr><td>Resting HR</td><td class="mono">78 bpm</td><td>Aerobic base indicator</td><td><span class="tag med">room to move</span></td></tr>
+            <tr><td>Max HR observed</td><td class="mono">182 bpm</td><td>Sets your training zones — Aug 4</td><td><span class="tag hi">well calibrated</span></td></tr>
+            <tr><td>HR recovery (1 min)</td><td class="mono">not yet clean</td><td>Autonomic fitness — the best free progress marker you have</td><td><span class="tag med">measurable today</span></td></tr>
+            <tr><td>Blood pressure</td><td class="mono">120/80 clinic</td><td>Training intensity tolerance</td><td><span class="tag med">watch home cuff</span></td></tr>
+            <tr><td>A1C</td><td class="mono">4.8%</td><td>Fuel handling — no restriction</td><td><span class="tag hi">asset</span></td></tr>
+            <tr><td>eGFR / liver</td><td class="mono">normal</td><td>Recovery capacity, supplement tolerance</td><td><span class="tag hi">asset</span></td></tr>
+            <tr><td>R knee (2012 injury)</td><td class="mono">symptomatic</td><td>Squat depth, Power, Agility — imaging exists but is lost</td><td><span class="tag med">records missing</span></td></tr>
+            <tr><td>R foot (bunionectomy)</td><td class="mono">post-surgical</td><td>Ankle dorsiflexion → knee valgus → knee load</td><td><span class="tag med">chain risk</span></td></tr>
+            <tr><td>Musculoskeletal exams</td><td class="mono">clean</td><td>Nothing — no restriction documented</td><td><span class="tag hi">asset</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="method" style="margin-top:12px;"><b>On the sleep row specifically.</b> The ~6 h figure is what the watch recorded on the nights it was worn — and it isn't worn every night. That makes it a <b>sample, not an average</b>, and the bias could run in either direction: if the watch comes off on nights you crash early, the number is too low; if it's mostly worn on ordinary home nights, it may miss your worst ones. <b>There is no way to tell from the data which is happening</b>, so this card no longer treats 6 h as established, and the tag has been downgraded from <i>limiting</i> to <i>unreliable sample</i>. Fixing it is cheap: wear it <b>five to seven nights in a row, once</b>, covering both shift and off nights. That single stretch is worth more than months of sporadic wear, and it settles a row that quietly gates every other row in this table.</p>
+      <p class="method" style="margin-top:12px;">Three of these are assets. The three still marked limiting are levers — and all three move with the same inputs: training volume, protein, and sleep. The two orthopedic rows are different: they're <b>unknowns, not limits</b>, and one imaging appointment converts them into either an asset or a plan. Sleep now sits in that same unknown category, which is the more useful place for it: <b>an open question you can close this week</b> rather than a verdict you're stuck with.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><h2>Combine Notes</h2></div>
+    <div class="panel notes">
+      <div class="note-line"><span class="mk">▸</span><span><b>First real test day: Aug 3, 2026.</b> Squat ~275 lb, bench ~245 lb (Smith machine, video-verified) — that squat number alone beats the original 6-month target. Same day: an 0.81mi run at HR up to 177, and it followed a HIIT session and a Saturday CrossFit WOD (3 rounds of 29 burpees/sit-ups/air-squats plus med-ball runs). <b>That's a real training week, not a single good day.</b></span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Aug 5 — the power clean is the most important number on this card.</b> 240 lb for a single at 262 lb bodyweight, plus 305×3 on the deadlift with reps left over. Power had been the largest guess here — 48, tagged <i>medium</i> confidence, explicitly because no explosive test existed. A clean is the best barbell measure of rate of force development there is, and yours came back at roughly 0.92× bodyweight — closer to <b>1.4× your estimated lean mass</b>. <b>That rating was wrong by about eighteen points, and it was wrong in your favor.</b> This is also the strongest evidence yet for something the card already suspected: the motor patterns survived thirteen years. You don't clean 240 by accident.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Aug 13 — EMOM 28, all 7 rounds finished on the buzzer.</b> A true EMOM doesn't reward finishing fast, it rewards not falling behind for 28 straight minutes: bike, V-ups, rope pulls, and heavy KB swings, cycling every minute with no break. Two decisions in the middle of it say more than the reps do — you <b>upscaled the KB to 35 lb</b> mid-workout instead of staying at the prescribed 26, and when the rope legitimately ran out (closest attempt: the 3rd marker, never the top beam) you dropped to ring rows instead of no-repping. <b>Worth being precise about the rope number:</b> 11 partial pulls, not 11 climbs — this card would rather undersell that than round it up.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>One caveat on the clean, so the number stays honest.</b> A barbell measures power against an external load. A vertical jump measures power against <i>your own</i> 262 lb — and those two will not agree right now. Expect the jump to read meaningfully lower than the clean suggests, and expect the gap between them to close as bodyweight comes off, without you getting any stronger. <b>That gap is worth measuring precisely because it's the part weight loss fixes for free.</b></span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Aug 4 — Muscle Up Annie, Beginner, 15:45, inside a 70-minute session.</b> The watch logged 06:10–07:20 as "HIIT" — that's the same session, not a second one. <b>1:10:22, 848 active calories, avg HR 135, peak 182.</b> 60 single unders, 60 anchored sit-ups, 46 ring rows, 10 pullups, ring support holds under a 10-minute EMOM. This was the first gymnastics work anywhere in your record and it moved Coordination from <i>inferred</i> to <i>measured</i>. The value of it <b>doubles the day you repeat it</b> — same scaling, 8–12 weeks out, one number against another.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>The zone split is the good news inside that session.</b> 42% of those 70 minutes sat in Zone 1, and only <b>1:14 went above 173</b>. You didn't survive that workout — you paced it. The heart-rate curve builds, peaks around 06:57, and comes back down, with no runaway drift at the end. And it happened in <b>95% humidity</b>, which inflates heart rate by roughly 5–10 bpm for identical work. <b>Every number here slightly understates you.</b></span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Your peak of 182 bpm is useful beyond bragging.</b> Age-predicted max at 32 is about 186, and you hit 182 without a maximal test — so your true ceiling is likely 185–190 and your watch's zones are calibrated correctly. That matters because it means the zone data above can be trusted as a training tool, not just a readout.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>You were never as fit as you were strong.</b> Your 2011 profile is a specialist's — Power 80, Strength 76, but Cardio Endurance at 52 even in peak football shape. Linemen are trained for four-second efforts, not aerobic capacity. <b>The version of you at the ceiling isn't a bigger lineman — it's a genuinely healthier athlete who happens to be nearly as powerful at 50 lb lighter.</b></span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>The crossover moved up. You now pass your 18-year-old self around month 9</b> — halfway through the projection, not two-thirds. That shift is entirely the Aug 5 lifts: you closed a 12-point gap instead of a 13-point one, and you closed it in the two domains that were supposed to be slowest. Power is still the last thing to cross, but it's crossing from 66, not 48.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Your skill ratings held.</b> Accuracy and Coordination sit closest to their 2011 values because motor skill decays far slower than aerobic capacity or strength. You didn't lose technique — you lost the engine underneath it. That's the easier of the two to rebuild.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Worth deciding later: 185 or 200?</b> You played DL at 240 on this exact frame, so your skeleton and lean mass were built to carry more than a typical 6'0" male. 185 is achievable and medically excellent — but 195–205 may be where this frame sits naturally lean and strong, and it would put your Strength and Power meaningfully higher. Both fully deliver the health outcome. Revisit at 12 months with real body-comp data instead of deciding now.</span></div>
+      <div class="note-line crit"><span class="mk">▲</span><span><b>Six sessions across two weeks, in a deficit, on a GLP-1 — and sleep is the one input this card cannot see.</b> Aug 1 WOD → HIIT → Aug 3 strength test and run → Aug 4 seventy minutes → Aug 5 deadlift and clean → Aug 13 EMOM 28, every one of them finished, none of them scaled down. The consistency is not the problem; it's the best thing here. The problem is that training, the deficit, and the medication all draw down the same recovery budget, and <b>the only line item that refills it is the one with the worst data.</b> That's the real gap on this card now — not another lift, not another benchmark. <b>A deliberate easy day is a training decision, not a missed one.</b></span></div>
+      <div class="note-line crit"><span class="mk">▲</span><span><b>The one real risk:</b> 20–30% of weight lost on a GLP-1 comes off as lean mass unless actively defended. Across 77 lb, that's up to 20 lb of muscle. <b>Protein at ~185–200 g/day plus lifting 3–4×/week is not a side quest — it's the mechanism that makes the loss permanent.</b> Retained lean mass is the single strongest predictor of not regaining.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Four ratings improve from weight loss alone.</b> Speed, Agility, Flexibility and Endurance all move just from carrying less mass, before any specific adaptation. That's why the first six months are the steepest part of the curve.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Flexibility is the cheapest rating on the board.</b> It's low mostly from body composition and an absence of any mobility work — not from restriction. Clinical exams have recorded normal range of motion consistently. Ten minutes of dedicated mobility, three times a week, moves it faster than anything else here.</span></div>
+      <div class="note-line crit"><span class="mk">▲</span><span><b>The right knee is the one open question — and the evidence is missing, not absent.</b> A high-low block in 2012, suspected ACL or LCL. It <i>was</i> imaged — MRI and X-rays — and treated with chiropractic care and e-stim in Woodstock GA. <b>None of it is in any chart you hold</b>, and the only entry in your current record reads "knee injury, 2014, resolved," with no side, no mechanism, no films. Every provider you see is reading a knee that looks long-settled. <b>The fact that you returned for the playoffs is the most useful clue you have</b> — a complete ACL tear doesn't allow that, so a graded MCL/LCL sprain or partial injury is far more likely than what you were told.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Losing 77 lb is knee treatment.</b> Bodyweight multiplies through the knee at roughly 4× per step. Getting to 185 removes on the order of <b>300 lb of peak load per stride</b>. Nothing else in this plan does more for that joint — and it's a reason to prioritize it now rather than after the heavy blocks.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Your symptom pattern is actually reassuring.</b> Pain when detrained, better when training, no giving way or locking — that reads more like quad-weakness-driven patellofemoral pain than active ligament instability. A truly unstable knee buckles. Yours responds to loading, which means loading is likely the treatment, done in the right order.</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><h2>Feeding The Tracker</h2><div class="hint">what to send · what it changes</div></div>
+    <div class="panel">
+      <p style="margin:0 0 14px; font-size:13.5px; color:var(--ink-2); line-height:1.6;">
+        This card is a <b style="color:var(--ink)">living index, not a snapshot.</b> Every rating carries a confidence tag, and every tag has a specific input that upgrades it. Send data in chat — it gets logged to <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px;">Training Log.md</code>, the ratings recompute, and this same URL updates. Nothing here is fixed.
+      </p>
+      <div class="link-grid">
+        <div class="link-card">
+          <h3>Lifts</h3>
+          <p>Any 1RM/3RM — bench, squat, deadlift, press. <b>Moves Strength, Power, and the confidence score in one shot.</b> Bench is the single largest blind spot.</p>
+        </div>
+        <div class="link-card">
+          <h3>Conditioning</h3>
+          <p>A timed run, row, or benchmark WOD. Apple Health workout summaries work directly. <b>Replaces the inferred Stamina and Speed marks.</b></p>
+        </div>
+        <div class="link-card">
+          <h3>Mobility &amp; control</h3>
+          <p>An overhead squat or sit-and-reach photo scores Flexibility for real. A wall-ball or target set scores Accuracy. <b>Both currently run on inference alone.</b></p>
+        </div>
+        <div class="link-card">
+          <h3>Health data</h3>
+          <p>Labs, weight, sleep, BP, body-comp scans. These set the caps in the panel above — <b>new bloodwork can raise a ceiling, not just a rating.</b></p>
+        </div>
+      </div>
+      <p class="method" style="margin-top:14px;">Useful cadence: weight weekly, training weekly, a lift or conditioning benchmark monthly, labs quarterly. Anything more frequent measures noise.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="panel method">
+      <b>How these numbers are built.</b> Ratings are anchored to measured data where it exists — VO₂ max 35.8 and a logged 225 lb squat session are real, as are repeated clinical findings of normal range of motion, gait, and coordination. Where no measurement exists, ratings are inferred from body composition, training history, occupational demand, and documented health markers, and are tagged accordingly in the Prediction Index. <b>Flexibility</b> is estimated from body-fat-driven mechanical restriction, prior foot surgery, and the absence of any mobility training, offset by consistently normal clinical ROM. <b>Accuracy</b> is estimated from occupational precision demands, documented technical lifting, and normal coordination exams, offset by ADHD-related motor-timing variability and chronic short sleep — both of which are modifiable. The <b>ceiling</b> is a forward projection of realistic trained capacity at goal bodyweight for a 32-year-old male of this frame; it is not a historical figure. Projections assume ~1.0–1.5 lb/week loss with resistance training and adequate protein. <b>These are estimates under consistency, not guarantees</b> — and every one of them is designed to be overwritten by a real number.
+    </div>
+  </div>
+
+</div>
+
+<button class="theme-toggle" id="themeToggle">Toggle theme</button>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  document.getElementById('themeToggle').addEventListener('click',function(){
+    var mql=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+    var cur=root.getAttribute('data-theme')||mql;
+    root.setAttribute('data-theme',cur==='dark'?'light':'dark');
+    render();
+  });
+})();
+function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+var CHECKPOINTS=[
+  {key:'then',short:'Then',when:'2011–12',ovr:68,wt:240,bf:'~22%',
+   caption:'<b>Age 17–18. Allatoona DL, All-Region 2nd Team.</b> A specialist build — enormous power and strength, but the aerobic profile of a lineman, which is to say poor. Note Cardio Endurance sitting at 52 even at peak football condition. <b>That gap is the opening: you were a better athlete then, but you are not chasing a healthier version of yourself backwards.</b>'},
+  {key:'now',short:'Now',when:'Aug 2026',ovr:57,wt:262,bf:'~35%',
+   caption:'<b>Eleven points below your 18-year-old self</b> — and 22 lb above your playing weight. <b>Six sessions across two weeks</b>, all of them now on the record: the Aug 1 WOD, a HIIT day, the Aug 3 strength test and run, a 70-minute watch-verified session on Aug 4 ending in Annie at 15:45, Aug 5\'s <b>power clean 240 lb / deadlift 305×3</b>, and an Aug 13 EMOM 28 finished start to finish. Five of ten domains are now measured rather than inferred. <b>The card has stopped guessing about you — and every correction so far has gone in your favor.</b>'},
+  {key:'m3',short:'3 Months',when:'Nov 2026',ovr:60,wt:243,bf:'~32%',
+   caption:'<b>Steepest weight-loss stretch of the curve</b> — roughly 19 lb down. Strength has less ground to cover here than originally modeled, since the Aug 3 test already landed close to this checkpoint. Endurance and conditioning are still the real work.'},
+  {key:'m6',short:'6 Months',when:'Feb 2027',ovr:65,wt:228,bf:'~28%',
+   caption:'<b>Retraining gains start landing.</b> Strength and conditioning both begin moving together. Flexibility picks up passively as body composition changes — this is where mobility work starts paying compound interest.'},
+  {key:'m12',short:'12 Months',when:'Aug 2027',ovr:72,wt:202,bf:'~22%',
+   caption:'<b>You are past your 18-year-old self by here.</b> 72 vs. 68 — and with the Aug 5 lifts on the board, the crossover now lands around <b>month 9</b> rather than 10–11. Sub-210 bodyweight, squat back to 325, deadlift near 390, VO₂ max into the mid-40s. Power is the one domain still short of its 2011 mark, and only just.'},
+  {key:'m18',short:'18 Months',when:'Feb 2028',ovr:77,wt:185,bf:'~16%',
+   caption:'<b>Goal weight — 185 lb at roughly 16% body fat.</b> Nine points clear of your football peak, at 55 lb lighter. Abs visible at that composition on a 6\'0" frame.'},
+  {key:'ceil',short:'Ceiling',when:'Trained max',ovr:84,wt:'~190',bf:'~12%',
+   caption:'<b>Sixteen points above your former peak — and better in all ten domains, not just the healthy ones.</b> Realistic trained maximum for your frame at this age: consistent training, recovered sleep, stable composition. Nothing exotic required.'},
+];
+
+var DOMAINS=[
+  {label:'Cardio Endurance',then:52,now:42,m3:48,m6:56,m12:65,m18:71,ceil:82,conf:'hi',
+   basis:'VO₂ max 35.8 caps this. But Aug 4 adds 70 minutes of continuous work at avg HR 135, <b>42% of it in Zone 1</b>, with no runaway drift and a 182 bpm peak — a better aerobic floor than the 12:43/mi run alone implied',
+   next:'A clean heart-rate recovery number: stop dead after a hard interval, read HR, read it again at 60 seconds'},
+  {label:'Stamina',then:65,now:60,m3:64,m6:69,m12:76,m18:81,ceil:86,conf:'hi',
+   basis:'Third full-completion conditioning session in under two weeks (Aug 1, Aug 4, Aug 13). Aug 13: 28-minute EMOM, all 7 rounds finished on the buzzer, with weight <b>self-upscaled</b> to 35 lb on the KB rather than scaled down under fatigue',
+   next:'Repeat Muscle Up Annie or the Aug 13 EMOM at the same scaling — a repeated benchmark beats a new one'},
+  {label:'Strength',then:76,now:70,m3:73,m6:76,m12:80,m18:84,ceil:88,conf:'hi',
+   basis:'Three lifts now on record: <b>deadlift 305×3</b> (Aug 5, ~330 est. 1RM, reps in reserve), squat ~275 and bench ~245 (Aug 3, Smith machine, video-verified). Deadlift-to-squat ratio is a textbook 1.2:1 — the numbers corroborate each other',
+   next:'A true deadlift single, and a free-bar squat to check the Smith-machine number'},
+  {label:'Flexibility',then:58,now:45,m3:49,m6:56,m12:64,m18:71,ceil:78,conf:'lo',
+   basis:'Normal clinical ROM, offset by body composition, bunionectomy-limited ankle dorsiflexion, and R knee stiffness',
+   next:'Overhead squat + ankle dorsiflexion wall test'},
+  {label:'Power',then:80,now:66,m3:69,m6:72,m12:77,m18:81,ceil:87,conf:'hi',
+   basis:'Aug 5 power clean — <b>240 lb for a single</b> at 262 lb bodyweight. A clean is rate-of-force-development under load, the closest barbell analogue to a lineman\'s first step. This rating was low purely because no explosive test existed; the test came back strong',
+   next:'Vertical jump — it measures <i>bodyweight</i> power, which at 262 lb will read lower than the barbell number'},
+  {label:'Speed',then:58,now:46,m3:50,m6:56,m12:64,m18:70,ceil:80,conf:'lo',
+   basis:'0.81mi run averaged 12:43/mi — an endurance pace, not a sprint test; top speed still unmeasured',
+   next:'A timed 40yd or 400m'},
+  {label:'Coordination',then:78,now:72,m3:74,m6:76,m12:79,m18:82,ceil:88,conf:'hi',
+   basis:'Aug 5 power clean at 240 lb — a technical lift that does not happen by accident. Plus the Aug 4 gymnastics WOD and Aug 13 rope pulls under an EMOM clock, switching to ring rows mid-station rather than no-repping — that\'s in-workout judgment, not just raw output',
+   next:'Double unders unbroken, or a loaded complex (clean + jerk) on video'},
+  {label:'Agility',then:62,now:44,m3:49,m6:56,m12:65,m18:72,ceil:84,conf:'lo',
+   basis:'Inferred from bodyweight and training style',
+   next:'A shuttle or agility-ladder drill'},
+  {label:'Balance',then:76,now:66,m3:68,m6:71,m12:75,m18:78,ceil:86,conf:'med',
+   basis:'"Gait steady and unassisted" across all exams; no fall history',
+   next:'Single-leg hold, timed, eyes closed'},
+  {label:'Accuracy',then:72,now:58,m3:61,m6:65,m12:71,m18:76,ceil:84,conf:'lo',
+   basis:'DL hand-placement technique, fireground/EMT precision demands — offset by ADHD timing variance and by short sleep, though <b>the sleep penalty is now uncertain</b>: the watch only samples nights it is worn',
+   next:'A wall-ball or target set, scored — plus one honest week of sleep data'},
+];
+
+var MILESTONES=[
+  {key:'m3',when:'3 Months',wt:'243',items:[['Squat','280 lb'],['VO₂ max','38'],['Body fat','~32%']]},
+  {key:'m6',when:'6 Months',wt:'228',items:[['Squat','300 lb'],['VO₂ max','41'],['Body fat','~28%']]},
+  {key:'m12',when:'12 Months',wt:'202',items:[['Squat','325 lb'],['VO₂ max','44'],['Body fat','~22%']]},
+  {key:'m18',when:'18 Months',wt:'185',items:[['Squat','355 lb'],['VO₂ max','47'],['Body fat','~16%']]},
+];
+
+var active='now';
+
+function radar(el,field){
+  var W=Math.min(el.clientWidth||430,430),H=390;
+  var cx=W/2,cy=H/2-6,R=Math.min(W,H)/2-48,n=DOMAINS.length;
+  var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('viewBox','0 0 '+W+' '+H); svg.setAttribute('width','100%'); svg.setAttribute('height',H);
+  svg.classList.add('radar');
+  function pt(i,val){var a=-Math.PI/2+i*(2*Math.PI/n),r=(val/99)*R;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+  [0.25,0.5,0.75,1].forEach(function(f){
+    var c=document.createElementNS(svg.namespaceURI,'circle');
+    c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r',R*f);c.setAttribute('class','ring');
+    svg.appendChild(c);
+  });
+  DOMAINS.forEach(function(d,i){
+    var a=-Math.PI/2+i*(2*Math.PI/n),e=[cx+R*Math.cos(a),cy+R*Math.sin(a)];
+    var l=document.createElementNS(svg.namespaceURI,'line');
+    l.setAttribute('x1',cx);l.setAttribute('y1',cy);l.setAttribute('x2',e[0]);l.setAttribute('y2',e[1]);
+    l.setAttribute('class','spoke');svg.appendChild(l);
+    var lx=cx+(R+23)*Math.cos(a),ly=cy+(R+23)*Math.sin(a);
+    var t=document.createElementNS(svg.namespaceURI,'text');
+    t.setAttribute('x',lx);t.setAttribute('y',ly);
+    t.setAttribute('text-anchor',Math.abs(Math.cos(a))<0.2?'middle':(Math.cos(a)>0?'start':'end'));
+    t.setAttribute('dominant-baseline',Math.abs(Math.sin(a))<0.2?'middle':(Math.sin(a)>0?'hanging':'auto'));
+    t.textContent=d.label.toUpperCase();
+    svg.appendChild(t);
+  });
+  function polyOutline(f,color){
+    var pts=DOMAINS.map(function(d,i){return pt(i,d[f]);});
+    var p=document.createElementNS(svg.namespaceURI,'path');
+    p.setAttribute('d',pts.map(function(q,i){return (i===0?'M':'L')+q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' ')+' Z');
+    p.setAttribute('fill','none');
+    p.setAttribute('stroke',color);p.setAttribute('stroke-width','1.5');
+    p.setAttribute('stroke-dasharray','2 4');p.setAttribute('stroke-linejoin','round');
+    p.setAttribute('opacity','0.85');
+    svg.appendChild(p);
+  }
+  function poly(f,color,op,dash){
+    var pts=DOMAINS.map(function(d,i){return pt(i,d[f]);});
+    var p=document.createElementNS(svg.namespaceURI,'path');
+    p.setAttribute('d',pts.map(function(q,i){return (i===0?'M':'L')+q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' ')+' Z');
+    p.setAttribute('fill',color);p.setAttribute('fill-opacity',op);
+    p.setAttribute('stroke',color);p.setAttribute('stroke-width','2');p.setAttribute('stroke-linejoin','round');
+    if(dash)p.setAttribute('stroke-dasharray','4 3');
+    svg.appendChild(p);
+    DOMAINS.forEach(function(d,i){
+      var q=pt(i,d[f]);
+      var c=document.createElementNS(svg.namespaceURI,'circle');
+      c.setAttribute('cx',q[0]);c.setAttribute('cy',q[1]);c.setAttribute('r',3.3);
+      c.setAttribute('fill',color);c.setAttribute('stroke',css('--surface'));c.setAttribute('stroke-width','1.5');
+      var ti=document.createElementNS(svg.namespaceURI,'title');ti.textContent=d.label+': '+d[f];c.appendChild(ti);
+      svg.appendChild(c);
+    });
+  }
+  poly('ceil',css('--ceil')||'#159db5',0.08,true);
+  if(field!=='then') polyOutline('then',css('--ink-3')||'#656e76');
+  if(field!=='now'&&field!=='ceil'&&field!=='then') poly(field,css('--proj')||'#b8871f',0.16,false);
+  if(field!=='ceil') poly(field==='then'?'then':'now',css('--now')||'#e8562a',0.22,false);
+  el.innerHTML='';el.appendChild(svg);
+}
+
+function renderAttrs(field){
+  var wrap=document.getElementById('attrList');wrap.innerHTML='';
+  var cl={hi:'HIGH',med:'MED',lo:'LOW'};
+  DOMAINS.forEach(function(d){
+    var row=document.createElement('div');row.className='attr-row';
+    var proj=d[field];
+    var showGain=field!=='now'&&proj>d.now;
+    var beatsThen = proj>=d.then;
+    row.innerHTML=
+      '<div class="attr-name">'+d.label+'</div>'+
+      '<div class="attr-track">'+
+        '<div class="attr-fill" style="width:'+d.now+'%"></div>'+
+        (showGain?'<div class="attr-gain" style="left:'+d.now+'%;width:'+(proj-d.now)+'%"></div>':'')+
+        '<div class="attr-then-mark" style="left:'+d.then+'%"></div>'+
+        '<div class="attr-ceil-mark" style="left:'+d.ceil+'%"></div>'+
+      '</div>'+
+      '<div class="attr-nums"><span class="n">'+d.now+'</span>'+(field!=='now'?' → <span class="'+(beatsThen?'d beat':'d')+'">'+proj+'</span>':'')+' <span class="p">/'+d.ceil+'</span></div>'+
+      '<div class="conf '+d.conf+'">'+cl[d.conf]+'</div>';
+    row.title=d.basis+' · 2011 level: '+d.then;
+    wrap.appendChild(row);
+  });
+}
+
+function renderIndex(){
+  var body=document.getElementById('idxBody');body.innerHTML='';
+  var cl={hi:'High',med:'Medium',lo:'Low'};
+  DOMAINS.forEach(function(d){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+d.label+'</td><td>'+d.basis+'</td><td>'+d.next+'</td>'+
+      '<td><span class="tag '+d.conf+'">'+cl[d.conf]+'</span></td>';
+    body.appendChild(tr);
+  });
+  var w={hi:1,med:0.6,lo:0.25};
+  var score=Math.round(DOMAINS.reduce(function(s,d){return s+w[d.conf];},0)/DOMAINS.length*100);
+  var nHi=DOMAINS.filter(function(d){return d.conf==='hi';}).length;
+  var nMed=DOMAINS.filter(function(d){return d.conf==='med';}).length;
+  var nLo=DOMAINS.filter(function(d){return d.conf==='lo';}).length;
+  document.getElementById('idxScore').textContent=score+'%';
+  document.getElementById('idxBar').style.width=score+'%';
+  document.getElementById('idxNote').textContent=nHi+' measured · '+nMed+' partly measured · '+nLo+' inferred — every row below is designed to be replaced';
+}
+
+function renderScrub(){
+  var s=document.getElementById('scrub');s.innerHTML='';
+  CHECKPOINTS.forEach(function(cp){
+    var b=document.createElement('button');b.type='button';
+    b.setAttribute('aria-pressed',cp.key===active?'true':'false');
+    b.innerHTML='<span class="t">'+cp.when+'</span>'+cp.short+' · '+cp.ovr;
+    b.addEventListener('click',function(){active=cp.key;render();});
+    s.appendChild(b);
+  });
+}
+
+function renderMilestones(){
+  var g=document.getElementById('msGrid');g.innerHTML='';
+  MILESTONES.forEach(function(m){
+    var d=document.createElement('div');
+    d.className='ms'+(m.key===active?' active':'');
+    d.innerHTML='<div class="when">'+m.when+'</div>'+
+      '<div class="wt jersey mono">'+m.wt+'<span class="u"> lb</span></div>'+
+      '<ul>'+m.items.map(function(i){return '<li><span>'+i[0]+'</span><b>'+i[1]+'</b></li>';}).join('')+'</ul>';
+    g.appendChild(d);
+  });
+}
+
+function render(){
+  var cp=CHECKPOINTS.filter(function(c){return c.key===active;})[0];
+  document.getElementById('ovrNum').textContent=cp.ovr;
+  document.getElementById('ovrLabel').textContent=(active==='now'?'Current OVR':(active==='ceil'?'Ceiling OVR':'Projected OVR'));
+  document.getElementById('scrubCaption').innerHTML=cp.caption;
+  document.getElementById('legProjRow').style.display=(active==='now'||active==='ceil'||active==='then')?'none':'flex';
+  document.getElementById('legProj').textContent='Projected — '+cp.when;
+  document.getElementById('legThenRow').style.display=(active==='then')?'none':'flex';
+  document.getElementById('legNow').textContent=(active==='then')?'2011 — age 18':'Current — Aug 2026';
+  document.getElementById('radarHint').textContent=active==='now'?'current vs. 2011 vs. ceiling':'showing '+cp.short;
+  document.getElementById('vitals').innerHTML=
+    '<div class="item">HT <b>6\'0"</b></div>'+
+    '<div class="item">WT <b>'+cp.wt+' lb</b></div>'+
+    '<div class="item">BODY FAT <b>'+cp.bf+'</b></div>'+
+    '<div class="item">GOAL <b>185 lb</b></div>'+
+    '<div class="item">MAX HR <b>182</b></div>'+
+    '<div class="item">WATCH <b style="color:var(--warn)">R knee — 2012, records lost</b></div>';
+  renderScrub();radar(document.getElementById('radar'),active);renderAttrs(active);renderMilestones();
+}
+
+render();renderIndex();
+window.addEventListener('resize',function(){radar(document.getElementById('radar'),active);});
+</script>
