@@ -97,7 +97,8 @@
   .conf.hi{color:var(--good);} .conf.med{color:var(--warn);} .conf.lo{color:var(--ink-3);}
   .attr-legend-row { display:grid; grid-template-columns:128px 1fr 92px 34px; gap:10px; font-size:10.5px; color:var(--ink-3); text-transform:uppercase; letter-spacing:.06em; padding-bottom:8px; border-bottom:1px solid var(--line); }
 
-  .ms-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .ms-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+  @media (max-width:900px){ .ms-grid{grid-template-columns:repeat(3,1fr);} }
   @media (max-width:700px){ .ms-grid{grid-template-columns:repeat(2,1fr);} }
   .ms { border:1px solid var(--line); border-radius:10px; padding:14px; background:var(--surface-2); }
   .ms.active { border-color:var(--now); background:color-mix(in srgb,var(--now) 10%,var(--surface-2)); }
@@ -159,10 +160,10 @@
       <div class="id">
         <div class="num-badge mono">#2‑21‑94 &nbsp;·&nbsp; ENGINE CO. &nbsp;·&nbsp; GREENVILLE, SC</div>
         <h1 class="jersey">D. BRANDON</h1>
-        <div class="role">Firefighter &nbsp;/&nbsp; <b>Former DL — Allatoona HS ’12</b> &nbsp;/&nbsp; Age 32</div>
+        <div class="role">Firefighter &nbsp;/&nbsp; <b>Allatoona HS '12 → Mount Union '13</b> &nbsp;/&nbsp; Age 32</div>
       </div>
       <div class="ratings">
-        <div class="rate-box" style="opacity:.72"><div class="lbl">Then · ’11</div><div class="num jersey mono" style="color:var(--ink-2)">68</div></div>
+        <div class="rate-box" style="opacity:.72"><div class="lbl">Then · '11</div><div class="num jersey mono" style="color:var(--ink-2)">68</div></div>
         <div class="rate-box live"><div class="lbl" id="ovrLabel">Current OVR</div><div class="num jersey mono" id="ovrNum">57</div></div>
         <div class="rate-box ceil"><div class="lbl">Ceiling</div><div class="num jersey mono">84</div></div>
       </div>
@@ -172,8 +173,9 @@
 
   <!-- VERIFIED RECORD -->
   <div class="block">
-    <div class="block-head"><h2>Verified Athletic Record</h2><div class="hint">MaxPreps + Allatoona Athletics · confirmed</div></div>
+    <div class="block-head"><h2>Verified Athletic Record</h2><div class="hint">MaxPreps + Allatoona Athletics + Mount Union (via Wayback Machine) · confirmed</div></div>
     <div class="panel">
+      <div class="eyebrow" style="margin-bottom:8px;">High School — Allatoona, Acworth GA · Class of '12</div>
       <div style="display:flex; gap:26px; flex-wrap:wrap; align-items:baseline;">
         <div><span class="eyebrow">Position</span><div class="mono" style="font-size:16px;font-weight:700;">DL &nbsp;<span style="color:var(--ink-3);font-size:12px;">#97</span></div></div>
         <div><span class="eyebrow">Playing weight</span><div class="mono" style="font-size:16px;font-weight:700;">240 lb</div></div>
@@ -184,11 +186,25 @@
         <div><span class="eyebrow">FF</span><div class="mono" style="font-size:16px;font-weight:700;">1</div></div>
       </div>
       <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--line); display:flex; gap:10px; flex-wrap:wrap;">
+        <span class="tag hi" style="font-size:10.5px; padding:4px 9px;">Four-year letterwinner (per Mount Union's own recruiting bio)</span>
         <span class="tag hi" style="font-size:10.5px; padding:4px 9px;">2011 · All-Region 7AAA — 2nd Team Defense</span>
         <span class="tag med" style="font-size:10.5px; padding:4px 9px;">2011 · Cobb All-Star Senior Bowl Nominee</span>
-        <span class="tag" style="font-size:10.5px; padding:4px 9px; color:var(--ink-3); background:var(--surface-2);">Univ. of Mount Union — freshman yr · self-reported</span>
       </div>
-      <p class="method" style="margin-top:14px;">Defensive line is the most power-dependent position on the field — first-step explosiveness, hip extension under load, and hand-fighting precision. 3.0 tackles for loss across 9 games means real penetration, not just gap-holding, and All-Region recognition means that production was graded against every other lineman in the region. <b>This is hard evidence that your Power and Accuracy ratings sit on a trained foundation, not just potential.</b> Same height then as now; you're currently 22 lb above your playing weight.</p>
+
+      <div class="eyebrow" style="margin:20px 0 8px; padding-top:16px; border-top:1px solid var(--line);">College — University of Mount Union · CONFIRMED, Aug 2026</div>
+      <div style="display:flex; gap:26px; flex-wrap:wrap; align-items:baseline;">
+        <div><span class="eyebrow">Position</span><div class="mono" style="font-size:16px;font-weight:700;">LB &nbsp;<span style="color:var(--ink-3);font-size:12px;">#52</span></div></div>
+        <div><span class="eyebrow">Weight</span><div class="mono" style="font-size:16px;font-weight:700;">240 lb</div></div>
+        <div><span class="eyebrow">Year</span><div class="mono" style="font-size:16px;font-weight:700;">Fr. · 2012–13</div></div>
+        <div><span class="eyebrow">Major</span><div class="mono" style="font-size:16px;font-weight:700;">Civil Eng.</div></div>
+        <div><span class="eyebrow">Program</span><div class="mono" style="font-size:16px;font-weight:700;">D3 champions '12</div></div>
+      </div>
+      <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--line); display:flex; gap:10px; flex-wrap:wrap;">
+        <span class="tag hi" style="font-size:10.5px; padding:4px 9px;">Verified via Mount Union's official bio page, Wayback Machine capture Sep 10, 2012</span>
+        <span class="tag" style="font-size:10.5px; padding:4px 9px; color:var(--ink-3); background:var(--surface-2);">One season played — left over academics, not injury</span>
+      </div>
+
+      <p class="method" style="margin-top:14px;">Defensive line and linebacker are both power-and-technique positions — first-step explosiveness, hip extension under load, hand-fighting and gap discipline. 3.0 tackles for loss across 9 games means real penetration, not just gap-holding, and All-Region recognition means that production was graded against every other lineman in the region. Making a roster at Mount Union matters specifically: that program went <b>15-0 and won the national title</b> the same season he was on it — not a program that carries a walk-on for show. <b>This is hard evidence that Power, Strength, and Coordination sit on a trained foundation, not just potential — and that the foundation was good enough for a serious D3 program to recruit and roster him.</b> Left after one year over grades; that's an academic outcome, fully separate from the senior-year knee injury covered below. Same height then as now; <b>currently under 5 lb above playing weight</b> (244.9 vs. 240), down from 22 lb when this card started.</p>
     </div>
   </div>
 
@@ -223,30 +239,91 @@
   </div>
 
   <div class="block">
-    <div class="block-head"><h2>Milestone Ladder</h2><div class="hint">262 lb → 185 lb over ~18 months</div></div>
+    <div class="block-head"><h2>Milestone Ladder</h2><div class="hint">245 lb → 185 lb, modeled at month 15–20</div></div>
     <div class="ms-grid" id="msGrid"></div>
   </div>
 
   <div class="block">
-    <div class="block-head"><h2>Expected Progression</h2><div class="hint">consistent training + protein floor + 2.5mg tirzepatide held</div></div>
-    <div class="panel table-wrap">
-      <table class="proj">
-        <thead><tr><th>Marker</th><th>Now</th><th>3 mo</th><th>6 mo</th><th>12 mo</th><th>18 mo</th></tr></thead>
-        <tbody>
-          <tr><td>Bodyweight</td><td>262 lb</td><td>243 lb</td><td>228 lb</td><td>202 lb</td><td class="up">185 lb</td></tr>
-          <tr><td>Body fat</td><td>~35%</td><td>~32%</td><td>~28%</td><td>~22%</td><td class="up">~16%</td></tr>
-          <tr><td>Back squat</td><td>~275 lb*</td><td>280 lb</td><td>300 lb</td><td>325 lb</td><td class="up">355 lb</td></tr>
-          <tr><td>Bench press</td><td>~245 lb*</td><td>250 lb</td><td>260 lb</td><td>270 lb</td><td class="up">280 lb</td></tr>
-          <tr><td>Deadlift</td><td>~330 lb‡</td><td>345 lb</td><td>365 lb</td><td>390 lb</td><td class="up">415 lb</td></tr>
-          <tr><td>Power clean</td><td>240 lb‡</td><td>250 lb</td><td>260 lb</td><td>275 lb</td><td class="up">290 lb</td></tr>
-          <tr><td>VO₂ max</td><td>35.8</td><td>38</td><td>41</td><td>44</td><td class="up">47</td></tr>
-          <tr><td>Resting HR</td><td>78</td><td>74</td><td>70</td><td>64</td><td class="up">58</td></tr>
-          <tr><td>Hemoglobin</td><td>13.6</td><td>13.8</td><td>14.0</td><td>14.2</td><td class="up">14.5</td></tr>
-          <tr><td>LDL cholesterol</td><td>151</td><td>~119†</td><td>~115</td><td>&lt;110</td><td class="up">&lt;100</td></tr>
-          <tr><td>Overall rating</td><td>57</td><td>60</td><td>65</td><td>72</td><td class="up">77</td></tr>
-        </tbody>
-      </table>
-      <p class="method" style="margin-top:12px;">* Updated Aug 3, 2026 — real 1RM test on a Smith machine (plates counted + ~15 lb estimated bar weight, video-verified). Both numbers landed ahead of the original 3-month projection, so the path to 6/12/18-month targets is compressed rather than reset. &nbsp;‡ Added Aug 5, 2026 — power clean 240 lb for a single, deadlift 305 lb × 3 with reps in reserve. The deadlift figure is an <b>estimated</b> 1RM from that triple; because the set wasn't taken near failure, the formula probably <i>understates</i> it. &nbsp;† Zetia moves the LDL row only; it has no bodyweight mechanism.</p>
+    <div class="block-head"><h2>1-Year Trend Forecast</h2><div class="hint">real trend + confirmed 5mg dose (corrected Aug 27) — not a straight-line guess</div></div>
+    <div class="panel">
+      <div style="display:flex; gap:22px; flex-wrap:wrap; align-items:baseline; padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid var(--line);">
+        <div>
+          <div class="eyebrow">Current measured pace</div>
+          <div class="mono jersey" style="font-size:26px; color:var(--now);">2.44 lb/wk</div>
+          <div style="font-size:11.5px; color:var(--ink-3);">Jul 23 (260.1) → Aug 31 (244.9), 39 days<br>95% CI 2.04–2.83 · R²&nbsp;0.91 · n=16</div>
+        </div>
+        <div>
+          <div class="eyebrow">185 lb ETA — modeled</div>
+          <div class="mono jersey" style="font-size:26px; color:var(--ceil);">Month 15–20</div>
+          <div style="font-size:11.5px; color:var(--ink-3);">≈ Nov 2027 – Apr 2028</div>
+        </div>
+        <div>
+          <div class="eyebrow">Lean share of loss</div>
+          <div class="mono jersey" style="font-size:26px; color:var(--warn);">24.8%</div>
+          <div style="font-size:11.5px; color:var(--ink-3);">inside the 20–30% GLP-1 risk band<br>flat across both halves</div>
+        </div>
+      </div>
+      <p class="method" style="margin-bottom:14px;"><b>Corrected Aug 27, 2026: the dose behind this trend was never 2.5mg.</b> A dosing-calculator check found he'd been drawing 25 IU per shot against a correct 12.5 IU for 2.5mg — exactly double. Every dose since day one has actually been <b>~5mg</b>, now confirmed and tracked as the real, intentional dose going forward. This doesn't change the measured trend itself (2.4 lb/week is what actually happened, regardless of what it was labeled) — but it changes what that trend implies about the future. A real 5mg dose has a longer, better-supported efficacy runway than the 2.5mg starter dose this model originally assumed, which argues for the trend holding up well. But it also has a known population ceiling — published 5mg trial data averages roughly 15–22% total body-weight loss without further dose changes, well short of the 28.8% needed to reach 185 from a 260 lb start. <b>Closing that gap requires the training/protein/sleep program to keep outperforming a typical 5mg patient, not the drug doing it alone</b> — which is exactly what's been happening so far, hence the pace beating the original plan. <b>The band widened rather than narrowed with this correction</b> — from month 15–17 to month 15–20 — because "confirmed real dose" also means "confirmed real ceiling," and reaching all the way to goal weight on 5mg alone, without ever revisiting the dose again, is a genuinely uncertain proposition. <b>Treat every number past "Now" as a modeled estimate, not a promise.</b></p>
+      <p class="method" style="margin-bottom:14px;"><b>Sep 1 re-fit on 4 new weigh-ins — the pace did not shift, and that is the finding.</b> Adding Aug 27, 28, 29 and 31 moves the fitted rate from 2.4 to <b>2.44 lb/week</b>, which is no change at all: the new number sits well inside the old one's confidence interval. The trend is <b>mildly decelerating</b> — first half of the window ~2.75 lb/wk, second half ~2.3 — exactly as a flat-dose GLP-1 curve should behave. <b>What did move is the starting point:</b> "Now" was 249 lb and is 244.9. <b>What did not move, and cannot yet, is the ETA.</b> Pinning the plateau anywhere from 15% to 32% total loss fits these 39 days almost identically (RMSE 1.09–1.12 lb across every scenario) — five weeks of data simply cannot see where this curve flattens. The month 15–20 band stays as it is, on evidence rather than caution.</p>
+      <div class="table-wrap">
+        <table class="proj">
+          <thead><tr><th>Marker</th><th>Now</th><th>3 mo</th><th>6 mo</th><th>9 mo</th><th>12 mo</th><th>Goal</th></tr></thead>
+          <tbody>
+            <tr><td>Bodyweight</td><td>244.9 lb§</td><td>235 lb</td><td>218 lb</td><td>207 lb</td><td>197 lb</td><td class="up">185 lb</td></tr>
+            <tr><td>Body fat %</td><td>34.1%§</td><td>~30%</td><td>~25%</td><td>~22%</td><td>~19%</td><td class="up">~15%</td></tr>
+            <tr><td>Visible ab definition</td><td colspan="4" style="text-align:center; color:var(--ink-3);">least certain row on this card — individual variance (skin, insertion, genetics) swamps any model</td><td class="up">first hints likely by here</td></tr>
+            <tr><td>VO₂ max</td><td>40◆</td><td>43</td><td>46</td><td>48</td><td>50</td><td class="up">52</td></tr>
+            <tr><td>Resting HR</td><td>78</td><td>73</td><td>69</td><td>66</td><td>63</td><td class="up">59</td></tr>
+            <tr><td>Back squat</td><td>385 lb◆</td><td>397 lb</td><td>407 lb</td><td>415 lb</td><td>422 lb</td><td class="up">432 lb</td></tr>
+            <tr><td>Deadlift</td><td>405 lb◆</td><td>417 lb</td><td>427 lb</td><td>435 lb</td><td>442 lb</td><td class="up">452 lb</td></tr>
+            <tr><td>Strict press</td><td>165 lb◆</td><td>170 lb</td><td>175 lb</td><td>179 lb</td><td>183 lb</td><td class="up">188 lb</td></tr>
+            <tr><td>Power clean</td><td>240 lb‡</td><td>248 lb</td><td>254 lb</td><td>259 lb</td><td>264 lb</td><td class="up">270 lb</td></tr>
+            <tr><td>Bench press</td><td>~245 lb*</td><td>250 lb</td><td>258 lb</td><td>263 lb</td><td>268 lb</td><td class="up">275 lb</td></tr>
+            <tr><td>Hemoglobin</td><td>13.6</td><td>13.7</td><td>13.9</td><td>14.0</td><td>14.2</td><td class="up">14.5</td></tr>
+            <tr><td>LDL cholesterol</td><td>151</td><td>~119†</td><td>~115</td><td>~112</td><td>&lt;110</td><td class="up">&lt;100</td></tr>
+            <tr><td>Overall rating</td><td>59</td><td>62</td><td>67</td><td>70</td><td>73</td><td class="up">78</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="method" style="margin-top:12px;">§ Real weight per the VeSync scale history through <b>Aug 31 (244.9 lb / 34.1% BF)</b>; 7-day trailing mean 247.4 lb, which is the number to quote when a single day would mislead. &nbsp;◆ From the Aug 26 screenshot deep-scan — <b>Aug 14, 2026 "Community Cup" true 1RM day</b> (squat 385, deadlift 405, strict press 165, all real max-effort tests) and the Aug 8 real VO₂ max reading (39, later 40.6). Strength growth from here is modeled slower than the jump that already happened — a caloric deficit genuinely caps further strength gain regardless of how strong the recent PRs were. &nbsp;‡ Aug 5, 2026 power clean and deadlift-by-triple; the deadlift number here is superseded by the Aug 14 true 1RM above. &nbsp;* Aug 3, 2026 Smith-machine test, video-verified; no new bench data since, so it grows on the same modeled curve as the rest of the pressing pattern. &nbsp;† Zetia moves the LDL row only; it has no bodyweight mechanism. &nbsp;On <b>ab visibility</b> specifically: visible definition typically needs somewhere in the 12–18% body-fat range depending on the person, and this card would rather flag that range honestly than fake a precise date — first hints are plausible around 12 months (~19–22% BF), fuller definition more likely near goal weight (~15% BF), but this is a genuine estimate on the weakest evidence of anything on this page.</p>
+    </div>
+  </div>
+
+  <!-- ATTRIBUTION -->
+  <div class="block">
+    <div class="block-head"><h2>What Is Actually Driving The Loss</h2><div class="hint">Sep 1 — what this data can and cannot separate</div></div>
+    <div class="panel">
+      <p class="method" style="margin-bottom:14px;">Six inputs started at roughly the same time: <b>tirzepatide (really 5 mg), paradoxine, the supplement stack, high-protein eating, CrossFit volume, and consistency.</b> One weight series cannot separate six simultaneous interventions — that is a limit of the study design, not of the arithmetic. What the series <i>can</i> do is bound how large an effect would have to be before it became visible at all.</p>
+      <div class="table-wrap">
+        <table class="idx">
+          <thead><tr><th>Input</th><th>Plausible size</th><th>Detectable here?</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Tirzepatide 5 mg</td><td class="mono">dominant — trial 5 mg averages 15–22% total loss</td><td>Yes — it is most of the signal</td><td><span class="tag hi">confirmed dose</span></td></tr>
+            <tr><td>Training volume</td><td class="mono">~80–120 kcal/day averaged over the month</td><td>No — below the 284 kcal/day floor</td><td><span class="tag med">logged, not isolable</span></td></tr>
+            <tr><td>High-protein diet</td><td class="mono">protects lean mass; small direct TEF effect</td><td>Indirectly — via lean share, not weight</td><td><span class="tag lo">intake never logged</span></td></tr>
+            <tr><td>Paradoxine</td><td class="mono">~100 kcal/day at 30 mg (published BAT effect)</td><td>No — roughly a third of the floor</td><td><span class="tag lo">no start date or dose</span></td></tr>
+            <tr><td>Supplement stack</td><td class="mono">not individually quantified</td><td>No</td><td><span class="tag lo">not itemised</span></td></tr>
+            <tr><td>Consistency</td><td class="mono">the multiplier on all of the above</td><td>Visible in adherence, not in a coefficient</td><td><span class="tag hi">excellent</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="method" style="margin-top:14px;"><b>The detection floor is the number that settles this.</b> With 16 clean readings over 39 days and a residual scatter of about 1.1 lb, this series resolves a difference of roughly <b>0.57 lb/week — about 284 kcal/day</b>. Paradoxine's published effect and the daily-averaged cost of six CrossFit sessions a month both land <i>under</i> that. So neither would show up as its own line in the data even with perfect logging, and <b>any confident claim that paradoxine is or isn't working would be invented, not measured.</b></p>
+      <p class="method" style="margin-top:12px;"><b>What the bundle is doing, measured as a bundle:</b> 5.8% of starting body weight in 5.6 weeks. Published 5 mg trial trajectories are near 4.5% at that point — so the whole stack together is running about <b>1.3× population pace</b>. That margin is the honest home for training, protein and consistency: it is real, it is measurable, and it is not attributable to any one of them individually.</p>
+      <p class="method" style="margin-top:12px;"><b>The one place diet shows up directly is lean mass, and there the news is flat.</b> Lean share of loss is <b>24.8%</b> over the whole window and 24.9% over the second half — no improvement. If the ~185–200 g/day protein target were being hit consistently, this is the number that should be bending downward. It isn't. That is the single strongest argument for logging intake rather than aiming at it.</p>
+      <p class="method" style="margin-top:12px;"><b>To make any of this separable</b> would take one input changing while the others hold, or direct measurement — daily active-energy burn, logged protein grams, a step count. None exist in the record today, and adding a step count is the cheapest of the three.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><h2>Accelerating The Trend</h2><div class="hint">what actually moves the ETA earlier — ranked by leverage</div></div>
+    <div class="panel notes">
+      <div class="note-line crit"><span class="mk">▲</span><span><b>Sleep is the single biggest lever on this list, and it's now a confirmed problem, not a data gap.</b> 5h39m average against a 7–9h target isn't a rounding error — short sleep raises ghrelin (hunger) and lowers leptin (satiety), degrades workout quality, and slows recovery, all of which work directly against the deficit you're already running. Closing even half that gap would plausibly move the deceleration curve above, not just how you feel day to day.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Protein floor, held not just aimed at.</b> ~185–200 g/day is what protects against the ~27% lean-mass-loss share the VeSync data already flagged. Losing muscle doesn't just look worse — it lowers BMR, which is exactly the mechanism that stalls a plateauing deficit. This is the highest-leverage thing you directly control day to day.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>NEAT — the walking you're not tracking.</b> There's no step count on this card at all right now. Daily walking outside of CrossFit is the lowest-fatigue-cost way to widen a deficit without adding training stress on top of a body that's already doing six-plus sessions a month on short sleep. Worth adding as a tracked row once there's data for it.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Protect the strength numbers instead of chasing the next PR.</b> Squat and deadlift already beat this card's old 18-month targets in month one — that's the good problem. The risk now is testing max-effort again too soon, in a deficit, on short sleep, and either stalling or getting hurt. Planned lighter weeks between hard tests will hold the gains better than constant re-testing.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Fix the scale-reading protocol, since you already flagged it yourself.</b> Weigh at the same time of day, same hydration state, before eating/training, and read the 7-day rolling average — not the single-day number — for anything except bodyweight itself. Body fat %, water %, and protein % on a BIA scale swing with hydration alone; a post-workout or evening reading will look "worse" than reality with zero real change underneath it.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Get one real cardio benchmark beyond the Watch estimate.</b> A submax or field test (timed mile, 12-minute run) gives a second, independent read on VO₂ max — worth having since the current number came from Apple's algorithm, not a lab or a maximal test.</span></div>
+      <div class="note-line crit"><span class="mk">▲</span><span><b>The dose question isn't outside this card's model anymore — it's inside it, and it wasn't what anyone thought.</b> Everything above now assumes 5mg, confirmed real, not the 2.5mg this card previously modeled. That correction came from a dosing-calculator check, not a clinical review — the last few weeks of injections were unsupervised at a dose double what was intended. If a further increase is ever on the table, that's a conversation for an actual prescriber with real monitoring, not a text thread — this card will keep tracking whatever the real number turns out to be, but it can't substitute for that check-in.</span></div>
     </div>
   </div>
 
@@ -281,46 +358,55 @@
         <table class="idx">
           <thead><tr><th>Marker</th><th>Current</th><th>What it caps</th><th>Effect</th></tr></thead>
           <tbody>
-            <tr><td>VO₂ max</td><td class="mono">35.8</td><td>Cardio Endurance — directly sets it</td><td><span class="tag lo">limiting</span></td></tr>
+            <tr><td>VO₂ max</td><td class="mono">39–40.6 <span style="color:var(--ink-3)">(measured)</span></td><td>Cardio Endurance — directly sets it</td><td><span class="tag lo">limiting</span></td></tr>
             <tr><td>Hemoglobin</td><td class="mono">13.6 g/dL</td><td>Oxygen carrying → Endurance, Stamina ceiling</td><td><span class="tag med">borderline</span></td></tr>
             <tr><td>Body fat</td><td class="mono">~35%</td><td>Flexibility, Agility, Speed — mechanical restriction</td><td><span class="tag lo">limiting</span></td></tr>
-            <tr><td>Sleep</td><td class="mono">~6 h <span style="color:var(--ink-3)">(sampled)</span></td><td>Accuracy, recovery, motor precision — and it gates every other row in this table</td><td><span class="tag med">unreliable sample</span></td></tr>
+            <tr><td>Sleep</td><td class="mono">5h39m avg <span style="color:var(--ink-3)">(measured, Jul14–Aug13)</span></td><td>Accuracy, recovery, motor precision — and it gates every other row in this table</td><td><span class="tag lo">limiting — confirmed</span></td></tr>
             <tr><td>Resting HR</td><td class="mono">78 bpm</td><td>Aerobic base indicator</td><td><span class="tag med">room to move</span></td></tr>
             <tr><td>Max HR observed</td><td class="mono">182 bpm</td><td>Sets your training zones — Aug 4</td><td><span class="tag hi">well calibrated</span></td></tr>
             <tr><td>HR recovery (1 min)</td><td class="mono">not yet clean</td><td>Autonomic fitness — the best free progress marker you have</td><td><span class="tag med">measurable today</span></td></tr>
             <tr><td>Blood pressure</td><td class="mono">120/80 clinic</td><td>Training intensity tolerance</td><td><span class="tag med">watch home cuff</span></td></tr>
             <tr><td>A1C</td><td class="mono">4.8%</td><td>Fuel handling — no restriction</td><td><span class="tag hi">asset</span></td></tr>
             <tr><td>eGFR / liver</td><td class="mono">normal</td><td>Recovery capacity, supplement tolerance</td><td><span class="tag hi">asset</span></td></tr>
-            <tr><td>R knee (2012 injury)</td><td class="mono">symptomatic</td><td>Squat depth, Power, Agility — imaging exists but is lost</td><td><span class="tag med">records missing</span></td></tr>
+            <tr><td>R knee (2011 injury)</td><td class="mono">symptomatic</td><td>Squat depth, Power, Agility — imaging exists but is lost</td><td><span class="tag med">records missing</span></td></tr>
             <tr><td>R foot (bunionectomy)</td><td class="mono">post-surgical</td><td>Ankle dorsiflexion → knee valgus → knee load</td><td><span class="tag med">chain risk</span></td></tr>
             <tr><td>Musculoskeletal exams</td><td class="mono">clean</td><td>Nothing — no restriction documented</td><td><span class="tag hi">asset</span></td></tr>
           </tbody>
         </table>
       </div>
-      <p class="method" style="margin-top:12px;"><b>On the sleep row specifically.</b> The ~6 h figure is what the watch recorded on the nights it was worn — and it isn't worn every night. That makes it a <b>sample, not an average</b>, and the bias could run in either direction: if the watch comes off on nights you crash early, the number is too low; if it's mostly worn on ordinary home nights, it may miss your worst ones. <b>There is no way to tell from the data which is happening</b>, so this card no longer treats 6 h as established, and the tag has been downgraded from <i>limiting</i> to <i>unreliable sample</i>. Fixing it is cheap: wear it <b>five to seven nights in a row, once</b>, covering both shift and off nights. That single stretch is worth more than months of sporadic wear, and it settles a row that quietly gates every other row in this table.</p>
-      <p class="method" style="margin-top:12px;">Three of these are assets. The three still marked limiting are levers — and all three move with the same inputs: training volume, protein, and sleep. The two orthopedic rows are different: they're <b>unknowns, not limits</b>, and one imaging appointment converts them into either an asset or a plan. Sleep now sits in that same unknown category, which is the more useful place for it: <b>an open question you can close this week</b> rather than a verdict you're stuck with.</p>
+      <p class="method" style="margin-top:12px;"><b>On the sleep row specifically — resolved Aug 26, 2026.</b> A month-view Apple Health screenshot covering Jul 14–Aug 13 shows sleep bars on the large majority of nights, not a sporadic sample: <b>average 5h39m, near-nightly.</b> That's a real number now, not an estimate with unknown bias in either direction — and the real number is genuinely short of a healthy range. The tag moves back from <i>unreliable sample</i> to <i>limiting</i>, with "confirmed" attached so it's clear this isn't the same soft flag as before. This is now a training-plan item, not a data-quality item: the fix is more sleep, not more measurement.</p>
+      <p class="method" style="margin-top:12px;">Three of these are assets. The rows marked limiting are levers — and they largely move with the same inputs: training volume, protein, and sleep. The two orthopedic rows are different: they're <b>unknowns, not limits</b>, and one imaging appointment converts them into either an asset or a plan.</p>
     </div>
   </div>
 
   <div class="block">
     <div class="block-head"><h2>Combine Notes</h2></div>
     <div class="panel notes">
+      <div class="note-line"><span class="mk">▸</span><span><b>Mount Union is now confirmed, not assumed — Aug 24, 2026.</b> A Wayback Machine capture of the program's own official bio page (archived Sep 10, 2012) shows freshman LB #52, 240 lb, Civil Engineering, and — from the coaching staff who recruited him — <b>"a four-year letterwinner that was an all-region selection."</b> The card had this flagged as self-reported and unverifiable; it wasn't unverifiable, it just wasn't on the *current* live roster, which doesn't go back 14 years. The lesson traveled further than the fact: a missing recent record is not evidence against an old claim.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>He made a 15-0 national championship roster.</b> Mount Union D3 football in 2012 won it all. Programs at that level don't carry a body for depth chart padding — a freshman on that roster was there because the staff believed the tape from a four-year Allatoona letterwinner. That is real corroboration for the Power and Coordination ratings above, independent of anything measured this month.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>How it ended, in his own words: "I only played my freshman year and dropped out because of grades."</b> One season. Academic, not athletic, not injury-related — and notably a full year <i>after</i> the senior-year knee injury below, not caused by it. Worth being precise about that separation: two setbacks, different causes, easy to blur together in a synopsis, wrong to blur together in a training plan.</span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>First real test day: Aug 3, 2026.</b> Squat ~275 lb, bench ~245 lb (Smith machine, video-verified) — that squat number alone beats the original 6-month target. Same day: an 0.81mi run at HR up to 177, and it followed a HIIT session and a Saturday CrossFit WOD (3 rounds of 29 burpees/sit-ups/air-squats plus med-ball runs). <b>That's a real training week, not a single good day.</b></span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>Aug 5 — the power clean is the most important number on this card.</b> 240 lb for a single at 262 lb bodyweight, plus 305×3 on the deadlift with reps left over. Power had been the largest guess here — 48, tagged <i>medium</i> confidence, explicitly because no explosive test existed. A clean is the best barbell measure of rate of force development there is, and yours came back at roughly 0.92× bodyweight — closer to <b>1.4× your estimated lean mass</b>. <b>That rating was wrong by about eighteen points, and it was wrong in your favor.</b> This is also the strongest evidence yet for something the card already suspected: the motor patterns survived thirteen years. You don't clean 240 by accident.</span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>Aug 13 — EMOM 28, all 7 rounds finished on the buzzer.</b> A true EMOM doesn't reward finishing fast, it rewards not falling behind for 28 straight minutes: bike, V-ups, rope pulls, and heavy KB swings, cycling every minute with no break. Two decisions in the middle of it say more than the reps do — you <b>upscaled the KB to 35 lb</b> mid-workout instead of staying at the prescribed 26, and when the rope legitimately ran out (closest attempt: the 3rd marker, never the top beam) you dropped to ring rows instead of no-repping. <b>Worth being precise about the rope number:</b> 11 partial pulls, not 11 climbs — this card would rather undersell that than round it up.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Aug 14 — "Community Cup," a true max-effort day, and the biggest single update to this card since it launched.</b> Back Squat 385, Deadlift 405, Strict Press 165 — all PRs, all real 1-rep-max tests, none of them estimates or Smith-machine numbers. <b>Both the squat and deadlift already beat this card's old 18-month targets (355/415)</b> before month one was even over. Strength is now the first domain to cross its 2011 football-peak rating — not projected to, already has. This is also the answer to the standing push-press question: <b>no push press has ever been logged anywhere in this record — the real pressing PR is a strict press, 165 lb</b>, tested the same day. If a true push press number matters, it needs its own dedicated test; strict press and push press are not interchangeable and this card won't conflate them.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>VO₂ max stopped being a guess on Aug 8.</b> Apple Health's Cardio Fitness reading came back at 39 ("Below Average" per Apple's own banding), and a later check showed 40.6 — both above the 35.8 this card had been estimating from a single easy run. Cardio Endurance moves up accordingly, though "Below Average" by Apple's standard is a fair, unflattering label to sit with rather than round away.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Sleep is no longer an open question — it's a confirmed limiter.</b> A month-view Health screenshot (Jul 14–Aug 13) shows near-nightly data, not a sporadic sample: <b>5h39m average.</b> The old "unreliable sample" flag is retired; the honest replacement is worse news delivered with more confidence. Given six-plus training sessions logged in the same window, the sleep debt and the training volume are very likely competing for the same recovery budget right now.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>The weight trend is now confirmed by a real 4-year device history, not a handful of readings.</b> A VeSync smart-scale CSV export (178 rows, Nov 2022–Aug 2026) shows 260.1 lb on Jul 23 (pre-dose) down to 250.4 lb on Aug 23 — <b>-9.7 lb in 31 days, ~2.2 lb/week</b>, ahead of this card's original ~1.5 lb/week pace. Composition split: roughly 27% of that loss reads as lean mass, right at the edge of the flagged GLP-1 risk range, while muscle mass % actually held steady-to-rising (60.3%→61.7%) — mixed but reassuring given how imprecise a bioelectrical-impedance scale is. <b>Do not extrapolate 2.2 lb/week forward 18 months</b> — early GLP-1 loss is typically front-loaded and this will decelerate.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Sep 1 — four more weigh-ins, and the pace held.</b> Aug 27 through Aug 31 brings the series to 244.9 lb and re-fits the rate at 2.44 lb/week — statistically identical to the 2.4 this card already carried. <b>The useful finding is a negative one:</b> plateau scenarios from 15% to 32% total loss all fit these 39 days within 0.03 lb of RMSE of each other, so the data genuinely cannot say yet where the curve flattens. The month 15–20 band is not caution, it is the honest width. Also worth noting: the Aug 17 reading of 253.7 lb was noise, not a regain, and weigh-in time alone is worth ~1.7 lb of apparent swing — mornings read low, afternoons read high.</span></div>
+      <div class="note-line crit"><span class="mk">▲</span><span><b>Aug 27 — the tirzepatide dose was never actually 2.5mg. Corrected, not silently fixed.</b> A dosing-calculator check showed the correct draw for 2.5mg is 12.5 IU; the real draw used every time was 25 IU — exactly double. Every dose since starting has actually been <b>~5mg</b>, discovered by accident, not through any clinical review. This directly reverses the hard rule set on Aug 1 ("will not escalate above 2.5mg no matter what"), and it's now the intentional, tracked dose going forward. It also gives the trend a more honest explanation: 2.4 lb/week was fast for a 2.5mg starter dose because it was never a 2.5mg dose. <b>The trend forecast below now assumes 5mg, and the ETA band widened rather than narrowed because of it</b> — see the methodology note there for why.</span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>One caveat on the clean, so the number stays honest.</b> A barbell measures power against an external load. A vertical jump measures power against <i>your own</i> 262 lb — and those two will not agree right now. Expect the jump to read meaningfully lower than the clean suggests, and expect the gap between them to close as bodyweight comes off, without you getting any stronger. <b>That gap is worth measuring precisely because it's the part weight loss fixes for free.</b></span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>Aug 4 — Muscle Up Annie, Beginner, 15:45, inside a 70-minute session.</b> The watch logged 06:10–07:20 as "HIIT" — that's the same session, not a second one. <b>1:10:22, 848 active calories, avg HR 135, peak 182.</b> 60 single unders, 60 anchored sit-ups, 46 ring rows, 10 pullups, ring support holds under a 10-minute EMOM. This was the first gymnastics work anywhere in your record and it moved Coordination from <i>inferred</i> to <i>measured</i>. The value of it <b>doubles the day you repeat it</b> — same scaling, 8–12 weeks out, one number against another.</span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>The zone split is the good news inside that session.</b> 42% of those 70 minutes sat in Zone 1, and only <b>1:14 went above 173</b>. You didn't survive that workout — you paced it. The heart-rate curve builds, peaks around 06:57, and comes back down, with no runaway drift at the end. And it happened in <b>95% humidity</b>, which inflates heart rate by roughly 5–10 bpm for identical work. <b>Every number here slightly understates you.</b></span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>Your peak of 182 bpm is useful beyond bragging.</b> Age-predicted max at 32 is about 186, and you hit 182 without a maximal test — so your true ceiling is likely 185–190 and your watch's zones are calibrated correctly. That matters because it means the zone data above can be trusted as a training tool, not just a readout.</span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>You were never as fit as you were strong.</b> Your 2011 profile is a specialist's — Power 80, Strength 76, but Cardio Endurance at 52 even in peak football shape. Linemen are trained for four-second efforts, not aerobic capacity. <b>The version of you at the ceiling isn't a bigger lineman — it's a genuinely healthier athlete who happens to be nearly as powerful at 50 lb lighter.</b></span></div>
-      <div class="note-line"><span class="mk">▸</span><span><b>The crossover moved up. You now pass your 18-year-old self around month 9</b> — halfway through the projection, not two-thirds. That shift is entirely the Aug 5 lifts: you closed a 12-point gap instead of a 13-point one, and you closed it in the two domains that were supposed to be slowest. Power is still the last thing to cross, but it's crossing from 66, not 48.</span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>The overall crossover moved up again, and one domain got there early.</b> <b>Strength individually has already crossed its 2011 peak</b> — the Aug 14 squat/deadlift/press day did that outright, months ahead of any projection. The <i>overall</i> rating crossover is still ahead, now landing earlier than the original month-9 estimate given how much of the strength gap just closed. Power remains the last domain projected to cross, from 66, not from the original 48.</span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>Your skill ratings held.</b> Accuracy and Coordination sit closest to their 2011 values because motor skill decays far slower than aerobic capacity or strength. You didn't lose technique — you lost the engine underneath it. That's the easier of the two to rebuild.</span></div>
-      <div class="note-line"><span class="mk">▸</span><span><b>Worth deciding later: 185 or 200?</b> You played DL at 240 on this exact frame, so your skeleton and lean mass were built to carry more than a typical 6'0" male. 185 is achievable and medically excellent — but 195–205 may be where this frame sits naturally lean and strong, and it would put your Strength and Power meaningfully higher. Both fully deliver the health outcome. Revisit at 12 months with real body-comp data instead of deciding now.</span></div>
-      <div class="note-line crit"><span class="mk">▲</span><span><b>Six sessions across two weeks, in a deficit, on a GLP-1 — and sleep is the one input this card cannot see.</b> Aug 1 WOD → HIIT → Aug 3 strength test and run → Aug 4 seventy minutes → Aug 5 deadlift and clean → Aug 13 EMOM 28, every one of them finished, none of them scaled down. The consistency is not the problem; it's the best thing here. The problem is that training, the deficit, and the medication all draw down the same recovery budget, and <b>the only line item that refills it is the one with the worst data.</b> That's the real gap on this card now — not another lift, not another benchmark. <b>A deliberate easy day is a training decision, not a missed one.</b></span></div>
+      <div class="note-line"><span class="mk">▸</span><span><b>Worth deciding later: 185 or 200?</b> You played DL/LB at 240 on this exact frame, so your skeleton and lean mass were built to carry more than a typical 6'0" male. 185 is achievable and medically excellent — but 195–205 may be where this frame sits naturally lean and strong, and it would put your Strength and Power meaningfully higher. Both fully deliver the health outcome. Revisit at 12 months with real body-comp data instead of deciding now.</span></div>
+      <div class="note-line crit"><span class="mk">▲</span><span><b>A dozen-plus sessions across three-plus weeks, in a deficit, on a GLP-1 — and now the sleep data confirms the recovery budget is genuinely short.</b> Aug 1 WOD → HIIT → Aug 3 strength test and run → Aug 4 seventy minutes → Aug 5 deadlift and clean → Aug 10, 12, 13, 14 (max-effort day), 19, 20, 25 — every one of them finished or PR'd, none of them scaled down. The consistency is not the problem; it's the best thing here. The problem is that training, the deficit, and the medication all draw down the same recovery budget, and <b>the confirmed 5h39m average means that budget is running a real deficit, not an unmeasured one.</b> That's the real gap on this card now — not another lift, not another benchmark. <b>A deliberate easy day is a training decision, not a missed one.</b></span></div>
       <div class="note-line crit"><span class="mk">▲</span><span><b>The one real risk:</b> 20–30% of weight lost on a GLP-1 comes off as lean mass unless actively defended. Across 77 lb, that's up to 20 lb of muscle. <b>Protein at ~185–200 g/day plus lifting 3–4×/week is not a side quest — it's the mechanism that makes the loss permanent.</b> Retained lean mass is the single strongest predictor of not regaining.</span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>Four ratings improve from weight loss alone.</b> Speed, Agility, Flexibility and Endurance all move just from carrying less mass, before any specific adaptation. That's why the first six months are the steepest part of the curve.</span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>Flexibility is the cheapest rating on the board.</b> It's low mostly from body composition and an absence of any mobility work — not from restriction. Clinical exams have recorded normal range of motion consistently. Ten minutes of dedicated mobility, three times a week, moves it faster than anything else here.</span></div>
-      <div class="note-line crit"><span class="mk">▲</span><span><b>The right knee is the one open question — and the evidence is missing, not absent.</b> A high-low block in 2012, suspected ACL or LCL. It <i>was</i> imaged — MRI and X-rays — and treated with chiropractic care and e-stim in Woodstock GA. <b>None of it is in any chart you hold</b>, and the only entry in your current record reads "knee injury, 2014, resolved," with no side, no mechanism, no films. Every provider you see is reading a knee that looks long-settled. <b>The fact that you returned for the playoffs is the most useful clue you have</b> — a complete ACL tear doesn't allow that, so a graded MCL/LCL sprain or partial injury is far more likely than what you were told.</span></div>
+      <div class="note-line crit"><span class="mk">▲</span><span><b>The right knee is the one open question — and the evidence is missing, not absent.</b> A high-low block in 2011 (senior season), suspected ACL or LCL. It <i>was</i> imaged — MRI and X-rays — and treated with chiropractic care and e-stim in Woodstock GA. <b>None of it is in any chart you hold</b>, and the only entry in your current medical record reads "knee injury, 2014, resolved," with no side, no mechanism, no films — and a date that still doesn't match. Every provider you see is reading a knee that looks long-settled. <b>The fact that you returned for the playoffs is the most useful clue you have</b> — a complete ACL tear doesn't allow that, so a graded MCL/LCL sprain or partial injury is far more likely than what you were told. <b>This is unrelated to Mount Union ending</b> — that came a full year later, over grades.</span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>Losing 77 lb is knee treatment.</b> Bodyweight multiplies through the knee at roughly 4× per step. Getting to 185 removes on the order of <b>300 lb of peak load per stride</b>. Nothing else in this plan does more for that joint — and it's a reason to prioritize it now rather than after the heavy blocks.</span></div>
       <div class="note-line"><span class="mk">▸</span><span><b>Your symptom pattern is actually reassuring.</b> Pain when detrained, better when training, no giving way or locking — that reads more like quad-weakness-driven patellofemoral pain than active ligament instability. A truly unstable knee buckles. Yours responds to loading, which means loading is likely the treatment, done in the right order.</span></div>
     </div>
@@ -356,7 +442,7 @@
 
   <div class="block">
     <div class="panel method">
-      <b>How these numbers are built.</b> Ratings are anchored to measured data where it exists — VO₂ max 35.8 and a logged 225 lb squat session are real, as are repeated clinical findings of normal range of motion, gait, and coordination. Where no measurement exists, ratings are inferred from body composition, training history, occupational demand, and documented health markers, and are tagged accordingly in the Prediction Index. <b>Flexibility</b> is estimated from body-fat-driven mechanical restriction, prior foot surgery, and the absence of any mobility training, offset by consistently normal clinical ROM. <b>Accuracy</b> is estimated from occupational precision demands, documented technical lifting, and normal coordination exams, offset by ADHD-related motor-timing variability and chronic short sleep — both of which are modifiable. The <b>ceiling</b> is a forward projection of realistic trained capacity at goal bodyweight for a 32-year-old male of this frame; it is not a historical figure. Projections assume ~1.0–1.5 lb/week loss with resistance training and adequate protein. <b>These are estimates under consistency, not guarantees</b> — and every one of them is designed to be overwritten by a real number.
+      <b>How these numbers are built.</b> Ratings are anchored to measured data where it exists — VO₂ max <b>39–40.6 (measured Aug 8)</b> and the <b>Aug 14 true 1RMs (squat 385, deadlift 405, strict press 165)</b> are real, as are repeated clinical findings of normal range of motion, gait, and coordination. Where no measurement exists, ratings are inferred from body composition, training history, occupational demand, and documented health markers, and are tagged accordingly in the Prediction Index. <b>Flexibility</b> is estimated from body-fat-driven mechanical restriction, prior foot surgery, and the absence of any mobility training, offset by consistently normal clinical ROM. <b>Accuracy</b> is estimated from occupational precision demands, documented technical lifting, and normal coordination exams, offset by ADHD-related motor-timing variability and confirmed short sleep — the second of which is modifiable. The <b>ceiling</b> is a forward projection of realistic trained capacity at goal bodyweight for a 32-year-old male of this frame; it is not a historical figure. Projections are anchored to the <b>measured −2.44 lb/week</b> with deceleration applied, not to a fixed linear assumption. <b>These are estimates under consistency, not guarantees</b> — and every one of them is designed to be overwritten by a real number.
     </div>
   </div>
 
@@ -378,59 +464,62 @@ function css(v){ return getComputedStyle(document.documentElement).getPropertyVa
 
 var CHECKPOINTS=[
   {key:'then',short:'Then',when:'2011–12',ovr:68,wt:240,bf:'~22%',
-   caption:'<b>Age 17–18. Allatoona DL, All-Region 2nd Team.</b> A specialist build — enormous power and strength, but the aerobic profile of a lineman, which is to say poor. Note Cardio Endurance sitting at 52 even at peak football condition. <b>That gap is the opening: you were a better athlete then, but you are not chasing a healthier version of yourself backwards.</b>'},
-  {key:'now',short:'Now',when:'Aug 2026',ovr:57,wt:262,bf:'~35%',
-   caption:'<b>Eleven points below your 18-year-old self</b> — and 22 lb above your playing weight. <b>Six sessions across two weeks</b>, all of them now on the record: the Aug 1 WOD, a HIIT day, the Aug 3 strength test and run, a 70-minute watch-verified session on Aug 4 ending in Annie at 15:45, Aug 5\'s <b>power clean 240 lb / deadlift 305×3</b>, and an Aug 13 EMOM 28 finished start to finish. Five of ten domains are now measured rather than inferred. <b>The card has stopped guessing about you — and every correction so far has gone in your favor.</b>'},
-  {key:'m3',short:'3 Months',when:'Nov 2026',ovr:60,wt:243,bf:'~32%',
-   caption:'<b>Steepest weight-loss stretch of the curve</b> — roughly 19 lb down. Strength has less ground to cover here than originally modeled, since the Aug 3 test already landed close to this checkpoint. Endurance and conditioning are still the real work.'},
-  {key:'m6',short:'6 Months',when:'Feb 2027',ovr:65,wt:228,bf:'~28%',
-   caption:'<b>Retraining gains start landing.</b> Strength and conditioning both begin moving together. Flexibility picks up passively as body composition changes — this is where mobility work starts paying compound interest.'},
-  {key:'m12',short:'12 Months',when:'Aug 2027',ovr:72,wt:202,bf:'~22%',
-   caption:'<b>You are past your 18-year-old self by here.</b> 72 vs. 68 — and with the Aug 5 lifts on the board, the crossover now lands around <b>month 9</b> rather than 10–11. Sub-210 bodyweight, squat back to 325, deadlift near 390, VO₂ max into the mid-40s. Power is the one domain still short of its 2011 mark, and only just.'},
-  {key:'m18',short:'18 Months',when:'Feb 2028',ovr:77,wt:185,bf:'~16%',
-   caption:'<b>Goal weight — 185 lb at roughly 16% body fat.</b> Nine points clear of your football peak, at 55 lb lighter. Abs visible at that composition on a 6\'0" frame.'},
+   caption:'<b>Age 17–18. Allatoona DL, All-Region 2nd Team, four-year letterwinner.</b> A specialist build — enormous power and strength, but the aerobic profile of a lineman, which is to say poor. Note Cardio Endurance sitting at 52 even at peak football condition. <b>That gap is the opening: you were a better athlete then, but you are not chasing a healthier version of yourself backwards.</b>'},
+  {key:'now',short:'Now',when:'Sep 2026',ovr:59,wt:245,bf:'~34%',
+   caption:'<b>Nine points below your 18-year-old self overall — but Strength already crossed it.</b> 244.9 lb (Aug 31 weigh-in; 7-day mean 247.4), <b>within 5 lb of your old playing weight.</b> A full month of testing is now on record: Aug 3\'s strength/run test, Aug 4\'s 70-minute session, Aug 5\'s power clean 240 / deadlift 305×3, Aug 13\'s EMOM 28, a run of finished conditioning sessions through Aug 25, and — the big one — <b>Aug 14\'s true max-effort day: squat 385, deadlift 405, strict press 165, all PRs.</b> VO₂ max and sleep both moved from estimated/sampled to genuinely measured this pass. <b>Every correction since this card started has gone in your favor.</b>'},
+  {key:'m3',short:'3 Months',when:'Nov 2026',ovr:62,wt:235,bf:'~30%',
+   caption:'<b>Riding the fast part of the curve.</b> Current trend is running ~2.4 lb/week, well ahead of a linear reading of the original plan — but this checkpoint already assumes some deceleration, because flat-dose GLP-1 loss almost always slows from its opening pace. ~14 lb down from now, most of it fat given the lifting volume in place.'},
+  {key:'m6',short:'6 Months',when:'Feb 2027',ovr:67,wt:218,bf:'~25%',
+   caption:'<b>Deceleration is visible in the model here, and that\'s expected, not a warning sign.</b> Retraining gains keep landing regardless — strength and conditioning both compound while the scale slows down. Flexibility picks up passively as mass comes off.'},
+  {key:'m9',short:'9 Months',when:'May 2027',ovr:70,wt:207,bf:'~22%',
+   caption:'<b>The overall crossover happens somewhere in this window.</b> Then-you was a 68; this checkpoint reads 70. Strength has been past its 2011 peak since Aug 14 — this is where the *rest* of the profile catches up to make the whole card read as \'better than 18-year-old you,\' not just one domain of it.'},
+  {key:'m12',short:'12 Months',when:'Aug 2027',ovr:73,wt:197,bf:'~19%',
+   caption:'<b>One year in, five points clear of your football peak.</b> Sub-200 bodyweight, squat in the low 420s, deadlift low 440s, VO₂ max around 50. This is also roughly where the earliest hints of visible ab definition tend to show up on a frame like yours — not guaranteed, and the least certain row on this whole card (see Trend Forecast below).'},
+  {key:'m18',short:'Goal',when:'~Nov 2027 – Jan 2028',ovr:78,wt:185,bf:'~15%',
+   caption:'<b>Goal weight — 185 lb at roughly 15% body fat, modeled at month 15–20</b> rather than a fixed 18-month date. The band is wide because the plateau, not the pace, is the open question — see the Trend Forecast. Ten points clear of your football peak, at 64 lb lighter. This is the checkpoint where visible ab definition is realistically expected, individual variance aside.'},
   {key:'ceil',short:'Ceiling',when:'Trained max',ovr:84,wt:'~190',bf:'~12%',
    caption:'<b>Sixteen points above your former peak — and better in all ten domains, not just the healthy ones.</b> Realistic trained maximum for your frame at this age: consistent training, recovered sleep, stable composition. Nothing exotic required.'},
 ];
 
 var DOMAINS=[
-  {label:'Cardio Endurance',then:52,now:42,m3:48,m6:56,m12:65,m18:71,ceil:82,conf:'hi',
-   basis:'VO₂ max 35.8 caps this. But Aug 4 adds 70 minutes of continuous work at avg HR 135, <b>42% of it in Zone 1</b>, with no runaway drift and a 182 bpm peak — a better aerobic floor than the 12:43/mi run alone implied',
+  {label:'Cardio Endurance',then:52,now:48,m3:52,m6:58,m9:62,m12:66,m18:72,ceil:82,conf:'hi',
+   basis:'<b>VO₂ max is now measured, not estimated</b> — Apple Health Cardio Fitness read 39 on Aug 8 ("Below Average") and 40.6 on a later check, replacing the old 35.8 estimate outright. Aug 4 also adds 70 minutes of continuous work at avg HR 135, <b>42% of it in Zone 1</b>, with no runaway drift and a 182 bpm peak',
    next:'A clean heart-rate recovery number: stop dead after a hard interval, read HR, read it again at 60 seconds'},
-  {label:'Stamina',then:65,now:60,m3:64,m6:69,m12:76,m18:81,ceil:86,conf:'hi',
-   basis:'Third full-completion conditioning session in under two weeks (Aug 1, Aug 4, Aug 13). Aug 13: 28-minute EMOM, all 7 rounds finished on the buzzer, with weight <b>self-upscaled</b> to 35 lb on the KB rather than scaled down under fatigue',
+  {label:'Stamina',then:65,now:63,m3:67,m6:72,m9:75,m12:78,m18:82,ceil:86,conf:'hi',
+   basis:'Six full-completion conditioning sessions in three weeks (Aug 1, 4, 10, 12, 13, 19, 20) — every one finished, several flagged as PRs by the app itself (31:13, 22:00, 10:16). Aug 13\'s 28-minute EMOM had weight <b>self-upscaled</b> mid-workout rather than scaled down under fatigue',
    next:'Repeat Muscle Up Annie or the Aug 13 EMOM at the same scaling — a repeated benchmark beats a new one'},
-  {label:'Strength',then:76,now:70,m3:73,m6:76,m12:80,m18:84,ceil:88,conf:'hi',
-   basis:'Three lifts now on record: <b>deadlift 305×3</b> (Aug 5, ~330 est. 1RM, reps in reserve), squat ~275 and bench ~245 (Aug 3, Smith machine, video-verified). Deadlift-to-squat ratio is a textbook 1.2:1 — the numbers corroborate each other',
-   next:'A true deadlift single, and a free-bar squat to check the Smith-machine number'},
-  {label:'Flexibility',then:58,now:45,m3:49,m6:56,m12:64,m18:71,ceil:78,conf:'lo',
+  {label:'Strength',then:76,now:83,m3:85,m6:87,m9:89,m12:90,m18:92,ceil:94,conf:'hi',
+   basis:'<b>Aug 14 "Community Cup" max-effort day: Back Squat 385, Deadlift 405, Strict Press 165 — all PRs, all true 1RM tests, not estimates.</b> Both squat and deadlift already beat this card\'s old 18-month targets (355/415) outright. This domain has now <i>crossed</i> the 2011 football-peak rating (76) — the first domain to do so, and earlier than any projection had it happening. Growth from here is modeled slower than the jump that already happened — a caloric deficit genuinely caps the rate of further strength gain, PRs or not',
+   next:'A true deadlift single with a fresh taper, to see how much more is actually there past 405'},
+  {label:'Flexibility',then:58,now:45,m3:49,m6:56,m9:60,m12:64,m18:71,ceil:78,conf:'lo',
    basis:'Normal clinical ROM, offset by body composition, bunionectomy-limited ankle dorsiflexion, and R knee stiffness',
    next:'Overhead squat + ankle dorsiflexion wall test'},
-  {label:'Power',then:80,now:66,m3:69,m6:72,m12:77,m18:81,ceil:87,conf:'hi',
-   basis:'Aug 5 power clean — <b>240 lb for a single</b> at 262 lb bodyweight. A clean is rate-of-force-development under load, the closest barbell analogue to a lineman\'s first step. This rating was low purely because no explosive test existed; the test came back strong',
-   next:'Vertical jump — it measures <i>bodyweight</i> power, which at 262 lb will read lower than the barbell number'},
-  {label:'Speed',then:58,now:46,m3:50,m6:56,m12:64,m18:70,ceil:80,conf:'lo',
+  {label:'Power',then:80,now:66,m3:69,m6:72,m9:75,m12:77,m18:81,ceil:87,conf:'hi',
+   basis:'Aug 5 power clean — <b>240 lb for a single</b> at 262 lb bodyweight. A clean is rate-of-force-development under load, the closest barbell analogue to a lineman\'s first step. This rating was low purely because no explosive test existed; the test came back strong, and a verified D3 roster spot backs it further',
+   next:'Vertical jump — it measures <i>bodyweight</i> power, which will read progressively lower than the barbell number as bodyweight drops'},
+  {label:'Speed',then:58,now:46,m3:50,m6:56,m9:60,m12:64,m18:70,ceil:80,conf:'lo',
    basis:'0.81mi run averaged 12:43/mi — an endurance pace, not a sprint test; top speed still unmeasured',
    next:'A timed 40yd or 400m'},
-  {label:'Coordination',then:78,now:72,m3:74,m6:76,m12:79,m18:82,ceil:88,conf:'hi',
-   basis:'Aug 5 power clean at 240 lb — a technical lift that does not happen by accident. Plus the Aug 4 gymnastics WOD and Aug 13 rope pulls under an EMOM clock, switching to ring rows mid-station rather than no-repping — that\'s in-workout judgment, not just raw output',
+  {label:'Coordination',then:78,now:72,m3:74,m6:76,m9:78,m12:79,m18:82,ceil:88,conf:'hi',
+   basis:'Aug 5 power clean at 240 lb — a technical lift that does not happen by accident. Plus the Aug 4 gymnastics WOD, Aug 13 rope pulls under an EMOM clock (switching to ring rows mid-station rather than no-repping), and a confirmed college linebacker season',
    next:'Double unders unbroken, or a loaded complex (clean + jerk) on video'},
-  {label:'Agility',then:62,now:44,m3:49,m6:56,m12:65,m18:72,ceil:84,conf:'lo',
+  {label:'Agility',then:62,now:44,m3:49,m6:56,m9:61,m12:65,m18:72,ceil:84,conf:'lo',
    basis:'Inferred from bodyweight and training style',
    next:'A shuttle or agility-ladder drill'},
-  {label:'Balance',then:76,now:66,m3:68,m6:71,m12:75,m18:78,ceil:86,conf:'med',
+  {label:'Balance',then:76,now:66,m3:68,m6:71,m9:73,m12:75,m18:78,ceil:86,conf:'med',
    basis:'"Gait steady and unassisted" across all exams; no fall history',
    next:'Single-leg hold, timed, eyes closed'},
-  {label:'Accuracy',then:72,now:58,m3:61,m6:65,m12:71,m18:76,ceil:84,conf:'lo',
-   basis:'DL hand-placement technique, fireground/EMT precision demands — offset by ADHD timing variance and by short sleep, though <b>the sleep penalty is now uncertain</b>: the watch only samples nights it is worn',
-   next:'A wall-ball or target set, scored — plus one honest week of sleep data'},
+  {label:'Accuracy',then:72,now:56,m3:60,m6:65,m9:68,m12:71,m18:76,ceil:84,conf:'lo',
+   basis:'DL/LB hand-placement and gap-fit technique, fireground/EMT precision demands — offset by ADHD timing variance and now a <b>confirmed</b> sleep penalty: real Apple Health data (Jul 14–Aug 13, near-nightly) shows a 5h39m average, genuinely short, not just an unworn-watch gap anymore',
+   next:'A wall-ball or target set, scored — the sleep question is now closed, the accuracy test itself is still open'},
 ];
 
 var MILESTONES=[
-  {key:'m3',when:'3 Months',wt:'243',items:[['Squat','280 lb'],['VO₂ max','38'],['Body fat','~32%']]},
-  {key:'m6',when:'6 Months',wt:'228',items:[['Squat','300 lb'],['VO₂ max','41'],['Body fat','~28%']]},
-  {key:'m12',when:'12 Months',wt:'202',items:[['Squat','325 lb'],['VO₂ max','44'],['Body fat','~22%']]},
-  {key:'m18',when:'18 Months',wt:'185',items:[['Squat','355 lb'],['VO₂ max','47'],['Body fat','~16%']]},
+  {key:'m3',when:'3 Months',wt:'235',items:[['Squat','397 lb'],['VO₂ max','43'],['Body fat','~30%']]},
+  {key:'m6',when:'6 Months',wt:'218',items:[['Squat','407 lb'],['VO₂ max','46'],['Body fat','~25%']]},
+  {key:'m9',when:'9 Months',wt:'207',items:[['Squat','415 lb'],['VO₂ max','48'],['Body fat','~22%']]},
+  {key:'m12',when:'12 Months',wt:'197',items:[['Squat','422 lb'],['VO₂ max','50'],['Body fat','~19%']]},
+  {key:'m18',when:'Goal',wt:'185',items:[['Squat','432 lb'],['VO₂ max','52'],['Body fat','~15%']]},
 ];
 
 var active='now';
@@ -567,7 +656,7 @@ function render(){
   document.getElementById('legProjRow').style.display=(active==='now'||active==='ceil'||active==='then')?'none':'flex';
   document.getElementById('legProj').textContent='Projected — '+cp.when;
   document.getElementById('legThenRow').style.display=(active==='then')?'none':'flex';
-  document.getElementById('legNow').textContent=(active==='then')?'2011 — age 18':'Current — Aug 2026';
+  document.getElementById('legNow').textContent=(active==='then')?'2011 — age 18':'Current — Sep 2026';
   document.getElementById('radarHint').textContent=active==='now'?'current vs. 2011 vs. ceiling':'showing '+cp.short;
   document.getElementById('vitals').innerHTML=
     '<div class="item">HT <b>6\'0"</b></div>'+
@@ -575,10 +664,11 @@ function render(){
     '<div class="item">BODY FAT <b>'+cp.bf+'</b></div>'+
     '<div class="item">GOAL <b>185 lb</b></div>'+
     '<div class="item">MAX HR <b>182</b></div>'+
-    '<div class="item">WATCH <b style="color:var(--warn)">R knee — 2012, records lost</b></div>';
+    '<div class="item">WATCH <b style="color:var(--warn)">R knee — 2011, records lost</b></div>';
   renderScrub();radar(document.getElementById('radar'),active);renderAttrs(active);renderMilestones();
 }
 
 render();renderIndex();
 window.addEventListener('resize',function(){radar(document.getElementById('radar'),active);});
 </script>
+
