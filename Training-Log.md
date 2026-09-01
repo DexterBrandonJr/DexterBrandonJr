@@ -1,12 +1,17 @@
 # Training Log — D. Brandon
 
-**Last updated:** Aug 13, 2026
+**Last updated:** Sep 1, 2026
 
 > **Training load flag:** a demanding stretch — Aug 1 WOD → HIIT → Aug 3 strength
-> + run → Aug 4 Annie 70 min → Aug 5 deadlift + clean → Aug 13 EMOM 28, in a
-> caloric deficit, on a GLP-1. Consistency is excellent. Recovery is the open
-> question — and sleep, the input that matters most for it, has the least
-> reliable data of anything tracked here. See the sleep note under Labs.
+> + run → Aug 4 Annie 70 min → Aug 5 deadlift + clean → Aug 10, 12, 13 EMOM 28 →
+> Aug 14 max-effort day → Aug 19, 20, 25, in a caloric deficit, on a GLP-1.
+> Consistency is excellent. Recovery is the open question — and sleep, the input
+> that matters most for it, **is now confirmed short at 5h39m**, not merely
+> unmeasured. See the sleep note under Labs.
+
+> **Dose correction, Aug 27:** the tirzepatide dose was never 2.5 mg. A
+> dosing-calculator check found 25 IU drawn against a correct 12.5 IU — exactly
+> double. Every dose since starting has been ~5 mg. See Medication below.
 
 ### How to get a clean heart-rate recovery number
 HRR is one of the best free markers of aerobic progress, but the Aug 4 reading
@@ -21,19 +26,65 @@ same way each time and it becomes a trend line.
 
 | Metric | Current | Date |
 |--------|---------|------|
-| Bodyweight | 262 lb | Aug 5, 2026 |
-| Body fat | ~35% | Aug 3, 2026 (est.) |
-| Squat 1RM | ~275 lb | Aug 3, 2026 |
-| Bench 1RM | ~245 lb | Aug 3, 2026 |
-| Deadlift 3RM | 305 lb (~330 est. 1RM) | Aug 5, 2026 |
+| Bodyweight | **244.9 lb** (7-day mean 247.4) | Aug 31, 2026 |
+| Body fat | **34.1%** (BIA scale) | Aug 31, 2026 |
+| Squat 1RM | **385 lb** | Aug 14, 2026 |
+| Deadlift 1RM | **405 lb** | Aug 14, 2026 |
+| Strict press 1RM | **165 lb** | Aug 14, 2026 |
+| CrossFit Total | **955 lb** | Aug 14, 2026 |
+| Bench 1RM | ~245 lb (Smith machine) | Aug 3, 2026 |
 | Power clean 1RM | 240 lb | Aug 5, 2026 |
-| VO₂ max | 35.8 | (Apple Health) |
+| VO₂ max | **39 → 40.6** | Aug 8, 2026 |
 | Resting HR | 78 bpm | Aug 5, 2026 |
 | Max HR observed | 182 bpm | Aug 4, 2026 |
+| Sleep | **5h39m avg** (near-nightly) | Jul 14 – Aug 13, 2026 |
+
+Superseded: the Aug 3 Smith-machine squat (~275) and the Aug 5 deadlift triple
+(305×3, ~330 estimated) are both beaten by the Aug 14 true 1RMs. Bench is now
+the only lift still running on a Smith-machine estimate.
 
 ---
 
 ## Workout Log
+
+### Aug 19, 20 and 25, 2026 — conditioning sessions (detail not captured)
+Three sessions are attested in the record and are counted in the consistency
+tally, but **no per-session detail was ever logged** — no workout name, score,
+scaling, or watch data. They are listed here so the gap is visible rather than
+silently absent. Nothing in the ratings rests on them beyond attendance.
+
+*If the app history for these dates is still available, they are worth
+backfilling — they are the only sessions in the whole August block without a
+scored result.*
+
+### Aug 14, 2026 — Community Cup Event 2 · CrossFit Total (SCORED, all PRs)
+Prevail CrossFit, 6:15 class. For max load: 1-rep-max back squat, 1-rep-max
+strict press, 1-rep-max deadlift. Same as Rx'd across every division.
+
+| Lift | Result | |
+|---|---:|---|
+| Back squat | **385 lb** | PR |
+| Strict press | **165 lb** | PR |
+| Deadlift | **405 lb** | PR |
+| **CrossFit Total** | **955 lb** | |
+
+Warm-up: 2 sets of 200 m jog, 10 bootstrappers, 10 PVC good mornings, 10 PVC
+shoulder presses, second set faster. Bodyweight that morning: 250.4 lb.
+
+**Why it counts:** these are true max-effort singles, not estimates and not
+Smith-machine numbers. Squat and deadlift both beat the combine card's old
+18-month targets (355/415) inside the first month. Strength became the first
+domain to cross its 2011 football-peak rating.
+
+**On the standing push-press question:** no push press has ever been logged
+anywhere in this record. The real pressing PR is a **strict** press at 165 lb.
+The two are not interchangeable; a push press number needs its own test.
+
+**Two ratios worth watching:**
+- Deadlift is only 20 lb over the squat — the pull has the most room before the
+  squat catches it.
+- Strict press sits at 43% of the squat, the weakest of the three, and it has the
+  most logged history (14 results vs. 10 for the squat).
 
 ### Aug 13, 2026 — EMOM 28 (Prevail CrossFit)
 True EMOM format — station switches on the buzzer at each minute mark
@@ -152,17 +203,40 @@ Coordination.
 ## Health Data
 
 ### Labs (Most Recent)
-- **VO₂ max:** 35.8 (Apple Health)
+- **VO₂ max:** **39 on Aug 8** (Apple Health Cardio Fitness, "Below Average" by
+  Apple's own banding), **40.6** on a later check. Replaces the old 35.8
+  estimate, which came from a single easy run.
 - **Hemoglobin:** 13.6 g/dL
 - **A1C:** 4.8%
 - **LDL cholesterol:** 151
 - **Blood pressure:** 120/80 (clinic)
 - **eGFR / liver:** Normal
 - **Resting HR:** 78 bpm
-- **Sleep:** ~6 hours — **sampled, not average.** The watch isn't worn every
-  night, so this reflects only the nights it was. Bias direction unknown.
-  *To fix:* wear it 5–7 consecutive nights once, covering both shift and off
-  nights. That single stretch beats months of sporadic wear.
+- **Sleep:** **5h39m average, Jul 14 – Aug 13** — resolved Aug 26. A month-view
+  Apple Health screenshot shows bars on the large majority of nights, so this is
+  a near-nightly average, not a sporadic sample. The old "unreliable sample" flag
+  is retired; the honest replacement is worse news held with more confidence.
+  **This is now a training-plan item, not a data-quality one** — the fix is more
+  sleep, not more measurement.
+
+### Body Composition
+Full scale series lives in the health-performance repo at
+`health/BODY-COMP-LOG.md`. Summary of the on-dose window:
+
+| | |
+|---|---|
+| Baseline (last pre-dose) | 260.1 lb / 36.5% — Jul 23 |
+| Current | **244.9 lb / 34.1%** — Aug 31 |
+| Change | **−15.2 lb, −2.4 pts body fat, in 39 days** |
+| Fitted rate | **−2.44 lb/week** (95% CI −2.83 to −2.04, R² 0.91) |
+| Fat mass | 94.9 → 83.5 lb (−11.4) |
+| Lean mass | 165.2 → 161.4 lb (−3.8) |
+| **Lean share of loss** | **24.8%** — inside the 20–30% GLP-1 risk band |
+
+Source is a bioelectrical-impedance scale, so the body-fat column is a trend,
+not a single-day truth. **Weigh-in time is uncontrolled and costs ~1.7 lb of
+spread** (mornings read 0.6 lb below trend, afternoons 1.1 lb above). The Aug 17
+reading of 253.7 lb is noise, not a regain.
 
 ### Orthopedic Notes
 - **R knee:** Symptomatic (2012 injury, likely MCL/LCL sprain)
@@ -172,8 +246,37 @@ Coordination.
 ---
 
 ## Medication / Interventions
-- **Tirzepatide:** 2.5 mg (held)
+- **Tirzepatide: ~5 mg** — corrected Aug 27, 2026. A dosing-calculator check
+  found 25 IU drawn per shot against a correct 12.5 IU for 2.5 mg, exactly
+  double. **Every dose since day one has actually been ~5 mg**, discovered by
+  accident rather than through any clinical review. This reverses the Aug 1 rule
+  ("will not escalate above 2.5 mg no matter what") after the fact, and it is now
+  the intentional, tracked dose. Any *further* change belongs with a prescriber
+  and real monitoring, not this log.
 - **Zetia:** Active (LDL management)
+- **Paradoxine (grains of paradise):** taken — **start date, dose and adherence
+  are not recorded anywhere.** Nothing in this log can attribute any part of the
+  weight trend to it until those three fields exist. See the note below.
+- **Supplement stack:** taken — **not itemised or dated in this log.** Same
+  caveat.
+
+### Why the unlogged inputs matter
+The weight series can resolve a difference of about **0.57 lb/week** — roughly
+**284 kcal/day**. Paradoxine's published thermogenic effect (~100 kcal/day at
+30 mg) and the average daily contribution of six CrossFit sessions a month
+(~80–120 kcal/day) both sit *below* that floor. So even with perfect logging,
+this dataset could not isolate either one from the others. What it can do is
+track the **bundle** — and the bundle is currently running about 1.3× the
+published 5 mg population pace.
+
+To make any of these separable would take either a period where one input
+changes and the others hold, or direct measurement (daily calorie burn, logged
+protein grams, a step count). None of those exist in the record today.
+
+### Not tracked at all
+- **Daily calorie burn** — no step count, no active-energy series.
+- **Protein intake** — ~185–200 g/day is the *target*, not a logged number.
+- **NEAT / walking outside training.**
 
 ---
 
