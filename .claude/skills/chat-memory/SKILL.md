@@ -43,6 +43,7 @@ This mirrors the same progressive-disclosure idea skills themselves use: the ind
    This creates `topics/<slug>.md` if it's new (or opens the existing one), appends a dated entry skeleton, and updates `INDEX.md`'s pointer line for that topic — all mechanically, so the index format never drifts no matter how many entries pile up over months. It prints the exact file and line range it just added.
 3. Fill in the entry skeleton's Decisions / Facts / Artifacts / Open threads with the real content from this conversation, using your own judgment about what's actually durable per the "what to capture" section above — the script only handles the bookkeeping, not the judgment call.
 4. Commit and push. An entry sitting unstaged in a container that's about to be reclaimed is exactly as gone as if it were never written.
+5. State back, plainly, exactly what you just saved — not "saved it," the actual content. A memory entry gets trusted as an established fact by every future session that reads it, with no re-verification step; the one moment that catches a mis-paraphrase or a too-broad generalization before it calcifies into "fact" is the user reading it back right after you wrote it. This costs one sentence and is not optional just because the save itself was quick.
 
 ## Recalling
 
