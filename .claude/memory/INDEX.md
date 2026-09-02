@@ -1,4 +1,3 @@
-- [Coding Preferences](topics/coding-preferences.md) — updated 2026-09-02 — Coding preferences
 <!--
 Chat-memory index. One line per topic, most-recently-updated first:
 
