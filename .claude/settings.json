@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/load-chat-memory.sh",
+            "command": "bash .claude/skills/chat-memory/scripts/session_start_hook.sh",
             "timeout": 10
           }
         ]
