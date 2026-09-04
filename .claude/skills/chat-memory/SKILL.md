@@ -58,7 +58,7 @@ This mirrors the same progressive-disclosure idea skills themselves use: the ind
 
 ## For truly automatic recall, pair this with a hook
 
-A skill only fires when Claude judges the conversation calls for it — good for "the user just referenced something from before," not guaranteed for "load memory silently at the start of every single session regardless of what's asked." If the goal is the latter — memory loaded every time, no judgment call involved — that's a `SessionStart` hook (e.g., one that reads `INDEX.md` into context automatically), not a skill. Use the `update-config` skill to set one up; keep this skill for the save/recall workflow and the judgment about what's worth keeping, which is exactly the part a hook can't do.
+A skill only fires when Claude judges the conversation calls for it — good for "the user just referenced something from before," not guaranteed for "load memory silently at the start of every single session regardless of what's asked." If the goal is the latter — memory loaded every time, no judgment call involved — that's a `SessionStart` hook, not a skill. `scripts/session_start_hook.sh` is a ready-made one: point a project's `.claude/settings.json` at it (via `update-config`) for that repo's memory, or see `references/global-setup.md` to wire the same script into `~/.claude/settings.json` once so personal, cross-project memory loads in every session on that machine, new repos included. Either way, keep this skill for the save/recall workflow and the judgment about what's worth keeping — that's the part a hook can't do.
 
 ## Keep the index honest
 
