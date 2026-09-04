@@ -26,6 +26,12 @@
 # No hard dependency on jq: falls back to python3, then to a
 # dependency-free pure-shell JSON escaper, so it still works on a
 # machine with neither installed.
+#
+# Injects at most $CLAUDE_CHAT_MEMORY_INDEX_CAP topic lines (default 20)
+# so a memory store that accumulates hundreds of topics over time doesn't
+# turn into an ever-growing per-session context tax -- past the cap, the
+# rest are left for search_memory.py to find instead of auto-injecting
+# all of them forever.
 
 set -euo pipefail
 
@@ -44,7 +50,25 @@ fi
 index_file="$memory_dir/INDEX.md"
 [ -f "$index_file" ] || exit 0
 
-content="$(cat "$index_file")"
+cap="${CLAUDE_CHAT_MEMORY_INDEX_CAP:-20}"
+
+topic_lines="$(sed '/<!--/,/-->/d' "$index_file" | grep -E '^- \[' || true)"
+total_count=0
+if [ -n "$topic_lines" ]; then
+  total_count=$(printf '%s\n' "$topic_lines" | wc -l)
+  total_count="${total_count// /}"
+fi
+
+if [ "$total_count" -gt "$cap" ]; then
+  shown="$(printf '%s\n' "$topic_lines" | head -n "$cap")"
+  remaining=$((total_count - cap))
+  content="$shown
+
++$remaining more topic(s) not shown here — run \`scripts/search_memory.py \"<query>\" --memory-dir $memory_dir\` to find them."
+else
+  content="$(cat "$index_file")"
+fi
+
 message="Chat memory index ($index_file), auto-loaded at session start. Treat this as prior context from earlier chats; open the matching file under $memory_dir/topics/ if something here is relevant to the current task.
 
 $content"

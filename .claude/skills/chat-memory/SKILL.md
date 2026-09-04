@@ -35,15 +35,16 @@ This mirrors the same progressive-disclosure idea skills themselves use: the ind
 
 ## Saving
 
-1. Decide the topic this belongs under — reuse an existing slug from `INDEX.md` if one fits; a new slug otherwise.
+1. Decide the topic this belongs under — reuse an existing slug from `INDEX.md` if one fits; a new slug otherwise. Not obvious whether something similar already exists? Run `python3 .claude/skills/chat-memory/scripts/list_topics.py --memory-dir <memory-dir>` rather than guessing — a near-duplicate topic is easy to create by accident and just as easy to avoid by checking first.
 2. Run:
    ```bash
    python3 .claude/skills/chat-memory/scripts/new_entry.py <topic-slug> --title "<short title>" --memory-dir <memory-dir>
    ```
    This creates `topics/<slug>.md` if it's new (or opens the existing one), appends a dated entry skeleton, and updates `INDEX.md`'s pointer line for that topic — all mechanically, so the index format never drifts no matter how many entries pile up over months. It prints the exact file and line range it just added.
 3. Fill in the entry skeleton's Decisions / Facts / Artifacts / Open threads with the real content from this conversation, using your own judgment about what's actually durable per the "what to capture" section above — the script only handles the bookkeeping, not the judgment call.
-4. Commit and push. An entry sitting unstaged in a container that's about to be reclaimed is exactly as gone as if it were never written.
-5. State back, plainly, exactly what you just saved — not "saved it," the actual content. A memory entry gets trusted as an established fact by every future session that reads it, with no re-verification step; the one moment that catches a mis-paraphrase or a too-broad generalization before it calcifies into "fact" is the user reading it back right after you wrote it. This costs one sentence and is not optional just because the save itself was quick.
+4. Run `python3 .claude/skills/chat-memory/scripts/scan_for_secrets.py <topic-file>` before committing. It's a pattern-based backstop for exactly the kind of thing that's easy to paste in without noticing — an API key, a token, a password — not a substitute for the judgment in step 3. Fix anything it flags before moving on.
+5. Commit locally (`git commit`), then state back, plainly, exactly what you're about to save — not "saved it," the actual content — before you push. Do this before the push, not after: commit is local and reversible, push is the step that makes it shared (and on a public repo, world-readable), so the moment that actually catches a mis-paraphrase or a too-broad generalization has to come before that step, not as a report filed afterward. This costs one sentence and is not optional just because the save itself was quick.
+6. Push. An entry sitting committed-but-unpushed in a container that's about to be reclaimed is exactly as gone as if it were never written.
 
 ## Recalling
 
