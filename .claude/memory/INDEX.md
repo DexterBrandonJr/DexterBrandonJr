@@ -1,3 +1,4 @@
+- [Github Integration](topics/github-integration.md) — updated 2026-09-05 — why repo creation 403s through the github MCP tool, the gh CLI workaround, and the org route as a durable fix
 - [chat-memory roadmap](topics/chat-memory-roadmap.md) — updated 2026-09-04 — prioritized list of follow-up improvements identified while building/testing the skill
 <!--
 Chat-memory index. One line per topic, most-recently-updated first:
