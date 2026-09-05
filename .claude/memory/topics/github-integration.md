@@ -83,8 +83,11 @@ the rights to do it. The short version: creating repos must go through the local
   just the repositories the Claude GitHub App is installed on."
 
 **Artifacts:**
-- Test repo created to confirm the fix:
-  https://github.com/DexterBrandonJr/claude-org-test-check-2
+- PR: https://github.com/DexterBrandonJr/DexterBrandonJr/pull/7 (this record)
+- The fix was confirmed live by creating `claude-org-test-check-2` via
+  `create_repository` with no `organization` param, immediately after
+  `/web-setup`. Deleted afterward as a throwaway — the confirmation is recorded
+  here, not in a repo that has to keep existing to prove it.
 
 **Open threads:**
 - The `brand841` GitHub org created while chasing the org route is unused and can
