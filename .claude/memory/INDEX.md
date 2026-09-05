@@ -1,3 +1,4 @@
+- [Github Integration](topics/github-integration.md) — updated 2026-09-05 — Resolved: /web-setup syncs local gh token to cloud sessions, fixes repo creation everywhere
 - [chat-memory roadmap](topics/chat-memory-roadmap.md) — updated 2026-09-04 — prioritized list of follow-up improvements identified while building/testing the skill
 <!--
 Chat-memory index. One line per topic, most-recently-updated first:
