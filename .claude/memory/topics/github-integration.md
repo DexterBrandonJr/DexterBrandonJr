@@ -47,4 +47,48 @@ the rights to do it. The short version: creating repos must go through the local
   run in an isolated container with no access to the local machine, so this has to
   be done from a local Claude Code session or by hand.
 - Undecided: whether to move repos into a GitHub org, which would be the durable
-  fix that also works from cloud sessions.
+  fix that also works from cloud sessions. **Superseded — see the entry below.**
+  `/web-setup` turned out to be the simpler, already-built answer to the same
+  problem; the org route was never pursued to completion.
+
+## 2026-09-05 — Resolved: /web-setup syncs local gh token to cloud sessions, fixes repo creation everywhere
+
+**Decisions:**
+- Fix adopted instead of the GitHub-org route: run `/web-setup` from a local,
+  signed-in Claude Code session (not a raw shell command — it's a Claude Code
+  slash command). It syncs the local `gh` CLI's own token to the Claude account,
+  and every cloud session then authenticates to GitHub with that token instead of
+  the Claude GitHub App.
+- No org needed. This works from every surface with one command, run once — this
+  chat, the mobile app, any future cloud session.
+
+**Facts / preferences:**
+- `/web-setup` requires being logged into claude.ai first (run `/login`). That is
+  a *separate* login from GitHub, and its own error if skipped — "Not signed in
+  to Claude. Run /login first." — is unrelated to the original 403 saga. This
+  session and others were logged in to Claude the whole time; only `/web-setup`
+  itself needed a fresh login.
+- After `/web-setup` completed ("Connected as DexterBrandonJr. Opened
+  https://claude.ai/code"), a fresh `create_repository` call in this cloud
+  session succeeded immediately, with no `organization` parameter — created
+  `DexterBrandonJr/claude-org-test-check-2` directly under the personal account.
+- Confirms the root-cause theory from the entry above exactly: the blocker was
+  specifically the GitHub App installation token, not "cloud sessions" as a
+  category. Once a cloud session authenticates with the same personal token `gh`
+  already uses locally, `POST /user/repos` succeeds there too, same as from the
+  CLI.
+- Source: Claude Code docs, "GitHub authentication options" — cloud sessions can
+  connect via either the GitHub App or a token synced with `/web-setup`; either
+  grants access to "any repository the connecting GitHub account can see, not
+  just the repositories the Claude GitHub App is installed on."
+
+**Artifacts:**
+- Test repo created to confirm the fix:
+  https://github.com/DexterBrandonJr/claude-org-test-check-2
+
+**Open threads:**
+- The `brand841` GitHub org created while chasing the org route is unused and can
+  stay parked, or be repurposed later — it's no longer needed for this.
+- The `~/.claude/CLAUDE.md` rule from the entry above is lower-priority now that
+  `create_repository` genuinely works post-`/web-setup`, but worth keeping as a
+  fallback note in case the sync ever lapses.
