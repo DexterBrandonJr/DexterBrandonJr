@@ -1,3 +1,4 @@
+- [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
 - [Tool Blueprint Workflow](topics/tool-blueprint-workflow.md) — updated 2026-09-06 — Fill the tool_blueprint template once a plan is agreed
 - [Macos Contextual Search](topics/macos-contextual-search.md) — updated 2026-09-06 — Scaffold built, tested, and pushed
 - [Chat Scope Apps And Tools](topics/chat-scope-apps-and-tools.md) — updated 2026-09-06 — Chat scope expanded: skills + apps/functions/tools
