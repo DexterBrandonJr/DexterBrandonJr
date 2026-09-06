@@ -1,3 +1,4 @@
+- [Pr Checkin Cadence](topics/pr-checkin-cadence.md) — updated 2026-09-06 — PR check-in cadence: weekly, lowest-activity day
 - [cross-session trigger hygiene](topics/cross-session-trigger-hygiene.md) — updated 2026-09-05 — verifiable cross-session asks need surviving evidence, not just trust
 - [chat-memory roadmap](topics/chat-memory-roadmap.md) — updated 2026-09-04 — secret scan, index cap, topic listing, and pre-push reorder shipped; 5 items still planned
 <!--
