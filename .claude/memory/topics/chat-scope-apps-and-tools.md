@@ -1,0 +1,8 @@
+# Chat Scope Apps And Tools
+
+## 2026-09-06 — Chat scope expanded: skills + apps/functions/tools
+
+**Decisions:** This chat/session (`session_01PCCg5xZAa7LjECtq6zXyLT`, retitled "Claude Builder Chat — Skills, Apps & Tools") is no longer scoped to just Claude Skills — Dex also uses it to plan and build standalone apps, functions, and tools for his own goals. Added a repo-root `CLAUDE.md` documenting this and two standing constraints: (1) this session is a cloud container, not Dex's local machine, so anything needing local filesystem/admin access or a GUI app has to run via Dex himself or a local Claude Code session on his Mac; (2) the installed GitHub App has previously lacked Administration permission to create new repos via API (confirmed 403), so a brand-new repo needs Dex to create the empty repo before Claude can push to it.
+**Facts / preferences:** New apps/tools built from this chat get their own dedicated repo (usually private) rather than living inside the public DexterBrandonJr/DexterBrandonJr profile repo, since they tend to involve personal data or machine-specific setup. This repo stays the coordination point via chat-memory entries pointing at where each project's real repo lives.
+**Artifacts:** First tool requested under the expanded scope: "Claude Contextual Engineering Search" — a macOS Finder-style contextual/semantic file search + file-organization tool for Dex's M1 Max MacBook Pro (64GB RAM, macOS 27). Currently in planning stage only, no repo created yet.
+**Open threads:** Decide and create the actual home (likely a new private repo) for the macOS contextual-search tool once Dex is ready to move from planning to execution (he intends to switch to Opus 5 for that).
