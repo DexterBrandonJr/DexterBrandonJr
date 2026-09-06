@@ -38,8 +38,10 @@ project's code doesn't.
   (or to a separate, local Claude Code session running on that machine) to
   actually execute — this session can write the code but cannot run,
   install, or grant permissions for it on his hardware.
-- The GitHub App installed for this account has previously lacked the
+- The GitHub App installed for this account previously lacked the
   Administration permission needed to create new repositories via the API
-  (a confirmed 403 — not fixable by reconnecting OAuth). A brand-new repo
-  may need Dexter to create the empty repo himself before Claude can push
-  scaffold code to it.
+  (a confirmed 403 — not fixable by reconnecting OAuth). As of 2026-09-06
+  that's no longer blocking — `create_repository` succeeded (created
+  `DexterBrandonJr/macos-contextual-search`, private). If it 403s again in
+  the future, treat that as a regression and fall back to Dexter creating
+  the empty repo himself.
