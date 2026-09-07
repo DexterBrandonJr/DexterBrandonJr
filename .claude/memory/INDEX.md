@@ -1,4 +1,4 @@
-- [Trading Engine](topics/trading-engine.md) — updated 2026-09-07 — Final QA/QC round 2: decided 5% size cap, added circuit breaker + signal decay self-assessment
+- [Trading Engine](topics/trading-engine.md) — updated 2026-09-07 — Build step 1 shipped: protected risk rules + circuit breaker, draft PR #1
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
 - [Tool Blueprint Workflow](topics/tool-blueprint-workflow.md) — updated 2026-09-06 — Fill the tool_blueprint template once a plan is agreed
 - [Macos Contextual Search](topics/macos-contextual-search.md) — updated 2026-09-07 — PR #1 merged
