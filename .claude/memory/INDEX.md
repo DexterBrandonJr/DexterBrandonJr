@@ -1,4 +1,4 @@
-- [Trading Engine](topics/trading-engine.md) — updated 2026-09-07 — Local home-folder search: Webull tax docs, transaction CSVs, and 150+ trading-assistant transcripts found
+- [Trading Engine](topics/trading-engine.md) — updated 2026-09-07 — QA/QC pass: OTOCO brackets solve device-independence; flagged a real position-size gap
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
 - [Tool Blueprint Workflow](topics/tool-blueprint-workflow.md) — updated 2026-09-06 — Fill the tool_blueprint template once a plan is agreed
 - [Macos Contextual Search](topics/macos-contextual-search.md) — updated 2026-09-07 — PR #1 merged
