@@ -1,4 +1,4 @@
-- [Trading Engine](topics/trading-engine.md) — updated 2026-09-08 — System complete: orchestrator, state, Stage 2/3, and the last three data gaps
+- [Trading Engine](topics/trading-engine.md) — updated 2026-09-08 — Phone control surface shipped; halt is one-way; the >90%-accuracy premise answered honestly
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
 - [Tool Blueprint Workflow](topics/tool-blueprint-workflow.md) — updated 2026-09-06 — Fill the tool_blueprint template once a plan is agreed
 - [Macos Contextual Search](topics/macos-contextual-search.md) — updated 2026-09-07 — PR #1 merged
