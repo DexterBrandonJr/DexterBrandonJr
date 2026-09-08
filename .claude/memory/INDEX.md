@@ -1,4 +1,4 @@
-- [Trading Engine](topics/trading-engine.md) — updated 2026-09-08 — Build step 5: horizons, calibration, setup detection; QA found a fabricated catalyst
+- [Trading Engine](topics/trading-engine.md) — updated 2026-09-08 — Build step 6: cards and execution; the re-probe habit caught an incomplete fix
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
 - [Tool Blueprint Workflow](topics/tool-blueprint-workflow.md) — updated 2026-09-06 — Fill the tool_blueprint template once a plan is agreed
 - [Macos Contextual Search](topics/macos-contextual-search.md) — updated 2026-09-07 — PR #1 merged
