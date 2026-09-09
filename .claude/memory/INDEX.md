@@ -1,4 +1,4 @@
-- [Trading Engine](topics/trading-engine.md) — updated 2026-09-08 — Round 3 QA/QC: every options structure, spreads from the chain, paper-first executor on the current Webull SDK
+- [Trading Engine](topics/trading-engine.md) — updated 2026-09-09 — Paper trades tagged and kept out of the real risk math; the seven-step paper checklist
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
 - [Tool Blueprint Workflow](topics/tool-blueprint-workflow.md) — updated 2026-09-06 — Fill the tool_blueprint template once a plan is agreed
 - [Macos Contextual Search](topics/macos-contextual-search.md) — updated 2026-09-07 — PR #1 merged
