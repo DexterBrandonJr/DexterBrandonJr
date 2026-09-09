@@ -1,4 +1,4 @@
-- [Trading Engine](topics/trading-engine.md) — updated 2026-09-09 — The bugs lived between the layers, not in them
+- [Trading Engine](topics/trading-engine.md) — updated 2026-09-09 — Six placement failures, and reading the docs instead of the SDK
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
 - [Tool Blueprint Workflow](topics/tool-blueprint-workflow.md) — updated 2026-09-06 — Fill the tool_blueprint template once a plan is agreed
 - [Macos Contextual Search](topics/macos-contextual-search.md) — updated 2026-09-07 — PR #1 merged
