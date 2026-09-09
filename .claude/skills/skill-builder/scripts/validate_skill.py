@@ -101,8 +101,15 @@ def check_body(body: str, skill_dir: Path, findings):
         candidate = (skill_dir / script_path).resolve()
         if not str(candidate).startswith(str(skill_dir.resolve())):
             continue
-        if not candidate.exists():
-            findings.append((WARN, f"body mentions '{script_path}' as a script to run, but no such file exists at {candidate} (false positive if this was just an illustrative example, not a real pointer)."))
+        if candidate.exists():
+            continue
+        # Some skills reference their own scripts by a repo-root-relative
+        # path (e.g. ".claude/skills/<name>/scripts/x.py") rather than one
+        # relative to the skill directory itself. Try resolving the same
+        # path from a few ancestors of skill_dir before calling it missing.
+        if any((ancestor / script_path).exists() for ancestor in list(skill_dir.parents)[:4]):
+            continue
+        findings.append((WARN, f"body mentions '{script_path}' as a script to run, but no such file exists at {candidate} (false positive if this was just an illustrative example, not a real pointer)."))
 
     for ref_path in re.findall(r"`(references/[\w./-]+\.md)`", body):
         candidate = skill_dir / ref_path
