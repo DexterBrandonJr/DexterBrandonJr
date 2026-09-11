@@ -12,6 +12,10 @@ things with Claude Code.
   decisions, and open threads across separate chats and sessions instead of
   losing them when a session ends. Auto-loads via a `SessionStart` hook.
   Read its `SKILL.md` before hand-editing anything under `.claude/memory/`.
+- `.claude/skills/workhorse/` — the domain-neutral core of how Dex prefers
+  systems built (the eight parts, the rhythm, the confidence contract), and
+  how to reach the full doctrine in the private `DexterBrandonJr/workhorse`
+  repo. Triggers on any new build in any domain.
 - `.claude/memory/` — the actual memory store (`INDEX.md` + `topics/`).
   **This repo is public** — nothing sensitive goes in here. See the skill's
   public/private/never-in-git guidance before writing an entry; some things
