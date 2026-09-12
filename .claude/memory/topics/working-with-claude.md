@@ -62,6 +62,33 @@ Two reading habits that prevent the most rework:
   "How would a major institution approach this?" asks which habits transfer to
   the situation at hand; it does not ask for an impression of one.
 
+## Green here is not green there — 2026-09-12
+
+A suite passing locally is evidence about *this container*, not about the
+project. Two test files imported `pyyaml`; the package's `dev` extra never
+declared it. Locally it was installed, so the suite went green and the
+result was reported as green. On the runner, collection died.
+
+Three things make this worth keeping rather than filing as a typo:
+
+- **The failure mode was silence, not noise.** `1 skipped, 2 errors` is not
+  two broken tests — two *collection* errors stop pytest before anything
+  runs. The whole suite had not executed on the last two merges, so every
+  safety guard in the project was unverified while being reported as
+  verified.
+- **It was found by an unrelated event.** A red check on a later, separate
+  branch. Nothing about the merges themselves surfaced it, because the thing
+  that would have surfaced it was the thing that was broken.
+- **The fix is cheap; the verification habit is the point.** The repair took
+  one line. Proving it took a clean virtual environment, an install from the
+  declared extras only, and a collect — reproducing the *runner's* conditions
+  rather than trusting this machine's.
+
+**The rule:** when a result depends on the environment — a dependency, a
+path, a binary, an installed tool — verify it in an environment built the way
+the real one is built, not in the one that happens to be to hand. And when
+reporting a suite as green, say which environment it was green in.
+
 **Artifacts:** The full version of this — including the personal context that
 shapes it and the project-specific history behind each lesson — lives in the
 private `DexterBrandonJr/trading-engine` repository at
