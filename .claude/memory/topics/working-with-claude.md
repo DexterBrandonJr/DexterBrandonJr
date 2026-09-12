@@ -89,6 +89,50 @@ path, a binary, an installed tool — verify it in an environment built the way
 the real one is built, not in the one that happens to be to hand. And when
 reporting a suite as green, say which environment it was green in.
 
+## A guessed interface is not a built feature — 2026-09-12
+
+Thirty-odd modules were built fast and deliberately untested, on Dex's
+explicit instruction, with testing and debugging as later phases he would
+start. That worked, and it is worth recording what each phase actually cost,
+because the split is a reusable way to work rather than a one-off.
+
+**The build phase produced working shapes and wrong numbers.** Every module
+compiled, imported and read correctly. What it could not produce was any
+contact with reality.
+
+**The test phase found three real bugs in a day's work**, all of the kind
+that survives a read-through because the code looks like it does the right
+thing: a cap that refused the very first item it was meant to govern, a decay
+curve that reported *total* decay as *no* decay because the log of zero is
+undefined, and a scorer that rated a source which never changes its mind as
+maximally trustworthy.
+
+**The debug phase found the expensive ones.** Reading the live interface
+rather than its documentation showed that essentially every field name guessed
+during the build was wrong — and more importantly, that two *thresholds* were
+wrong by an order of magnitude in the direction that silences a feature
+completely. The single most valuable finding was that the highest-ranked item
+in the whole plan would have produced nothing, ever, and nothing in the code,
+the tests or the review would have said so. Only real data said so.
+
+**The transferable rules:**
+
+- **A threshold guessed without data is a coin flip on whether a feature
+  exists at all.** Calibrate against real samples and record the samples in
+  the code next to the number.
+- **When an encoding is ambiguous, record and do not claim.** An undocumented
+  integer that might mean the opposite of what you assume makes a feature
+  confidently wrong half the time, which is worse than absent. Store the raw
+  value, emit no claim, and leave one switch to flip once the record settles
+  it.
+- **Some corrections are structural, not textual.** An endpoint that returns
+  only a current value cannot support a "change since yesterday" feature
+  however the fields are spelled — that needs storage, which is a schema
+  change discovered only by looking.
+- **Build fast, then test, then debug is a real sequence** — but it is only
+  honest if the untested work is kept where it cannot run. A branch is what
+  makes "testing is a later phase" true rather than aspirational.
+
 **Artifacts:** The full version of this — including the personal context that
 shapes it and the project-specific history behind each lesson — lives in the
 private `DexterBrandonJr/trading-engine` repository at
