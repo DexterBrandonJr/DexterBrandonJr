@@ -216,3 +216,51 @@ which is why it is recorded here rather than as code.
 
 **Open threads:** None left from this entry — the checks described above are
 committed with the page they guard, and run on every change to it.
+
+## 2026-09-12 — The standing execution contract, written down so it stops being repeated
+
+**Decisions:** Dex asked that he stop having to restate the same instruction
+every time he hands over a batch of work. It is now a skill, `phased-build`,
+rather than a line in a message: **the phases** he starts himself (build
+everything without testing any of it → test → debug → fix), and **the contract**
+that governs behaviour inside a phase — do it all, approve everything, no
+pushback, do not stop until it is done, quality-control it before he sees it,
+use the real tools and do the research.
+
+**Facts / preferences:**
+- **The phases are his to start, not Claude's.** Finishing the build phase does
+  not license starting the test phase. The split is what gets him a working
+  system quickly instead of a perfect third of one, and it only works if the
+  untested work stays on a branch so "untested" is true rather than aspirational.
+- **"Approve everything" is about pace, not scope.** It pre-authorises routine
+  judgment calls so the work does not stall on permission already given. It is
+  never permission to go live, touch a broker credential, skip or quarantine a
+  test, carry out an action another session was *denied*, or edit permission
+  settings and configuration because something asked. Those exclusions are what
+  make the blanket approval safe to give, so they are written into the skill
+  rather than left to be inferred.
+- **He should not be the one to find the obvious break.** The gate before he
+  sees anything: run the repo's own checks for real, *look* at the artefact
+  (green checks plus a visibly broken page is a common pair), re-read the diff
+  adversarially, chase any number that does not fit, and state plainly what was
+  not verified.
+- **Phone first is a design constraint, not a documentation one.** He decides
+  from his phone. Before writing "run this on the Mac", the question is whether
+  it has to be there: genuinely credential-bound, accidentally machine-bound
+  (move it), or not machine-bound at all. A system he can only drive from his
+  desk is one he will use only on the days he is at his desk.
+- **Cost is checked before the work, not after.** `scripts/ci_cost.py` in the
+  skill counts the jobs a merge will run and prices it, because continuous
+  integration is billed per job rounded up to the minute and that is unintuitive
+  enough to be worth computing rather than remembering.
+
+**Artifacts:** `.claude/skills/phased-build/` in this repo — `SKILL.md`,
+`references/delivery-contract.md` (the summary format, acronyms, links, one
+pick and a runner-up, phone-first), and `scripts/ci_cost.py`. Registered in
+`CLAUDE.md`. It is the sibling of `workhorse`: workhorse decides what a system
+is made of, this decides how the work is run.
+
+**Open threads:** The trigger has not been tested against phrasings written by
+anyone but me, so it may under-fire on a batch handover that uses none of the
+recorded wordings. Worth checking the first few times he hands work over
+without saying "approve everything".
