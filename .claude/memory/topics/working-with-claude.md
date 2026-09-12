@@ -264,3 +264,40 @@ is made of, this decides how the work is run.
 anyone but me, so it may under-fire on a batch handover that uses none of the
 recorded wordings. Worth checking the first few times he hands work over
 without saying "approve everything".
+
+## 2026-09-12 — A source that never worked looks exactly like a source having a quiet day
+
+**Decisions:** When Dex asks why something isn't showing up, check the table
+before reading the code. Two data sources in the trading engine turned out to
+have produced literally zero rows since the day they shipped, and no amount of
+reading the module would have said so — the code was correct. One query
+against the store answered it in seconds. "Is this feature empty, or is it
+broken?" is a question the database answers and the source file cannot.
+
+**Facts / preferences:** A caught exception that logs once and lets the run
+report success is the most expensive kind of bug, because nothing ever
+escalates. Three separate instances turned up in one day: a write rejected for
+a schema mismatch, and two sources refused at the network edge. Every run was
+green throughout. The pattern to watch for is a handler whose recovery is
+"return empty" — an empty result is indistinguishable from a genuinely quiet
+day, and that ambiguity is what buys the bug its months.
+
+Two related habits worth keeping: surface a configuration problem in whatever
+summary a person actually reads, not in the log; and distinguish "not set up
+yet" from "tried and failed", because they need completely different responses
+and only one of them is worth investigating.
+
+A third, narrower one: error bodies are often compressed, and reading them raw
+turns the server's explanation into mojibake. An error handler that discards
+the explanation it was written to capture is worse than no handler, because it
+looks like diligence.
+
+**Artifacts:** The engine-side detail — which sources, which header, the probe
+table, the variable that fixes it — lives in `docs/ACTIVATION.md` and the
+guards in the private `trading-engine` repo. Nothing about it belongs here.
+
+**Open threads:** Neither failure had a guard that would have caught it at the
+time; both now do, but the class is wider than the two instances. Worth a pass
+over every `except` in a scheduled job that returns an empty result, asking
+what a permanent failure of that branch would look like from outside. It would
+look like nothing, which is the point.
