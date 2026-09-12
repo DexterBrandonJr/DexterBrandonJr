@@ -194,7 +194,25 @@ for it (`overflowtest.mjs`, `selfoverflow.mjs`, `switchtap.mjs`, `keynav.mjs`)
 are scratch files, not committed — the durable part is the reasoning above,
 which is why it is recorded here rather than as code.
 
-**Open threads:** The two overflow tests are throwaway scripts run by hand.
-Nothing re-runs them when the page changes, so the next edit can reintroduce
-either bug class silently. Worth making them a checked-in step for any page
-that gets iterated on.
+- **A wall-clock gap between two runs of the same suite is evidence, not
+  trivia.** CI passed these checks in 14 seconds; the identical suite took 301
+  locally. That 20x is what exposed the real defect: the page loads its
+  typeface from a font CDN, and a browser that cannot reach it falls back to
+  the system font **silently**, so both runs had been measuring a page nobody
+  sees. Layout tests are only as good as the glyphs they measure, and the
+  widest face on a page is usually the one the overflow checks turn on — so
+  vendor the fonts and assert they applied. A green suite on the wrong font is
+  worse than no suite.
+- **`document.fonts.check()` cannot tell you a font loaded.** It answers
+  `true` for a family the page never defined, which is how a first attempt at
+  that assertion reported all three fonts present while none of them was. The
+  only reliable probe is to measure the same string in the webfont and in a
+  generic it cannot match, and compare widths.
+- **Check what the page actually uses before testing it.** The rewritten probe
+  first reported a font missing that was fine — it tested a weight the page
+  never renders. Enumerate the real (family, weight) pairs from the DOM rather
+  than guessing which ones matter; the same pass showed the page requesting a
+  weight it never used at all.
+
+**Open threads:** None left from this entry — the checks described above are
+committed with the page they guard, and run on every change to it.
