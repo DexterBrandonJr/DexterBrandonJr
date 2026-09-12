@@ -144,3 +144,57 @@ covers what that system is meant to become.
 **Open threads:** The prediction ledger described above has no entries yet —
 it starts the first time a prediction is written down before its outcome is
 known.
+
+## 2026-09-12 — Verifying a UI fix: two overflow bugs, two tests
+
+**Decisions:** "Text runs off the page" and "content spills outside its
+element" are **two different bugs and need two different tests.** A
+page-level check — does the document scroll sideways — is structurally blind
+to the second one: whenever any ancestor has `overflow: hidden`, the content
+is clipped rather than pushed out, so the page never widens and the test
+stays green while the user is still looking at a word cut in half. The
+second test is a different question asked of every element: is
+`scrollWidth > clientWidth`, excluding the containers that are meant to
+scroll. Both now run at 320 / 360 / 390 / 430 / 768 / 1024 / 1440 px.
+
+**Facts / preferences:**
+- **Run a new test against the broken version first.** A test that has never
+  failed has proved nothing. Running the page-level check against the old
+  build reproduced the reported bug exactly — a 439 px page inside a 320 px
+  phone — which is what made the later pass mean something. Do this before
+  reporting a fix, not after.
+- **Text overflow is usually not about length — it is about breakability.**
+  Long prose wraps by itself. What breaks a layout is a single unbreakable
+  token: a file path, a shell command, an option symbol, a hex fingerprint, a
+  URL. The fix is `overflow-wrap: anywhere` on the containers that hold
+  identifiers, plus `min-width: 0` on flex and grid children, whose default
+  `auto` minimum silently refuses to shrink below their content.
+- **A flex item shrinks below its own content by default.** That is how a
+  button ended up narrower than the word inside it, with the text spilling
+  past its own border. Controls in a flex row want `flex: 0 0 auto`; the text
+  beside them is what should give way.
+- **A media query placed above the rule it means to override silently
+  loses.** Same specificity, so source order decides. The failure is nastier
+  than a rule that does nothing: only the properties the base rule does *not*
+  also set survive, so the block looks partly applied rather than dead, and
+  it can sit wrong for months. Wide-screen overrides belong *after* the
+  narrow-screen base, not with the rest of the layout above it.
+- **Look at the render after the tests are green.** Both of the day's worst
+  findings — a desktop navigation rail stretched into a ladder of empty
+  blocks, and the clipped button above — were found in a screenshot, with
+  every automated check passing. Screenshots at one phone width and one
+  desktop width are cheap and catch a class the assertions cannot express.
+- **An invisible tap target needs its own proof.** Widening a control with an
+  absolutely positioned pseudo-element works only if no ancestor clips it,
+  and nothing about the appearance tells you either way. `elementFromPoint`
+  just outside the visible edge answers it in one call.
+
+**Artifacts:** The deck was republished with these fixes; the tests written
+for it (`overflowtest.mjs`, `selfoverflow.mjs`, `switchtap.mjs`, `keynav.mjs`)
+are scratch files, not committed — the durable part is the reasoning above,
+which is why it is recorded here rather than as code.
+
+**Open threads:** The two overflow tests are throwaway scripts run by hand.
+Nothing re-runs them when the page changes, so the next edit can reintroduce
+either bug class silently. Worth making them a checked-in step for any page
+that gets iterated on.
