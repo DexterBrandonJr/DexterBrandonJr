@@ -12,6 +12,11 @@ things with Claude Code.
   decisions, and open threads across separate chats and sessions instead of
   losing them when a session ends. Auto-loads via a `SessionStart` hook.
   Read its `SKILL.md` before hand-editing anything under `.claude/memory/`.
+- `.claude/skills/phased-build/` — how the work is *run*: build → test → debug
+  → fix as separate phases Dex starts himself, his standing execution contract
+  ("do it all, approve everything, don't stop"), the quality-control gate
+  before he sees anything, and `scripts/ci_cost.py`, which prices one merge in
+  continuous-integration minutes before the work starts rather than after.
 - `.claude/skills/workhorse/` — the domain-neutral core of how Dex prefers
   systems built (the eight parts, the rhythm, the confidence contract), and
   how to reach the full doctrine in the private `DexterBrandonJr/workhorse`
