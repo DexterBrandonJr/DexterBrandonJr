@@ -51,3 +51,46 @@ change runs one test fewer.
 Narrowing that on pull requests and keeping the full matrix on the default
 branch is the remaining saving, and it is a coverage decision rather than a
 tuning one, so it stays Dex's call.
+
+## 2026-09-12 — An invariant stated as a direction hides the assumption it was built on
+
+**Decisions:** When adding the first instance of a genuinely new case to a
+system, go looking for the rules that were written before it existed, rather
+than waiting for one to fail. Four separate safety checks in one build all
+turned out to state a rule as a *direction* — "must be bought", "stop below
+entry", "a stop can only move up", "the entry must be a buy" — when what they
+each meant was "the safe way round". Every one of them was correct, and every
+one of them inverted on the first case of the new kind. None would have been
+found by reading the code looking for bugs, because none was a bug.
+
+**Facts / preferences:** The tell is a rule whose statement names a direction
+instead of a property. "Up" is a direction; "reduces exposure" is the
+property. Where the two coincided for every case that had ever existed,
+nobody had reason to separate them, and the wording quietly became the rule.
+When the mirror case arrives, the fix is to restate the property and derive
+both directions from it — never to add a branch for the new case, which
+leaves the original wording in place to be re-derived wrongly later.
+
+Two related habits proved out on the same build. First, hold that kind of
+guarantee as a **property over both directions**, not as one example each: a
+mirror is exactly the change that looks correct in all the cases you thought
+of. Second, mutate the safe direction and watch the tests fail — the mutation
+that silently *widens* a loss is the one worth building the suite around, and
+it should fail loudly and in several places.
+
+And the counterweight: not every such rule should be mirrored. One of the
+four was the last check before an order reaches the broker, and its stated
+purpose was detecting a corrupted payload, not describing the position. Wave
+that one through and a real invariant is traded for a feature. Stopping there
+and saying so was the right end to the session, not a failure to finish.
+
+**Artifacts:** The specific rules, the mirrored code and the mutation tables
+live in the private `trading-engine` repo. Nothing about the instrument or the
+accounts belongs here; the pattern is the part worth carrying.
+
+**Open threads:** No way yet to find these rules before they bite — they look
+like ordinary correct code and read as confident. Worth a pass over any
+module whose docstring states a guarantee in directional language, asking
+what property it is standing in for and whether a case exists that would flip
+it. That is a search over *wording*, which is unusual and might be the reason
+it works.

@@ -1,4 +1,4 @@
-- [Workhorse](topics/workhorse.md) — updated 2026-09-12 — The loop runs on a budget, and the budget has a cliff
+- [Workhorse](topics/workhorse.md) — updated 2026-09-12 — Four safety rules said 'up' when they meant 'the safe way'; the first new case inverted all four
 - [Working With Claude](topics/working-with-claude.md) — updated 2026-09-12 — Two SEC sources were dead from day one; the lesson is checking the table, not the code
 - [Trading Engine](topics/trading-engine.md) — updated 2026-09-10 — moved to the private repo; a history rewrite would NOT remove it (GitHub PR refs), checked and recorded
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
