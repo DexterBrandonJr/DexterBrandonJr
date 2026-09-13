@@ -239,3 +239,63 @@ properly (name references first, then rank a guard above a property) rather
 than bolted on. Still open from the previous entry: promote the two
 reachability scans into `workhorse` as one script so every project gets them
 instead of rewriting them each time.
+
+## 2026-09-13 — A call on the wrong object, and the check that looked one level too high
+
+**Decisions:**
+- **Before extending a script, check that what it already does works.** Wiring
+  eight dead readings into a scanner started by reading the three it had. Two
+  of those three called methods on the wrong object — a vendor library splits
+  its client into sub-clients, and the methods lived on siblings of the one
+  being called. Both raised `AttributeError` into a broad `except` that logged
+  a line and continued, so the run reported an empty market. **Two of its
+  three readings had never once worked**, and nothing in the output said so.
+- **A surface check has to check the layer that is actually used.** There was
+  already a continuous-integration job proving each sub-client exists on the
+  vendor client. That is one level too high: it proves the object resolves,
+  not that the method called on it does. The new check walks every
+  `api.<client>.<method>()` call site and asks the installed library whether
+  the name is there. It fired on both and named where each method really
+  lives.
+- **When a module admits its field names are guesses, do not guess again —
+  make the run report what it saw.** The last live run against that vendor
+  found every guessed field name wrong but one. So each fetch now returns the
+  payload *and the keys the response actually carried*, and a mapping that
+  yields nothing prints those keys. An endpoint that returns nothing and an
+  endpoint spelled differently are indistinguishable from a row count. One
+  real run converts a guess into a committed fact.
+
+**Facts / preferences:**
+- **The substring lesson landed on me twice more in one session.** A guard that
+  read a whole configuration file failed because my own *comment* named the
+  script it forbids — same shape as a scan counting a comment as an import. I
+  tightened the guard to read executable content rather than rewording around
+  it, with a test that proves it still fires on a real line. Then, triaging
+  the wiring tier's findings, I grepped for callers and found four the tier
+  said did not exist: every one was prose in a docstring or a string in an
+  export list. **The tree walk was right and my grep was wrong.**
+- **A tool being present in one job says nothing about another.** A new check
+  was added as a step in the job that had the library it needed — and that job
+  installed only that library, not the test runner. It went red with "no
+  module named pytest", so the check never ran at all. Audit *every* job that
+  runs a tool, not just the one that broke.
+- **Reproduce a continuous-integration failure before fixing it, even an
+  obvious one.** A throwaway virtual environment reproduced the exact message
+  in seconds and made the fix verifiable rather than plausible.
+- **A table with no reader or writer is the same disease one layer down.** A
+  store had existed in a migration for weeks with nothing touching it, so the
+  reading that depended on it could never fire however its fields were
+  spelled. Finding it took wiring the thing above it.
+
+**Artifacts:** Four pull requests merged on the private project repo: the
+multi-tiered validation protocol; a pass taking its own findings from nine
+defects to zero; a fifth tier that asks whether a capability is wired or only
+tested; and the fetch layer for eight readings that had none — which is what
+surfaced the two calls that never resolved.
+
+**Open threads:** Six of the eight readings still carry unverified field
+spellings; only a run on the real machine can settle them, and the run is now
+built to say which keys it saw. Two things are deliberately off until a human
+decides: the futures contract symbols, and an imbalance-side encoding three
+live snapshots could not settle. 36 wiring findings remain, none of them
+guards.
