@@ -100,11 +100,25 @@ remember it:
 
 ```bash
 python3 .claude/skills/phased-build/scripts/ci_cost.py <repo-root>
+python3 .claude/skills/phased-build/scripts/ci_cost.py <repo-root> --used 1894 --included 3000
 ```
 
 It prints jobs per event, which workflows a paths filter can skip, which cancel
 superseded runs, and the floor cost of one merge cycle. Run it before a phase
 that will produce several pull requests, and say the number in the plan.
+
+**With `--used` it answers the question that actually decides whether to
+build**: the schedule's own monthly floor, what is left after it, and how many
+merges that buys. The merge cycle is the number everyone quotes and on a
+repository whose product IS a scheduled loop it is the smaller half — a job on
+a daily cron costs about thirty minutes a month whether or not anybody merges
+anything. Read the used figure off the account's billing page; the script does
+not call GitHub, because a guardrail that needs a credential is one that stops
+working the day the credential does.
+
+A budget check never gates. It reports and the human decides — a check that
+could fail a run would be one more way for the loop to stop, which is the
+thing the budget exists to prevent.
 
 A `$0` budget set to stop usage does not bill — it **stops**. When the scheduled
 loop is the product, hitting the cap takes the product dark until the month

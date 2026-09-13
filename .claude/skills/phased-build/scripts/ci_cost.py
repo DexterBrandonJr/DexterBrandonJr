@@ -12,8 +12,19 @@ workflows can be skipped by a paths filter and which cancel superseded runs,
 and prints the floor cost of one pull-request-and-merge cycle.
 
     python3 ci_cost.py [repo-root]
+    python3 ci_cost.py [repo-root] --used 1894 --included 3000
 
-Exit code is 0 always; this reports, it does not gate.
+**Scheduled runs are the half that surprises you.** The merge cycle is the
+number everyone quotes, and on a repository whose product IS a scheduled loop
+it is the smaller half: a job that runs every day costs about thirty minutes a
+month whether or not anybody merges anything. With `--used` this prints the
+monthly floor for the schedule alone, what is left after it, and how many
+merges that actually buys -- which is the number that decides whether a build
+can go ahead today.
+
+Exit code is 0 always; this reports, it does not gate. A budget check that
+could fail a run would be one more way for the loop to stop, and the loop
+stopping is the thing the budget exists to prevent.
 """
 
 from __future__ import annotations
@@ -58,13 +69,13 @@ def triggers(on) -> dict:
     return {}
 
 
-def main(root: Path) -> int:
+def main(root: Path, *, used: int = -1, included: int = 2000) -> int:
     workflows = sorted((root / ".github" / "workflows").glob("*.y*ml"))
     if not workflows:
         print(f"no workflows under {root}/.github/workflows")
         return 0
 
-    pr_jobs = main_jobs = 0
+    pr_jobs = main_jobs = sched_jobs = 0
     rows = []
     for path in workflows:
         try:
@@ -87,6 +98,11 @@ def main(root: Path) -> int:
             pr_jobs += count
         if on_main:
             main_jobs += count
+        # Scheduled work is the half nobody quotes. A job on a daily cron costs
+        # its jobs every day whether or not anyone merges, and on a repository
+        # whose product IS the loop that is most of the bill.
+        if "schedule" in on:
+            sched_jobs += count
 
         rows.append((
             path.name, count,
@@ -114,8 +130,44 @@ def main(root: Path) -> int:
     print("Levers, cheapest first: paths-ignore for commits that cannot break a")
     print("test (a system that commits its own record needs this); a concurrency")
     print("group so superseded pushes stop; a narrower matrix on pull requests.")
+    if used >= 0:
+        budget(cycle, sched_jobs, used, included)
+    return 0
+
+
+def budget(cycle: int, scheduled_jobs: int, used: int, included: int) -> int:
+    """What the schedule costs a month, and how many merges the rest buys."""
+    monthly_schedule = scheduled_jobs * 30
+    left = max(0, included - used)
+    print()
+    print(f"Scheduled work alone: {scheduled_jobs} job(s) a day "
+          f"= about {monthly_schedule} billed minutes a month.")
+    print(f"Used {used} of {included} included; {left} left this month.")
+    if cycle:
+        merges = (left - monthly_schedule) // cycle
+        if merges >= 0:
+            print(f"After the schedule, that is about {merges} more merge(s) "
+                  f"at {cycle} minutes each.")
+        else:
+            # The cliff, named before it arrives. A budget set to stop usage
+            # does not bill -- it STOPS, and the scheduled loop goes dark
+            # until the month resets.
+            print(f"WARNING: the schedule alone wants {monthly_schedule} and "
+                  f"only {left} is left. Batch into fewer, larger pull "
+                  f"requests, and say so rather than discovering it at 90%.")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(Path(sys.argv[1] if len(sys.argv) > 1 else ".")))
+    args = [a for a in sys.argv[1:]]
+    root = Path(args[0]) if args and not args[0].startswith("-") else Path(".")
+
+    def flag(name: str, default: int) -> int:
+        if name not in args:
+            return default
+        try:
+            return int(args[args.index(name) + 1])
+        except (IndexError, ValueError):
+            sys.exit(f"{name} needs a number")
+
+    raise SystemExit(main(root, used=flag("--used", -1), included=flag("--included", 2000)))
