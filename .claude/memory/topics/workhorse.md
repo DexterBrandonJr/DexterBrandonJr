@@ -184,3 +184,58 @@ one is a warning rather than a silence — the previous entry's question, still
 open in its stronger form. Also unresolved: the function-level scan's 91 hits
 are mostly noise, so it needs a way to rank a guard above a property before
 anyone will run it twice.
+
+## 2026-09-13 — Scanners that read themselves, and the swallow that is not silent
+
+**Decisions:**
+- **A quality-control scanner must never scan its own pattern table, and the
+  fix is not an exclusion list.** A marker check searched raw lines, so its
+  own regex literal — and the docstring sentence explaining the rule — became
+  findings. All three of its findings in the whole repository were itself,
+  against zero real ones. Excluding the file by name would have blinded it to
+  real markers there; reading *comment tokens* instead fixed it without
+  blinding anything. Same shape as every other false positive that week:
+  **parse the region that matters, do not match a substring in a file.**
+- **Deliberately swallowing and silently swallowing are different things, and
+  the fix is to carry the reason out, not to raise.** Six handlers swallowed
+  on purpose for good reasons (the order is already with the broker; the call
+  is outbound only; the fallback is safe). All six now record a reason onto
+  the run report, which counts them and prints them. None of them raise. The
+  reasons were never the problem — the silence was.
+- **When a scanner and a carefully-written module disagree, check the scanner
+  first.** The tier flagged the one module written most carefully about that
+  exact hazard, because it looked only at the statement immediately after the
+  `try` and the module's re-raise was three statements down inside an `if`.
+
+**Facts / preferences:**
+- **A tier that cries wolf gets muted, and then catches nothing at all.**
+  This is the reason to spend real effort on false positives rather than
+  shipping a noisy check and promising to tune it. It is also the reason to
+  refuse to ship a half-calibrated new tier.
+- **Write the test for the false negative your fix could introduce, not only
+  the one for the bug you fixed.** Widening a check to look through a whole
+  block risked excusing a swallow because some function defined below raises.
+  The test written to pin that failed on the first attempt — the pruning
+  guard skipped nested definitions among a node's children but not when the
+  statement itself was one. Without that test it would have shipped.
+- **A count in prose goes stale the moment the code moves.** A docstring said
+  "five places" after six were wired. Same class as the earlier 16-vs-13
+  orphan count. If a number describes code, something should derive it.
+- **"Called only by its own test" is a distinct orphan class, and a
+  reachability scan that counts tests as callers cannot see it.** Measured:
+  ~70 public functions, though that number is an overcount until name
+  references (a rules tuple, a registry) are handled — the same false
+  positive the module-level scan already burned down.
+
+**Artifacts:** The validation protocol merged, then a second pass that took
+its own DEFECT findings from nine to zero — six swallows made visible, a
+failure journal taught to report its own failure, an over-broad `except`
+narrowed to the parse error it meant to catch, a fourteenth orphan wired, and
+two corrections to the tiers themselves. Both pull requests are on the
+private project repo.
+
+**Open threads:** A fifth tier for "reached only by its own test," calibrated
+properly (name references first, then rank a guard above a property) rather
+than bolted on. Still open from the previous entry: promote the two
+reachability scans into `workhorse` as one script so every project gets them
+instead of rewriting them each time.
