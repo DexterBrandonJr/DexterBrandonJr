@@ -94,3 +94,42 @@ module whose docstring states a guarantee in directional language, asking
 what property it is standing in for and whether a case exists that would flip
 it. That is a search over *wording*, which is unusual and might be the reason
 it works.
+
+## 2026-09-13 — A module that exists is not a module that runs
+
+**Decisions:** Before building anything onto a system, check what in it is
+actually *called* — by grep, over the working tree, for each module's name
+appearing somewhere that is not its own file. Asked "did we build all forty
+things", the changelog said yes and was right; the caller list said twelve were
+running, seven measured nightly and were never read back, and thirteen had no
+caller at all. Every one of those forty passed its tests. A test proves a unit
+behaves; only a caller proves it happens.
+
+**Facts / preferences:** The worst case is not the unbuilt thing, it is the
+loop that is closed at one end. A nightly job computed measurements for a month
+and nothing opened the file, which reads in every log and every summary as a
+system that is learning. That failure is invisible from inside each half:
+the writer works, the reader works, and nobody owns the join.
+
+Two habits that came out of it. Verify a status claim against the artefact that
+would have to be true — a caller, a row in a table, a request in a log — rather
+than against the document that records the intention. And when a document
+contradicts itself, that contradiction is usually sitting exactly on top of the
+real gap: the section saying "wired" and the section saying "not wired" were
+both partly true, and the thing neither described was the part that was broken.
+
+Also worth keeping: a browser or integration harness earns its cost the first
+time a change breaks the artefact while every unit test stays green. One name
+collision in a page produced eleven failures across layout, tap targets and
+keyboard handling, none of them near the cause. The fix was a check that runs
+first and looks for the cause directly, not more checks on the symptoms.
+
+**Artifacts:** The engine-side counts, the modules and the harness check live in
+the private `trading-engine` repo. The ranked build order that came out of the
+audit is a published page Dex can reopen.
+
+**Open threads:** No cheap way yet to notice a half-closed loop from the
+outside — the write side and the read side are each healthy, and only a person
+asking "who reads this" finds it. Worth thinking about whether a module can
+declare that it expects a reader, so an unread one is a warning rather than a
+silence.
