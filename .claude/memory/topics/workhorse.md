@@ -133,3 +133,54 @@ outside — the write side and the read side are each healthy, and only a person
 asking "who reads this" finds it. Worth thinking about whether a module can
 declare that it expects a reader, so an unread one is a warning rather than a
 silence.
+
+## 2026-09-13 — A module can have a caller while its guard has none
+
+**Decisions:** The previous entry's open thread — "no cheap way yet to notice
+a half-closed loop from the outside" — now has an answer, and the answer has
+two levels rather than one. A repository scan for **modules nothing imports**
+is the cheap check, and it is not sufficient: a module can be imported for one
+name while the function that actually guards something is called by nobody.
+Both scans now belong in the quality-control pass on any project built this
+way, and the second one is the one that found the expensive thing.
+
+**Facts / preferences:**
+- **Scan with an abstract-syntax-tree walk, never a regular expression.** A
+  regex scan of imports reported sixteen dead modules in one project; four of
+  those were reached by *relative* imports (`from .thing import X`) that the
+  pattern could not see. The real figure was thirteen. A wrong number here is
+  worse than no number: it sends the next session to wire something that was
+  never broken, and it went into a published artifact before it was caught.
+- **Then scan at function level.** Of 672 public functions in that project, 91
+  had no caller outside their own file. Most of that is noise — properties,
+  internal helpers — but one was a safety guard that had been written
+  correctly and never once run, in the exact area the system had recently
+  learned to operate in. The module-level scan could not see it, because the
+  module was imported for a different name entirely.
+- **The lesson generalises past code.** A capability that is built, correct
+  and unreferenced is indistinguishable from one that does not exist, and it
+  is *more* dangerous, because everyone involved believes it is there. This
+  belongs in the doctrine's engineering rules next to the record and the gate:
+  building a thing and wiring a thing are two separate pieces of work, and
+  only the second one is delivery.
+- **A test suite passing tells you nothing about this.** All 1,961 tests
+  passed with thirteen modules dead. Tests prove a module works; they do not
+  prove anything runs it. That is what the scans are for.
+- **Corollary for the build phases:** the "did it actually execute" question
+  belongs in the debug phase as a *scan*, not only as a live run. A live run
+  needs credentials and costs continuous-integration minutes; a scan is free
+  and catches the whole class in seconds.
+
+**Artifacts:** The two scans (module-level and function-level) as scratch
+scripts in the session; worth promoting into the workhorse repo as a
+quality-control script so they run on every project rather than being
+rewritten each time. The horizon artifact for that project now carries the
+corrected count and the correction itself, rather than quietly replacing the
+wrong number.
+
+**Open threads:** Promote both scans into `workhorse` as one script, and
+decide whether "expects a caller" can be declared by a module so an unwired
+one is a warning rather than a silence — the previous entry's question, still
+open in its stronger form. Also unresolved: the function-level scan's 91 hits
+are mostly noise, so it needs a way to rank a guard above a property before
+anyone will run it twice.
