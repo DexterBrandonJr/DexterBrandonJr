@@ -301,3 +301,39 @@ time; both now do, but the class is wider than the two instances. Worth a pass
 over every `except` in a scheduled job that returns an empty result, asking
 what a permanent failure of that branch would look like from outside. It would
 look like nothing, which is the point.
+
+## 2026-09-14 — A cron does not fire when it says, and a single-shot schedule cannot be aimed
+
+**Decisions:** Any scheduled job whose job is to catch a moving target gets a
+*periodic* schedule, not one well-aimed fire. The reasoning generalises past
+the project it came from: a platform-wide scheduling delay shifts every fire
+in a schedule by the same amount and leaves the *spacing* between them intact.
+So an hourly job still checks hourly no matter how late the hour starts, while
+a once-a-day job aimed at "thirty minutes before X" misses X entirely the
+moment either the delay or X moves. Where a periodic schedule pairs with a
+warning window, the window is set equal to the gap between fires and a test
+binds the two numbers together — shorter and events fall in the blind spot
+between fires, longer and the same event fires twice.
+
+**Facts / preferences:** GitHub Actions runs scheduled (`on: schedule`)
+workflows late, and on a real repository the delay was large and consistent
+rather than occasional: five consecutive runs of one workflow came in 227–243
+minutes after their cron, and three runs of another 245–259 minutes. Roughly
+four hours, every time. GitHub documents that schedules may be delayed under
+load; what is not obvious until measured is the *size* and the *consistency*.
+Anything that reasons about when a scheduled job lands — a downstream job, a
+notification window, a document that tells a human when to look — is wrong by
+that margin until it is measured. Second, related: a workflow chained with
+`workflow_run` inherits the trigger times of *everything* that starts the
+upstream workflow, including pushes and manual dispatches, so its landing time
+can vary by far more than the cron delay alone.
+
+**Artifacts:** Nothing public. The measurement was taken with the GitHub
+Actions API on a private repository (list the workflow's runs and compare
+`run_started_at` against the cron), which is a two-minute check worth running
+on any repository before writing down when its jobs "run".
+
+**Open threads:** The measurement is per-repository and per-moment — it is a
+reading, not a constant. Anything that depends on the number should say so and
+be re-measured rather than treated as four hours forever. The safer pattern is
+the one above: build schedules that do not need the number to be right.
