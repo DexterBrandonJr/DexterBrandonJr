@@ -299,3 +299,61 @@ built to say which keys it saw. Two things are deliberately off until a human
 decides: the futures contract symbols, and an imbalance-side encoding three
 live snapshots could not settle. 36 wiring findings remain, none of them
 guards.
+
+## 2026-09-15 — The doctrine is general only where it has a derivation
+
+**Decisions:** Dex asked to be pointed at the generalised build setup "for
+making other systems related to any topic, thing, or interest I decide." The
+doctrine already answers that in principle — the eight parts are
+domain-neutral and §1 says so — but the only route from a topic to an actual
+mapping was `playbooks/domains.md`, a table of seven domains, and §9 step 4
+sent a new project straight at it. Pick an eighth and the lookup has no row
+and nothing says how to make one. **A general doctrine reachable only through
+a finite list is not general in the way it claims** — the same shape as the
+other failures on this record, a thing that reads as complete and establishes
+less than it looks like. The playbook now opens with the derivation and the
+table is relabelled as the seven already worked out.
+
+**Facts / preferences:**
+
+- **The scaffold had never once been run.** The open thread from 2026-09-11
+  said the first scaffolded project would test the templates for real, and
+  four days later none had been, while the doctrine was being cited as
+  working. Running it is now **Proven**: ten files, exit 0, zero unfilled
+  placeholders, against a domain deliberately not in the table. Worth keeping
+  as a habit — a generator nobody has run is a plan, not a tool, and the gap
+  is invisible because every file it would write reads correctly in the
+  template.
+- **One genuine leak, and it was in the checklist rather than the prose.**
+  `templates/QA_QC.md` told every future project to answer device-independence
+  with "a broker-side order", and headed a whole section "Against the real
+  service" when plenty of domains have no outside service at all. Domain
+  leakage survives longest in the operational documents, because they are the
+  ones written last and read least.
+- **Two parameters the seven worked rows were carrying silently.** The
+  **scoring horizon** — how long until you find out a decision was right —
+  changes how a build feels more than anything else: days means Stage 2 in a
+  season, months means the record must carry leading indicators or the loop
+  learns nothing for a year. And **the irreversible action**, named plainly
+  per domain (money sent, a body injured, something published, a reputation
+  spent). In trading both are obvious, which is exactly why neither got
+  written down.
+- **A domain can legitimately not fit.** No natural record, no fast feedback,
+  or no irreversible action each get a stated answer rather than a warning —
+  and the last one means saying out loud that the honest build is four parts,
+  not faking a gate that guards nothing.
+
+**Artifacts:** `DexterBrandonJr/workhorse` pull request 3, on
+`claude/deriving-a-domain-that-is-not-on-the-list` — `playbooks/domains.md`
+(the eight derivation questions and the three resistances), `DOCTRINE.md` §9
+step 4, `templates/QA_QC.md` generalised and carrying the new rule that a
+measurement beats the vendor's documentation with the doc quote recorded next
+to it. Documentation only; `new_project.py` was run, not modified.
+
+**Open threads:** Still open from 2026-09-13, and now two sessions old: promote
+the module-level and function-level reachability scans into one quality-control
+script in `workhorse`, so every project gets them instead of rewriting them per
+project. The derivation itself is **Tested at best** — it has been written and
+reviewed, not yet used to start a real project, which is the same trap the
+scaffold sat in for four days. The next new build in any domain is what proves
+it.

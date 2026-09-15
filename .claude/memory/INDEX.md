@@ -1,5 +1,5 @@
+- [Workhorse](topics/workhorse.md) — updated 2026-09-15 — the scaffold script run for the first time (proven, 10 files, one trading leak found); the domains playbook now derives a row for any topic instead of listing seven
 - [Working With Claude](topics/working-with-claude.md) — updated 2026-09-15 — four ways a check can look right and establish nothing: a derived id whose suffix broke five readers, a vendor doc believed over a measurement, a safety state inferred from control flow, and "could not determine" collapsed into yes
-- [Workhorse](topics/workhorse.md) — updated 2026-09-13 — A call on the wrong object, and the check that looked one level too high
 - [Trading Engine](topics/trading-engine.md) — updated 2026-09-10 — moved to the private repo; a history rewrite would NOT remove it (GitHub PR refs), checked and recorded
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
 - [Tool Blueprint Workflow](topics/tool-blueprint-workflow.md) — updated 2026-09-06 — Fill the tool_blueprint template once a plan is agreed
