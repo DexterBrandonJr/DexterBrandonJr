@@ -1,4 +1,4 @@
-- [Working With Claude](topics/working-with-claude.md) — updated 2026-09-14 — a cron does not fire when it says: GitHub schedules measured ~4 hours late, and why a periodic schedule survives that while a single shot cannot
+- [Working With Claude](topics/working-with-claude.md) — updated 2026-09-15 — four ways a check can look right and establish nothing: a derived id whose suffix broke five readers, a vendor doc believed over a measurement, a safety state inferred from control flow, and "could not determine" collapsed into yes
 - [Workhorse](topics/workhorse.md) — updated 2026-09-13 — A call on the wrong object, and the check that looked one level too high
 - [Trading Engine](topics/trading-engine.md) — updated 2026-09-10 — moved to the private repo; a history rewrite would NOT remove it (GitHub PR refs), checked and recorded
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses

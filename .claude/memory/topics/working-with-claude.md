@@ -337,3 +337,127 @@ on any repository before writing down when its jobs "run".
 reading, not a constant. Anything that depends on the number should say so and
 be re-measured rather than treated as four hours forever. The safer pattern is
 the one above: build schedules that do not need the number to be right.
+
+## 2026-09-14 — Check where a library actually logs, and never key a guard on prose
+
+**Decisions:** Two general engineering lessons from a day on the private
+trading project, recorded here because neither is specific to it.
+
+**First: "install a filter on the root logger" is an assumption, not a
+mechanism.** A dependency was writing a secret to a log, and the obvious fix —
+a `logging.Filter` on the root logger and root's handlers — would have caught
+**nothing**. Reading the installed library rather than assuming showed three
+independent reasons, any one of which is enough on its own:
+
+1. A logger's own filters are consulted **only** for records logged *through*
+   that logger. A record that merely propagates up to an ancestor's handlers
+   never sees the ancestor's filters. So a filter on root never sees a record
+   emitted by `logging.getLogger("somelib.module")`.
+2. If nothing in the process calls `logging.basicConfig`, the root logger has
+   **no handlers at all** — output reaches the terminal via `lastResort`.
+   There was literally nothing to attach to.
+3. The library installed its own handlers on its own named loggers, and did so
+   lazily on first client construction — i.e. **after** the install point had
+   already run. Even on a process that had configured root, attaching to "the
+   handlers" would have bound the ones that existed then and missed the ones
+   created later.
+
+`logging.setLogRecordFactory` has none of those failure modes.
+`Logger.makeRecord` calls the factory for **every** record from **every**
+logger in the process, before any filter, handler or formatter runs, and a
+handler created an hour later still formats a record that came through it.
+That is the real "filter on the record" — the rest is a filter on authorship.
+
+**Second: a guard keyed on prose is a guard its own documentation can
+disarm.** Existing code detected a specific failure with
+`if "<some phrase>" in str(exc)` and took a significant action on it. Rewriting
+that exception's message — a pure documentation improvement, to say what had
+actually been measured — would have stopped the match **silently**: the guard
+simply never fires again, and nothing reports that it stopped. Caught only
+because the full suite ran. The fix is a dedicated exception subclass, so
+callers that do not care are unchanged and the prose can be rewritten freely;
+a test then constructs one whose message shares *no words* with the old one and
+requires the guard to still fire.
+
+**Facts / preferences:** This is the sixth occurrence of the same underlying
+defect class in a week, and the first time it was in **existing** code rather
+than something newly written: **matching a substring instead of asking the
+thing itself.** Previous instances were tests grepping a function's source and
+matching its docstring, and a set-membership check that undercounted
+duplicates. The general rule now worth applying by default: when a check needs
+to know *what something is*, ask the object (type, attribute, parsed
+structure), never its rendered text. Text is for humans and changes when the
+humans improve it.
+
+A second habit reinforced: **a fail-safe must fail closed.** The first version
+of the log filter swallowed an error and passed the record through untouched.
+That is the worst of the available options — the one record that breaks the
+scrubber is the one most likely to be an odd shape *because* it is carrying
+something odd. It now withholds the content and records the failure type
+out-of-band, since it cannot log from inside the log path without re-entering
+itself.
+
+**Artifacts:** Both landed in the private trading repo, so no link here. The
+reusable shape is the record-factory wrapper plus a `failures()` accessor for
+what it could not process — worth reaching for again rather than re-deriving.
+
+**Open threads:** None. Both lessons are general and apply to any project
+where a dependency writes to logs, or where one code path branches on another
+path's error message.
+
+## 2026-09-15 — Four ways a check can look right and establish nothing
+
+A day of fixing guards that reported states they had never actually checked.
+All four are the same shape — something that *reads* as a safety check but
+whose answer was never connected to reality — and all four are worth
+recognising in any codebase, not just the one they came from.
+
+**Decisions:**
+
+**A derived identifier carries meaning in its text, so anything appended to
+it has to be stripped everywhere that meaning is read.** I added a retry
+suffix to an id that five separate places parsed by `endswith(...)`. All five
+silently stopped recognising the retried form — one of them in a way that
+could have produced the exact dangerous state the module exists to prevent.
+The cost of deriving ids is paid at every call site, not one, and the moment
+to pay it is when you append. There is now a syntax-tree test that fails any
+suffix comparison not routed through the strip, because the whole defect was
+a check that looked right and matched nothing.
+
+**A vendor's published documentation is a claim, not a measurement.** A
+constant had been set to a restrictive value on the strength of a doc line,
+deliberately and with the quote recorded. The doc was wrong for the case in
+hand, and the cost of believing it was a real failure every night. But the
+inverse error was worse: flipping the constant on a hunch would have turned a
+short-lived thing into a refused one. The resolution was neither — a probe
+that asked the live system, then encoding *the measurement* with the request
+id beside it. Keep the doc quote as the reason the constant is a named thing
+with a paragraph attached, so there is an obvious place to change back.
+
+**A state that matters cannot be inferred from control flow.** A message
+whose only job was to say whether something was safe was computed from which
+exception had been raised. Twice in one hour it printed the opposite of the
+truth. Reading the actual state back also revealed the bigger bug: the code
+was raising an alarm in a case where nothing was wrong, and the natural human
+response to that false alarm would have made things genuinely unsafe.
+
+**"Could not determine" deserves to be a first-class state.** Collapsing it
+into either yes or no produces a confident sentence in the one situation that
+warrants none. Give it its own wording and let it carry the urgency of the
+bad case, not the reassurance of the good one.
+
+**Facts / preferences:** When a test asserts something that turns out to be
+false, **invert it in place with the evidence named** rather than deleting
+it. The test name itself is often where the bug is visible in hindsight —
+one here read `..._the_entry_keeps_X_and_the_children_are_Y`, and that
+asymmetry *was* the defect, sitting in plain sight for months. A deleted test
+takes the history with it; an inverted one leaves the next reader the
+evidence and not just the conclusion.
+
+**Open threads:** Worth noticing that in all four cases the repository's own
+tooling caught part of it and my reasoning caught the rest — the tier-2
+validator refused a bare `except` I had written in the very function deciding
+whether a dangerous action was safe, and two pre-existing tests caught me
+reporting absent things as present. Neither would have fired without the
+other. The general lesson is not "trust the tests" or "think harder" but that
+the two are complementary and a change to a safety path deserves both.
