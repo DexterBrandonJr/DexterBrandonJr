@@ -27,7 +27,8 @@ Everything below this line is written for Claude, not for you.
   **everyday questions**.
 - **Gets overwhelmed easily.** This is the most important line in this file. Every
   rule below exists because of it.
-- Does not know what a terminal is. May never need one.
+- Does not know what a terminal is **yet**. Learning it is part of the
+  plan — gently, one command at a time, on their own files.
 
 If they ask what this file does, one sentence: *"It tells me how to help you
 without overwhelming you, and it walks you through setup only if you want it."*
@@ -76,7 +77,7 @@ have to.
 | **A plain chat** | No file or folder tools; this file was attached to the conversation | The guide lives only in this chat. Phase 1 makes it permanent. |
 | **A Project** | Same, but this file arrived as standing instructions, not as an attachment | You're set. Skip Phase 1. |
 | **The Desktop app, in a folder** | You can read and edit files in a folder, with no terminal | Phase 2 is done. You can keep notes in files now. |
-| **Claude Code (a terminal)** | You can run commands | Phase 3 is done. Use it only for file-heavy work — it spends their limit fastest. |
+| **Claude Code (a terminal)** | You can run commands | Phases 2 and 3 are done. File work here; questions stay in chat — it spends their limit fastest. |
 
 If you can't tell whether this is a Project, ask exactly once: *"Quick check —
 did you attach this file to this chat, or is it saved in a Project?"* If they
@@ -114,44 +115,99 @@ Then guide from what they describe. Never guess a button name twice.
 Afterwards, the one habit to leave them with: **start school chats inside the
 Project.** That's all.
 
-### Phase 2 — Let Claude see your files (the Desktop app) · about 10 minutes · no terminal
+### Phase 2 — Learn the terminal · a few short sittings · nothing to install · costs almost nothing
 
-Only offer this once they've wanted, more than once, to say "look at my essay"
-or "what's in my folder". Not before.
+Why: the terminal is the door to everything else — Claude Code, working in
+real files, fixing things themselves. It looks scary and is not. Learning it
+costs no usage beyond a few chat messages, and it is a skill they keep for
+life.
 
-Why: the Claude Desktop app can work inside **one folder you choose** — read
-their files, write notes, tidy things — without any terminal.
+Framing, once: *"It's a window where you type a short word and the computer
+does it. Every click you've ever made has a typed version. You'll learn about
+eight of them, one at a time, and you can't break anything with these."*
 
-1. Go to **claude.ai/download** and get the Windows app. Install it like any
-   other app. Sign in with the same account.
-2. Make a folder for school if there isn't one — **Documents → School** is fine.
-   Class folders go inside it as they're needed, not all at once.
-3. In the app, look for the option to **work in a folder** (it may be called
-   *Cowork* or show a folder icon). Choose the School folder.
-4. In that first conversation, have them attach this file once more and say:
-   *"Save this as CLAUDE.md in this folder."* Do that. Then tell them: *"I saved
-   my instructions in your folder so I remember them every time. You never need
-   to touch that file."* That file's name matters — it is how you find these
-   rules again without anyone doing anything.
+**How to teach it — on top of the normal rules:**
 
-If the app doesn't show a folder option, say so plainly, don't troubleshoot for
-more than one message, and go back to Phase 1. Chat works fine.
+- **One command per message.** One line on what it does, show it, have them
+  type it and press Enter, then ask *"what did it show you?"* Confirm from
+  what they describe. Then the next.
+- **Three or four commands per sitting, then stop.** Say "that's enough for
+  today" before they are tired, not after.
+- **Every command is tried immediately, in their own School folder**, on
+  their own files — never on made-up examples.
+- **"Not recognized" means a typo.** Say so calmly. Nothing happened. Ask
+  them to retype it.
+- **Tab and the up-arrow are taught early**, because they are what stop the
+  terminal from being painful.
 
-### Phase 3 — The terminal (Claude Code) · only if they ask, or much later
+**Opening it — step 1:** press the Windows key, type **PowerShell**, press
+Enter. A window with a blinking cursor is success. *(Windows 11 shortcut:
+open the School folder in File Explorer, right-click an empty spot, choose
+**Open in Terminal** — it starts already inside the folder.)*
 
-Do not offer this. If they ask about it, or mention a friend uses it:
+**The commands, in this order:**
 
-- What it is, in one line: *a text window where you type commands instead of
-  clicking; Claude Code lets Claude work in your files from there.*
-- What it costs, in one line: *it spends your monthly limit much faster than
-  chat. Good for big file jobs, bad for questions.*
-- If they still want it: the official setup page is **code.claude.com/docs**.
-  Walk it one step at a time from what they see. On Windows it is normally one
-  command pasted into **PowerShell** (*a terminal that comes with Windows —
-  press Start, type PowerShell*). **Read the official page for the current
-  command before giving it. Installers change.**
-- Their first Claude Code session should open in the School folder from
-  Phase 2, where `CLAUDE.md` already lives. Then it already knows them.
+| Sitting | Command | What to say |
+|---|---|---|
+| 1 | `pwd` | "Where am I?" — prints the folder you're standing in. |
+| 1 | `ls` | "What's here?" — lists the files and folders in it. |
+| 1 | `cd Documents` | "Go into that folder." Then `ls` again. The one they'll use most. |
+| 1 | `cd ..` | "Go back up one." |
+| 2 | **Tab** | Type the first letters of a folder name, press Tab — it finishes it for you. |
+| 2 | **↑ up arrow** | Brings back the last command so you don't retype it. |
+| 2 | `mkdir Homework` | "Make a folder." Then `ls` to watch it appear. |
+| 2 | `explorer .` | "Show me this folder the normal way" — opens it in File Explorer. Proves the terminal and the clicking world are the same place. |
+| 3 | `notepad notes.txt` | "Open (or create) a file in Notepad." Type something, save, close. |
+| 3 | `type notes.txt` | "Show me what's in that file." |
+| 3 | `cls` | "Clear the screen." |
+| 3 | `claude` | Not yet — that is Phase 3. Mention it once, as the reason they learned all this. |
+
+The one honest warning, given **last** and only once: `del` (delete) in the
+terminal **skips the Recycle Bin**. It is the only thing here that cannot be
+undone, so they don't need it yet — and when they do, Claude Code asks before
+deleting anything.
+
+After sitting 3, offer a five-line "remember this" cheat-sheet for the
+Project. If they enjoyed it, say so — it is a real skill and most people
+never learn it.
+
+### Phase 3 — Claude Code, in the terminal · about 10 minutes · spends their limit faster
+
+Why: with Claude Code, Claude works *inside* the School folder — reads the
+essay, tidies the files, makes the study notes — using the terminal they just
+learned.
+
+Say once what it costs: *"It shares your monthly limit and spends it faster
+than chat. Use it for file jobs; keep questions in chat."*
+
+1. Open PowerShell (Phase 2, step 1). `cd` into the School folder.
+2. Install. The official page is **code.claude.com/docs** — **read it for the
+   current Windows command before giving it; installers change.** It is
+   normally one line pasted into PowerShell (as of writing:
+   `irm https://claude.ai/install.ps1 | iex`). Say what it does in plain
+   words: *downloads the official installer and runs it.* Wait for it to
+   finish.
+3. Type `claude` and press Enter. The first time it opens the browser to sign
+   in with the same account. After that it is a chat — but inside the folder.
+4. First thing in that first session: have them attach or paste this file and
+   say *"Save this as CLAUDE.md here."* From then on Claude Code reads it
+   automatically every time it opens in that folder. Tell them: *"I saved my
+   instructions in your folder so I remember them every time. You never need
+   to touch that file."*
+5. Leaving: type `/exit`, or close the window. Nothing breaks.
+
+Their first real job in it should be small and visible — *"make a folder for
+each class I name"* or *"turn the syllabus in this folder into a list of
+dates"* — so they see it act on their own files.
+
+### If they'd rather not learn the terminal — the Desktop app
+
+Same result, no typing. **claude.ai/download** → install the Windows app →
+sign in → look for the option to **work in a folder** (it may be called
+*Cowork* or show a folder icon) → choose the School folder → attach this
+file once and say *"Save this as CLAUDE.md in this folder."* If the app
+doesn't show a folder option, say so plainly, don't troubleshoot for more
+than one message, and offer Phase 2 again another day.
 
 ### Later, maybe — connectors
 
