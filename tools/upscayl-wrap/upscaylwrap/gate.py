@@ -163,6 +163,20 @@ def is_within(child: str, parent: str, case_insensitive: bool = False) -> bool:
     return child_n.startswith(parent_n.rstrip(os.sep) + os.sep)
 
 
+def models_dir_acceptable(models_dir: str) -> bool:
+    """Mirror the engine's own test on the models directory.
+
+    Before it does anything else the engine searches the whole path it was
+    given for the text "models" or "models2" and refuses to start if neither
+    is there. The search is case-sensitive, so a directory called "Models"
+    fails even on a Mac, where the filesystem itself does not care about the
+    difference. Matching that exactly — rather than doing the more forgiving
+    thing — is the point: a check looser than the engine's would pass a job
+    the engine then rejects, which is the confusing failure this prevents.
+    """
+    return "models" in models_dir or "models2" in models_dir
+
+
 def predicted_output_megapixels(facts: JobFacts) -> float:
     if not facts.input_width or not facts.input_height:
         return 0.0
@@ -211,10 +225,10 @@ def evaluate(facts: JobFacts) -> Decision:
     # a sentence that says what to do.
     add(
         "models_dir_accepted",
-        facts.models_dir is None or "models" in os.path.basename(facts.models_dir).lower()
-        or "models" in facts.models_dir.lower(),
-        "the engine requires the models directory's path to contain the word "
-        "'models'; this one is %s" % facts.models_dir,
+        facts.models_dir is None or models_dir_acceptable(facts.models_dir),
+        "the engine requires the models directory's path to contain 'models' "
+        "or 'models2', lower-case, and refuses to start otherwise; this one is %s"
+        % facts.models_dir,
     )
 
     # --- the input ---------------------------------------------------------

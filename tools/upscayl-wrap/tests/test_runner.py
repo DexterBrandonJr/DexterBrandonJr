@@ -135,11 +135,14 @@ class TheEngineLies(RunnerCase):
         quarantined = os.listdir(self.app_paths.quarantine_dir)
         self.assertEqual(len(quarantined), 1)
 
-    def test_a_crash_is_a_failure_with_the_engines_message(self):
+    def test_a_start_up_failure_is_reported_as_one(self):
+        # A non-zero exit can only come from start-up validation, so the
+        # message should say that rather than blaming the picture.
         self.set_mode("crash")
         result = self.runner().run(self.request())
         self.assertEqual(result.status, STATUS_FAILED)
-        self.assertIn("vkAllocateMemory", result.row.stderr_tail or "")
+        self.assertIn("refused to start", result.message)
+        self.assertIn("vkEnumeratePhysicalDevices", result.row.stderr_tail or "")
 
     def test_the_wrong_scale_is_caught_by_the_score(self):
         # The output here is a perfectly valid PNG. Only the prediction made
@@ -344,9 +347,18 @@ class RetryLadder(RunnerCase):
         self.assertLessEqual(len(result.row.attempts), self.config.tile_retry_attempts + 1)
 
     def test_a_failure_that_smaller_tiles_cannot_fix_is_not_retried(self):
-        # A missing model is not a memory problem; retrying wastes time.
+        # No graphics device at all is not a memory problem; retrying at a
+        # smaller tile just wastes time.
         self.set_mode("crash")
         result = self.runner().run(self.request())
+        self.assertEqual(len(result.row.attempts), 1)
+
+    def test_a_timeout_is_not_retried(self):
+        # Each further attempt would cost another full timeout.
+        self.set_mode("hang")
+        self.config.timeout_seconds = 2
+        result = self.runner().run(self.request(tile_size=512))
+        self.assertEqual(result.status, STATUS_FAILED)
         self.assertEqual(len(result.row.attempts), 1)
 
 

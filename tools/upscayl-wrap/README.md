@@ -147,7 +147,7 @@ Three stages. It starts at the first one.
 | Stage | Meaning |
 | --- | --- |
 | 1 | Approve everything. Every job needs `-y`. The scheduled sweep reports and does nothing. |
-| 2 | Adjust within what was approved — these models, up to this scale, these folders. Anything outside still needs approval. |
+| 2 | Adjust within what was approved — these models, up to this scale. Raising the stage records the models installed at that moment as the approved set; folders are unrestricted unless you set them. Anything outside still needs approval. |
 | 3 | Act alone. |
 
 Any part of the system can drop the stage back to 1 and stop the tool acting:

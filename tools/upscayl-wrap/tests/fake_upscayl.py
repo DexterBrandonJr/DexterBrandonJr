@@ -17,7 +17,9 @@ Its failure modes are what make it worth having. Set ``FAKE_UPSCAYL_MODE``:
   truncated       write a PNG with its ending cut off
   wrong-scale     quietly produce 2x when asked for 4x
   empty           create the output file with nothing in it
-  crash           exit 1 with a message on standard error
+  crash           fail during start-up: a graphics-device error and a
+                  non-zero exit, which is the only way the real engine can
+                  exit non-zero
   hang            sleep far longer than any sane timeout
   black-image     the worst one: print a graphics-memory error, then write a
                   complete, structurally valid image anyway, and exit 0. No
@@ -159,7 +161,9 @@ def main(argv: "list[str]") -> int:
         time.sleep(3600)
         return 0
     if mode == "crash":
-        sys.stderr.write("🚨 Error: vkAllocateMemory failed\n")
+        # Start-up failures are the only ones the real engine can signal with
+        # an exit code, and they happen before any image is read.
+        sys.stderr.write("🚨 Error: vkEnumeratePhysicalDevices failed -3\n")
         return 1
     if mode == "silent-failure":
         sys.stderr.write("🚨 Error: could not process image\n")

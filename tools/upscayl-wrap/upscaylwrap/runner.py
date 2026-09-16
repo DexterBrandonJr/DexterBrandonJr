@@ -150,9 +150,10 @@ def build_command(
     ]
     if model_native_scale is None or model_native_scale != request.scale:
         command += ["-s", str(request.scale)]
-    # The engine validates the tile size against a lower bound only, and the
-    # desktop application omits the flag entirely rather than sending a zero.
-    # Following that exactly avoids relying on how it treats a zero.
+    # The engine accepts a tile size of zero (meaning "choose for me") and
+    # rejects anything else below 32. Passing zero and omitting the flag are
+    # the same thing to it — an absent value is filled in with zero — so the
+    # flag is left off, which is also what the desktop application does.
     tile = request.tile_size if tile_override is None else tile_override
     if tile and tile >= 32:
         command += ["-t", str(int(tile))]
@@ -445,9 +446,17 @@ class Runner:
                 }
             )
 
+            # Only retry a failure a smaller tile could actually fix. A
+            # non-zero exit means start-up validation rejected something — the
+            # arguments, the models directory, the graphics device — and none
+            # of that changes with the tile size. A timeout is excluded too:
+            # each further attempt would cost another full timeout, so a
+            # thirty-minute limit would turn one hang into an hour and a half.
             retry_possible = (
                 fault is not None
                 and fault.retry_smaller_tile
+                and row.exit_code == 0
+                and not timed_out
                 and len(attempts) <= self.config.tile_retry_attempts
             )
             if not retry_possible:

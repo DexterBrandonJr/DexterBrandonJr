@@ -171,6 +171,13 @@ class RulesFromKnownEngineFailures(unittest.TestCase):
         self.assertFalse(decision.allowed)
         self.assertTrue(failed(decision, "models_dir_accepted"))
 
+    def test_the_models_check_is_case_sensitive_like_the_engines(self):
+        # The engine's search is case-sensitive even though a Mac's filesystem
+        # is not, so a directory called "Models" really does fail there. A
+        # looser check here would pass a job the engine then rejects.
+        self.assertFalse(gate.evaluate(facts(models_dir="/opt/Models")).allowed)
+        self.assertTrue(gate.evaluate(facts(models_dir="/opt/models2")).allowed)
+
     def test_a_normal_models_directory_passes(self):
         self.assertTrue(gate.evaluate(facts(models_dir="/Applications/Upscayl.app/Contents/Resources/models")).allowed)
 
