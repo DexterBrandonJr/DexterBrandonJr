@@ -433,21 +433,48 @@ class NothingLeftBehind(RunnerCase):
     def test_an_unexpected_exception_does_not_strand_a_partial_output(self):
         # An interrupt part-way through a batch raises out of the middle of a
         # job, past every cleanup branch. A half-written 4x image is large.
-        from upscaylwrap import imageprobe as probe_module
+        #
+        # Where this raises is the whole test. Interrupting after the result
+        # has been moved into place leaves nothing to clean up, so such a
+        # test passes whether or not the cleanup exists. Scoring happens
+        # while the temporary file is still on disk and still owned by the
+        # job, which is the moment that actually needs covering.
+        from upscaylwrap import scorer as scorer_module
 
-        original = probe_module.sha256_file
+        original = scorer_module.score
 
         def explode(*_args, **_kwargs):
             raise KeyboardInterrupt("user pressed Ctrl-C")
 
-        probe_module.sha256_file = explode
-        self.addCleanup(setattr, probe_module, "sha256_file", original)
+        scorer_module.score = explode
+        self.addCleanup(setattr, scorer_module, "score", original)
 
         with self.assertRaises(KeyboardInterrupt):
             self.runner().run(self.request())
 
         leftovers = [n for n in os.listdir(self.outputs) if n.startswith(".upscayl-wrap-tmp-")]
         self.assertEqual(leftovers, [], "a temporary file was stranded")
+
+    def test_that_interruption_really_did_leave_a_file_to_clean_up(self):
+        # Guards the test above: if the engine never wrote anything, the
+        # assertion there would hold for the wrong reason.
+        from upscaylwrap import scorer as scorer_module
+
+        original = scorer_module.score
+        seen = {}
+
+        def capture(*args, **kwargs):
+            seen["existed"] = any(
+                n.startswith(".upscayl-wrap-tmp-") for n in os.listdir(self.outputs)
+            )
+            raise KeyboardInterrupt("user pressed Ctrl-C")
+
+        scorer_module.score = capture
+        self.addCleanup(setattr, scorer_module, "score", original)
+
+        with self.assertRaises(KeyboardInterrupt):
+            self.runner().run(self.request())
+        self.assertTrue(seen.get("existed"), "no temporary file existed at the interrupt")
 
 
 class ThreadFlagSafety(RunnerCase):

@@ -100,7 +100,18 @@ def run_baseline(
 
 def compare(baseline: Optional[Dict[str, Any]], actual: Dict[str, Any]) -> Dict[str, Any]:
     """Express the upscale as a multiple of the cheap alternative."""
-    if not baseline or not baseline.get("available") or "duration_seconds" not in baseline:
+    # A baseline that ran is not the same as a baseline that worked. The
+    # duration is recorded before the exit code is examined, so a failed
+    # conversion still carries a plausible-looking time — and comparing
+    # against it would put a confident, meaningless multiple in the review.
+    # Nothing is comparable unless the alternative actually produced an image.
+    if (
+        not baseline
+        or not baseline.get("available")
+        or baseline.get("exit_code") != 0
+        or not baseline.get("output_width")
+        or not baseline.get("duration_seconds")
+    ):
         return {"comparable": False}
 
     comparison: Dict[str, Any] = {"comparable": True}

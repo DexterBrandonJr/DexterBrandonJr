@@ -20,6 +20,7 @@ if PROJECT_DIR not in sys.path:
     sys.path.insert(0, PROJECT_DIR)
 
 FAKE_ENGINE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fake_upscayl.py")
+FAKE_SIPS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fake_sips.py")
 
 SHIPPED_MODELS = (
     "upscayl-standard-4x",
@@ -95,6 +96,22 @@ def make_webp_lossy(path: str, width: int = 20, height: int = 10) -> str:
     return path
 
 
+def make_heif(path: str, width: int = 64, height: int = 48) -> str:
+    """A minimal HEIC, which is what an iPhone photographs in.
+
+    Two boxes are enough for everything under test: the file-type box that
+    identifies it, and the image spatial extents box that carries the size.
+    The engine cannot read this format at all, so it is the input that has to
+    be converted before anything else can happen.
+    """
+    ftyp = struct.pack(">I", 24) + b"ftyp" + b"heic" + b"\x00\x00\x00\x00" + b"heicmif1"
+    ispe = struct.pack(">I", 20) + b"ispe" + b"\x00" * 4 + struct.pack(">II", width, height)
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    with open(path, "wb") as handle:
+        handle.write(ftyp + ispe)
+    return path
+
+
 def make_gif(path: str, width: int = 12, height: int = 7) -> str:
     data = b"GIF89a" + struct.pack("<HH", width, height) + b"\x00\x00\x00"
     with open(path, "wb") as handle:
@@ -128,6 +145,13 @@ class Workspace(unittest.TestCase):
 
         self._saved_environment = {}
         for key, value in (
+            # HOME matters as much as the rest. Discovery searches a list of
+            # "~/..." locations, expanded against the real home, and one of
+            # them is exactly where install.sh puts a downloaded engine. Left
+            # unpatched, a test that asks what happens when no engine is
+            # present finds the real one — and so passes in a clean container
+            # and fails on the Mac this tool is actually for.
+            ("HOME", self.root),
             ("XDG_CONFIG_HOME", self.config_home),
             ("XDG_DATA_HOME", self.data_home),
             ("UPSCAYL_BIN", self.engine_path()),
@@ -138,8 +162,24 @@ class Workspace(unittest.TestCase):
             os.environ[key] = value
         self.addCleanup(self._restore_environment)
 
+        # Patching HOME is not enough on its own: the application bundle
+        # locations are absolute paths, so a real Upscayl installed in
+        # /Applications would still be found. Emptied for the duration of
+        # each test, which is the difference between a suite that proves
+        # something about this code and one that reports on what happens to
+        # be installed on the machine running it.
+        from upscaylwrap import config as config_module
+
+        saved_roots = config_module.BUNDLE_ROOTS
+        config_module.BUNDLE_ROOTS = ()
+        self.addCleanup(setattr, config_module, "BUNDLE_ROOTS", saved_roots)
+
+        # ~/Pictures is where the default inbox and outbox live.
+        os.makedirs(os.path.join(self.root, "Pictures"), exist_ok=True)
+
         self.write_models()
         self.make_engine()
+        self.make_sips()
 
     def _restore_environment(self) -> None:
         for key, value in self._saved_environment.items():
@@ -158,6 +198,27 @@ class Workspace(unittest.TestCase):
         with open(path, "w", encoding="utf-8") as handle:
             handle.write("#!/bin/sh\nexec %s %s \"$@\"\n" % (sys.executable, FAKE_ENGINE))
         os.chmod(path, 0o755)
+        return path
+
+    def make_sips(self) -> str:
+        """Stand in for the macOS image converter, which is absent elsewhere.
+
+        Pointed at by both the conversion path and the counterfactual, so the
+        whole of each can run on any machine.
+        """
+        path = os.path.join(self.root, "bin", "sips")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as handle:
+            handle.write("#!/bin/sh\nexec %s %s \"$@\"\n" % (sys.executable, FAKE_SIPS))
+        os.chmod(path, 0o755)
+
+        from upscaylwrap import counterfactual as counterfactual_module
+        from upscaylwrap import transcode as transcode_module
+
+        for module in (transcode_module, counterfactual_module):
+            saved = module.SIPS
+            module.SIPS = path
+            self.addCleanup(setattr, module, "SIPS", saved)
         return path
 
     def write_models(self, names=SHIPPED_MODELS) -> None:

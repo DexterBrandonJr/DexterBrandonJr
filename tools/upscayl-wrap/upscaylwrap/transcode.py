@@ -64,8 +64,11 @@ def to_png(
         "converted": False,
         "tool": "sips",
         "source": source,
+        # Recorded either way, so a row explains itself without the reader
+        # having to know what the machine had installed at the time.
+        "available": available(),
     }
-    if not available():
+    if not record["available"]:
         record["note"] = "sips is not available; the engine cannot read this format"
         return None, record
 
