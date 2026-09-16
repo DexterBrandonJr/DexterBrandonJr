@@ -75,11 +75,25 @@ FAULTS: List[Fault] = [
     ),
     Fault(
         key="model_unreadable",
-        pattern=r"fopen .*\.(param|bin) failed|find_blob_index_by_name .* failed|"
-        r"load_param failed|load_model failed",
-        meaning="the model files could not be read, so the network never loaded "
-        "and the output is whatever was in the buffer — usually solid black",
-        remedy="run 'upscayl-wrap doctor' to check the models directory",
+        # These are the exact shapes the neural-network library prints, taken
+        # from its source rather than guessed. It is worth being precise here:
+        # the engine throws away the return codes from loading a model, so
+        # when a model file is truncated or corrupt these lines are the only
+        # sign that anything went wrong. The network then runs on whatever
+        # happened to be in memory and produces a black image under a success
+        # banner. A pattern that does not match is the same as no check.
+        pattern=r"layer (load_model|load_param|create_pipeline|upload_model) [^\n]*failed"
+        r"|ParamDict load_param(_bin)? [^\n]*failed"
+        r"|load_model error at layer"
+        r"|find_(blob|layer)_index_by_name [^\n]*failed"
+        r"|create overwritten layer [^\n]*failed"
+        r"|compile spir-v module failed"
+        r"|(fopen|_wfopen) [^\n]*failed",
+        meaning="a model file could not be read or loaded, so the network never "
+        "came up and the output is whatever was left in the buffer — usually "
+        "solid black",
+        remedy="run 'upscayl-wrap doctor'; a model whose two files are present "
+        "but truncated looks fine to a file listing and only fails here",
     ),
     Fault(
         key="write_failed",

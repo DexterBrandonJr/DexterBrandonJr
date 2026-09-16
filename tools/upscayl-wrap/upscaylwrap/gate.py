@@ -127,6 +127,9 @@ class JobFacts:
     writable_formats: frozenset = frozenset()
     # Very small inputs crash the engine as reliably as very large ones do.
     min_input_dimension: int = 32
+    # The tile size asked for, and the smallest the engine will accept.
+    tile_size: int = 0
+    engine_min_tile_size: int = 32
     # "strict" refuses a scale the model was not trained for; "warn" allows it
     # and records that the output may not be the size that was asked for.
     scale_policy: str = "warn"
@@ -319,6 +322,19 @@ def evaluate(facts: JobFacts) -> Decision:
         "this image has transparency, and the engine writes transparent areas "
         "out as black when the output is a JPEG. Use --format png or webp.",
     )
+    # A tile size the engine will not take is worse than no tile size: the
+    # flag gets dropped, the engine falls back to its own automatic choice —
+    # which is the largest tile it has — and someone trying to escape an
+    # out-of-memory error by asking for a smaller tile gets a bigger one.
+    add(
+        "tile_size_accepted",
+        facts.tile_size == 0 or facts.tile_size >= facts.engine_min_tile_size,
+        "a tile size of %s is below the engine's minimum of %d, and asking for "
+        "it would get you the largest tile instead of the smallest. Use 0 for "
+        "automatic, or %d and up."
+        % (facts.tile_size, facts.engine_min_tile_size, facts.engine_min_tile_size),
+    )
+
     # The engine writes its own buffer sizes into fixed 256-byte stack arrays
     # with no bounds check, so a long enough models path corrupts its stack
     # rather than producing an error. The standard path is nowhere near this;

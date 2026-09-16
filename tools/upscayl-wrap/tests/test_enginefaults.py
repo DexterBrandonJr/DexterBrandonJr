@@ -38,6 +38,29 @@ class Recognising(unittest.TestCase):
         fault = enginefaults.find_fault("fopen /models/x.param failed")
         self.assertEqual(fault.key, "model_unreadable")
 
+    def test_the_real_model_load_failures_are_recognised(self):
+        # These are the exact shapes the neural-network library prints, taken
+        # from its source. Earlier patterns here matched strings it never
+        # emits, which is the same as having no check at all: the engine
+        # discards the load return codes, so these lines are the only sign
+        # that a model failed and the picture is about to be black.
+        for line in (
+            "layer load_model 12 conv_first failed",
+            "layer load_param 3 conv failed",
+            "ParamDict load_param 7 body.0 failed",
+            "ParamDict load_param_bin 2 failed",
+            "load_model error at layer 4, parameter file has inconsistent content.",
+            "layer create_pipeline 9 conv failed",
+            "layer upload_model 1 conv failed",
+            "find_blob_index_by_name data failed",
+            "find_layer_index_by_name out failed",
+            "compile spir-v module failed",
+            "fopen /models/upscayl-standard-4x.param failed",
+        ):
+            fault = enginefaults.find_fault(line)
+            self.assertIsNotNone(fault, line)
+            self.assertEqual(fault.key, "model_unreadable", line)
+
     def test_encoder_refusal(self):
         fault = enginefaults.find_fault("🚨 Error: Couldn't write the image /tmp/a.png")
         self.assertEqual(fault.key, "write_failed")

@@ -285,12 +285,22 @@ class Command(RunnerCase):
         self.assertNotIn("-w", command)
         self.assertNotIn("-z", command)
 
-    def test_compression_is_rounded_the_way_the_engine_rounds_it(self):
+    def test_compression_is_passed_through_for_the_engine_to_round(self):
+        # The engine rounds to the nearest ten itself, and rounding here
+        # first would disagree with it: C rounds a half away from zero while
+        # Python rounds it to even, so 25 would become 20 here and 30 there.
+        for value in (23, 25, 45, 65, 85):
+            command = build_command(
+                "engine", self.request(compression=value), self.models_dir,
+                "/tmp/out.png", model_native_scale=4,
+            )
+            self.assertEqual(command[command.index("-c") + 1], str(value))
+
+    def test_compression_is_absent_when_not_asked_for(self):
         command = build_command(
-            "engine", self.request(compression=23), self.models_dir, "/tmp/out.png",
-            model_native_scale=4,
+            "engine", self.request(), self.models_dir, "/tmp/out.png", model_native_scale=4
         )
-        self.assertEqual(command[command.index("-c") + 1], "20")
+        self.assertNotIn("-c", command)
 
 
 

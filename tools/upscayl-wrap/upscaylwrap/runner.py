@@ -186,9 +186,12 @@ def build_command(
         # error message.
         command += ["-j", jobs_spec]
     if request.compression is not None:
-        # The engine rounds this to the nearest ten internally, so anything
-        # finer than that is a false promise.
-        command += ["-c", str(int(round(request.compression / 10.0) * 10))]
+        # Passed through untouched. The engine rounds it to the nearest ten
+        # itself, and rounding here first would disagree with it: C rounds a
+        # half away from zero while Python rounds it to even, so 25 would
+        # become 20 here and 30 there, which is a different picture quality
+        # than the number asked for.
+        command += ["-c", str(int(request.compression))]
     if request.tta:
         command += ["-x"]
     if verbose:
@@ -232,6 +235,8 @@ def gather_facts(
         input_error=info.error,
         input_bytes=info.size_bytes,
         scale=request.scale,
+        tile_size=request.tile_size,
+        engine_min_tile_size=32,
         model_name=request.model_name,
         model_usable=bool(model and model.usable),
         model_native_scale=model.native_scale if model else None,
@@ -487,6 +492,25 @@ class Runner:
             engine_input = converted
             self._pending_conversion = conversion
 
+            # Check the converted copy, not just the original. Transparency
+            # cannot be read out of a GIF or a HEIC header, so the alpha rule
+            # above had nothing to go on; the PNG that comes out of the
+            # conversion says so plainly. Getting this wrong means writing a
+            # transparent image out as a JPEG, where the engine claims to
+            # convert the transparency away and then does not, and every
+            # transparent area arrives black.
+            converted_info = imageprobe.probe(converted)
+            if converted_info.has_alpha and request.output_format == "jpg":
+                row.finish(STATUS_REJECTED, started_monotonic)
+                row.reason = (
+                    "this %s has transparency, and the engine writes transparent "
+                    "areas out as black when the output is a JPEG. Use --format "
+                    "png or webp." % info.fmt
+                )
+                self._record(row)
+                self.on_event("reject", request, row)
+                return JobResult(status=STATUS_REJECTED, row=row, message=row.reason)
+
         # The output file's extension is what actually picks the encoder: the
         # -f flag is validated and then ignored for a single image. They are
         # both set from the same place here so they cannot disagree.
@@ -623,11 +647,19 @@ class Runner:
         elif row.exit_code != 0:
             # A non-zero status can only come from start-up validation, which
             # means the problem is the arguments, the models directory or the
-            # graphics device — never the picture.
-            failure_reason = "the engine refused to start (status %d): %s" % (
-                row.exit_code,
-                (stderr_text.strip().splitlines() or ["no message"])[-1][:300],
-            )
+            # graphics device — never the picture. Some of the most useful
+            # faults only ever appear this way, so the recognised explanation
+            # is used when there is one rather than only the raw last line.
+            if fault is not None:
+                row.reason_key = fault.key
+                failure_reason = "the engine refused to start: %s" % enginefaults.describe(
+                    fault, stderr_text
+                )
+            else:
+                failure_reason = "the engine refused to start (status %d): %s" % (
+                    row.exit_code,
+                    (stderr_text.strip().splitlines() or ["no message"])[-1][:300],
+                )
         elif fault is not None:
             # The important branch. The engine has exited successfully and may
             # well have written a perfectly valid image; it is just not a

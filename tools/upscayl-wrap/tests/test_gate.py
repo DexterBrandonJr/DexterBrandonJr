@@ -245,6 +245,22 @@ class RulesProtectingTheEngineFromItself(unittest.TestCase):
     def test_an_ordinary_models_path_is_fine(self):
         self.assertTrue(gate.evaluate(facts()).allowed)
 
+    def test_a_tile_size_the_engine_would_drop_is_refused(self):
+        # Asking for a tile below the engine's minimum gets the flag dropped
+        # and the engine's own automatic choice used instead — which is the
+        # largest tile it has. Someone escaping an out-of-memory error by
+        # asking for a smaller tile would get a bigger one.
+        decision = gate.evaluate(facts(tile_size=16))
+        self.assertFalse(decision.allowed)
+        self.assertTrue(failed(decision, "tile_size_accepted"))
+
+    def test_zero_means_automatic_and_is_fine(self):
+        self.assertTrue(gate.evaluate(facts(tile_size=0)).allowed)
+
+    def test_a_tile_size_at_or_above_the_minimum_is_fine(self):
+        for size in (32, 128, 512):
+            self.assertTrue(gate.evaluate(facts(tile_size=size)).allowed, size)
+
     def test_compression_with_png_output_is_refused(self):
         # The engine reuses the number as a compression level, where 0 means
         # maximum and anything over 9 is invalid. Silently dropping the flag
