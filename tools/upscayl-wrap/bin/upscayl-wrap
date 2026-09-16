@@ -1,0 +1,36 @@
+#!/bin/sh
+# Thin launcher so the tool can be run from anywhere, and from launchd, with
+# no installation step and nothing added to the Python environment.
+#
+# Resolves its own location first, following symlinks, so that a symlink in
+# ~/.local/bin still finds the package it belongs to.
+set -eu
+
+target=$0
+while [ -L "$target" ]; do
+    link=$(readlink "$target")
+    case $link in
+        /*) target=$link ;;
+        *) target=$(dirname "$target")/$link ;;
+    esac
+done
+project_dir=$(cd "$(dirname "$target")/.." && pwd)
+
+python=${UPSCAYL_WRAP_PYTHON:-}
+if [ -z "$python" ]; then
+    for candidate in python3 /usr/bin/python3 /opt/homebrew/bin/python3 /usr/local/bin/python3; do
+        if command -v "$candidate" >/dev/null 2>&1; then
+            python=$candidate
+            break
+        fi
+    done
+fi
+if [ -z "$python" ]; then
+    echo "upscayl-wrap: no python3 found. Install Apple's Command Line Tools:" >&2
+    echo "  xcode-select --install" >&2
+    exit 3
+fi
+
+PYTHONPATH="$project_dir${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH
+exec "$python" -m upscaylwrap "$@"
