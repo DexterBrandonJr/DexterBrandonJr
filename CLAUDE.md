@@ -29,10 +29,11 @@ things with Claude Code.
 
 - `share/claude-starter/START-HERE.md` — a single file to hand to someone
   who is new to Claude (Windows, Pro plan, chat only, easily overwhelmed).
-  Their Claude reads it, walks them through setup one step at a time,
-  teaches the terminal one command at a time before Claude Code, keeps
-  their usage low, and carries a plain-language cut of the workhorse build
-  questions. Deliberately **not** named `CLAUDE.md`: a `CLAUDE.md` in
+  Their Claude reads it, gets them to a made thing on day one, walks setup
+  at their pace, offers two doors to file work (desktop app, or the
+  terminal taught one command at a time), climbs a ladder of one-file
+  tools they can double-click, keeps their usage low, and carries a
+  plain-language cut of the workhorse build questions. Deliberately **not** named `CLAUDE.md`: a `CLAUDE.md` in
   a subdirectory here would load as directory-scoped instructions into
   Dex's own sessions. Generic and public-safe by design.
 
