@@ -2,13 +2,13 @@
 - [Working With Claude](topics/working-with-claude.md) — updated 2026-09-16 — "gets overwhelmed" read as avoid-the-terminal was wrong, teach it one command at a time; no chat-transfer exists, the repos are the transfer; now six ways a check establishes nothing, and green-here-red-on-the-only-machine-that-matters
 - [Github Integration](topics/github-integration.md) — updated 2026-09-16 — draft→ready is a GraphQL mutation rate-limited separately from REST; create/merge/close kept working; the way through is close, recreate non-draft, merge — used only when the stale version being live costs something
 - [Claude Starter File](topics/claude-starter-file.md) — updated 2026-09-16 — share/claude-starter/START-HERE.md: a made thing on day one, two doors to file work, a ladder of one-file tools they double-click, the same message shape every time; three iterations on Dex's feedback
+- [Pr Checkin Cadence](topics/pr-checkin-cadence.md) — updated 2026-09-16 — weekly on Thursdays, the low-activity day; violated again by an hourly per-PR check-in — reaching for send_later on a PR is the moment to re-read this
 - [Workhorse](topics/workhorse.md) — updated 2026-09-15 — the scaffold script run for the first time (proven, 10 files, one trading leak found); the domains playbook now derives a row for any topic instead of listing seven
 - [Trading Engine](topics/trading-engine.md) — updated 2026-09-10 — moved to the private repo; a history rewrite would NOT remove it (GitHub PR refs), checked and recorded
 - [Macos Contextual Search](topics/macos-contextual-search.md) — updated 2026-09-07 — PR #1 merged
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
 - [Tool Blueprint Workflow](topics/tool-blueprint-workflow.md) — updated 2026-09-06 — Fill the tool_blueprint template once a plan is agreed
 - [Chat Scope Apps And Tools](topics/chat-scope-apps-and-tools.md) — updated 2026-09-06 — Chat scope expanded: skills + apps/functions/tools
-- [Pr Checkin Cadence](topics/pr-checkin-cadence.md) — updated 2026-09-16 — weekly on Thursdays, the low-activity day; violated again by an hourly per-PR check-in — reaching for send_later on a PR is the moment to re-read this
 - [cross-session trigger hygiene](topics/cross-session-trigger-hygiene.md) — updated 2026-09-05 — verifiable cross-session asks need surviving evidence, not just trust
 - [chat-memory roadmap](topics/chat-memory-roadmap.md) — updated 2026-09-04 — secret scan, index cap, topic listing, and pre-push reorder shipped; 5 items still planned
 <!--
