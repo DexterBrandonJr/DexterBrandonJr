@@ -95,3 +95,36 @@ the rights to do it. The short version: creating repos must go through the local
 - The `~/.claude/CLAUDE.md` rule from the entry above is lower-priority now that
   `create_repository` genuinely works post-`/web-setup`, but worth keeping as a
   fallback note in case the sync ever lapses.
+
+## 2026-09-16 — The draft-to-ready flip is GraphQL and has its own rate limit
+
+**Decisions:** When `update_pull_request` with `draft: false` fails with
+"API rate limit already exceeded" while every other call succeeds, the
+limit is on GitHub's GraphQL API, not REST. Creating, closing, retitling
+and merging a pull request are REST and kept working the whole time; the
+draft→ready conversion is the one GraphQL mutation in the flow. Confirmed
+the diagnosis by calling the REST merge endpoint on the draft: it reached
+GitHub and answered `405 Pull Request is still a draft` — a real refusal,
+not a limit.
+
+The way through is REST-only: close the draft, create a new pull request
+from the same branch with `draft: false`, merge. Used it three times in one
+evening, each time because the version already on `main` was wrong and was
+being shared; declined it for documentation nobody was waiting on and armed
+a check-in instead. The cost is a dead PR number in the history; the rule
+is to pay it only when the stale version being live costs more.
+
+**Facts / preferences:**
+- The GraphQL limit lasted well over an hour and returned twice in one
+  evening. It cleared on its own; no retry pattern changed its timing.
+- Retrying a limited write does not help and may extend the block. Reads
+  say nothing about whether writes are limited — separate budgets.
+- A first call that sets title, body and `draft` together can apply the
+  REST fields and then fail on the GraphQL one, so a PR can end up retitled
+  but still a draft. Read it back before assuming either state.
+- Opening pull requests non-draft in the first place avoids the flip
+  entirely; the session's own rule is to open them as drafts, so the flip
+  is on the path every time.
+
+**Artifacts:** `DexterBrandonJr/trading-engine` pull requests 148→149 and
+this repo's 27→28 and 29→30 are the close-and-recreate pairs.

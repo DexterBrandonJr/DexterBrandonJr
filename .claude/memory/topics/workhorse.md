@@ -343,8 +343,8 @@ table is relabelled as the seven already worked out.
   and the last one means saying out loud that the honest build is four parts,
   not faking a gate that guards nothing.
 
-**Artifacts:** `DexterBrandonJr/workhorse` pull request 3, on
-`claude/deriving-a-domain-that-is-not-on-the-list` — `playbooks/domains.md`
+**Artifacts:** `DexterBrandonJr/workhorse` pull request 3, merged as
+`541b72c` on `main` — `playbooks/domains.md`
 (the eight derivation questions and the three resistances), `DOCTRINE.md` §9
 step 4, `templates/QA_QC.md` generalised and carrying the new rule that a
 measurement beats the vendor's documentation with the doc quote recorded next
