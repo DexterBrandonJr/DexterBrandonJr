@@ -10,10 +10,10 @@
 - [Pr Checkin Cadence](topics/pr-checkin-cadence.md) — updated 2026-09-06 — PR check-in cadence: weekly, lowest-activity day
 - [cross-session trigger hygiene](topics/cross-session-trigger-hygiene.md) — updated 2026-09-05 — verifiable cross-session asks need surviving evidence, not just trust
 - [chat-memory roadmap](topics/chat-memory-roadmap.md) — updated 2026-09-04 — secret scan, index cap, topic listing, and pre-push reorder shipped; 5 items still planned
-- [<title>](topics/<slug>.md) — updated <YYYY-MM-DD> — <one-line summary>
 <!--
 Chat-memory index. One line per topic, most-recently-updated first:
 
+- [<title>](topics/<slug>.md) — updated <YYYY-MM-DD> — <one-line summary>
 
 Managed by .claude/skills/chat-memory/scripts/new_entry.py — see that
 skill's SKILL.md before hand-editing this file. This repo is public,
