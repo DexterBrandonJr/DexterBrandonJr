@@ -8,7 +8,7 @@
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
 - [Tool Blueprint Workflow](topics/tool-blueprint-workflow.md) — updated 2026-09-06 — Fill the tool_blueprint template once a plan is agreed
 - [Chat Scope Apps And Tools](topics/chat-scope-apps-and-tools.md) — updated 2026-09-06 — Chat scope expanded: skills + apps/functions/tools
-- [Pr Checkin Cadence](topics/pr-checkin-cadence.md) — updated 2026-09-06 — PR check-in cadence: weekly, lowest-activity day
+- [Pr Checkin Cadence](topics/pr-checkin-cadence.md) — updated 2026-09-16 — weekly on Thursdays, the low-activity day; violated again by an hourly per-PR check-in — reaching for send_later on a PR is the moment to re-read this
 - [cross-session trigger hygiene](topics/cross-session-trigger-hygiene.md) — updated 2026-09-05 — verifiable cross-session asks need surviving evidence, not just trust
 - [chat-memory roadmap](topics/chat-memory-roadmap.md) — updated 2026-09-04 — secret scan, index cap, topic listing, and pre-push reorder shipped; 5 items still planned
 <!--
