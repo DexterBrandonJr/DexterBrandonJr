@@ -121,6 +121,11 @@ def install(
     )
     with open(target, "wb") as handle:
         plistlib.dump(document, handle)
+    # launchd refuses a job description that anyone but its owner could write,
+    # and the file otherwise lands at whatever the shell's umask happens to
+    # be. Rewriting an existing plist keeps its old mode too, so this is set
+    # explicitly every time rather than only on creation.
+    os.chmod(target, 0o644)
 
     domain = "gui/%d" % os.getuid()
     # Remove any previous copy first; bootstrap refuses to load a label that

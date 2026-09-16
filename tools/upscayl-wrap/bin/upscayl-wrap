@@ -16,18 +16,29 @@ while [ -L "$target" ]; do
 done
 project_dir=$(cd "$(dirname "$target")/.." && pwd)
 
+# Each candidate is tested by running it, not by checking it exists. On macOS
+# /usr/bin/python3 is a stub that is present even with no Command Line Tools
+# installed and fails when invoked — and under the scheduled agent there is no
+# terminal to show that failure in, so the sweep would just stop happening.
+# Same order as install.sh, so the interpreter the installer checked is the
+# one that actually runs.
 python=${UPSCAYL_WRAP_PYTHON:-}
+if [ -n "$python" ] && ! "$python" -c 'import sys' >/dev/null 2>&1; then
+    echo "upscayl-wrap: UPSCAYL_WRAP_PYTHON is set to '$python', which does not run." >&2
+    exit 3
+fi
 if [ -z "$python" ]; then
-    for candidate in python3 /usr/bin/python3 /opt/homebrew/bin/python3 /usr/local/bin/python3; do
-        if command -v "$candidate" >/dev/null 2>&1; then
+    for candidate in /usr/bin/python3 python3 /opt/homebrew/bin/python3 /usr/local/bin/python3; do
+        if "$candidate" -c 'import sys' >/dev/null 2>&1; then
             python=$candidate
             break
         fi
     done
 fi
 if [ -z "$python" ]; then
-    echo "upscayl-wrap: no python3 found. Install Apple's Command Line Tools:" >&2
+    echo "upscayl-wrap: no working python3 found. Install Apple's Command Line Tools:" >&2
     echo "  xcode-select --install" >&2
+    echo "(/usr/bin/python3 may look like it exists already; it is a stub until then.)" >&2
     exit 3
 fi
 

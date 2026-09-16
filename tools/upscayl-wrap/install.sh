@@ -21,6 +21,7 @@
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Must match what config.py searches, which derives the same way.
 ENGINE_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/upscayl-wrap/engine"
 LINK_DIR="$HOME/.local/bin"
 REPO_RAW="https://raw.githubusercontent.com/upscayl/upscayl"
@@ -44,10 +45,22 @@ DRY_RUN=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        --engine) ENGINE_CHOICE="${2:-auto}"; shift 2 ;;
+        --engine)
+            if [ $# -lt 2 ] || [ -z "${2:-}" ]; then
+                echo "--engine needs a value: auto, brew, download or skip" >&2
+                exit 2
+            fi
+            ENGINE_CHOICE="$2"
+            shift 2
+            ;;
         --all-models) WANT_ALL_MODELS=1; shift ;;
         --dry-run) DRY_RUN=1; shift ;;
-        -h|--help) sed -n '2,25p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -h|--help)
+            # Stop at the first line that is not a comment, so this stays
+            # right when the header above grows or shrinks.
+            sed -n '2,${/^#/!q;p;}' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+            exit 0
+            ;;
         *) echo "unknown option: $1" >&2; exit 2 ;;
     esac
 done
@@ -71,13 +84,23 @@ if [ "$(uname -s)" != "Darwin" ]; then
 fi
 
 step "Checking for Python"
+# /usr/bin/python3 on macOS is a stub that exists whether or not the Command
+# Line Tools are installed; invoking it without them pops a dialog and fails.
+# So each candidate is tested by actually running something, not by checking
+# that the file is there.
 PYTHON=""
-for candidate in /usr/bin/python3 python3 /opt/homebrew/bin/python3; do
-    if command -v "$candidate" >/dev/null 2>&1; then PYTHON="$candidate"; break; fi
+for candidate in /usr/bin/python3 python3 /opt/homebrew/bin/python3 /usr/local/bin/python3; do
+    if "$candidate" -c 'import sys; sys.exit(0)' >/dev/null 2>&1; then
+        PYTHON="$candidate"
+        break
+    fi
 done
 if [ -z "$PYTHON" ]; then
-    say "No python3 found. Install Apple's Command Line Tools first:"
+    say "No working python3 found. Install Apple's Command Line Tools first:"
     say "  xcode-select --install"
+    say ""
+    say "(/usr/bin/python3 may appear to exist already — it is a stub that does"
+    say " nothing until those tools are installed.)"
     exit 3
 fi
 say "    $("$PYTHON" --version 2>&1) at $PYTHON"
@@ -167,7 +190,14 @@ for target in "$ENGINE_HOME/upscayl-bin" "/Applications/Upscayl.app"; do
     if [ -e "$target" ]; then
         if xattr -p com.apple.quarantine "$target" >/dev/null 2>&1; then
             say "    clearing on $target"
-            run xattr -dr com.apple.quarantine "$target"
+            # Being able to read the attribute does not mean being able to
+            # remove it: an app installed by another account is readable and
+            # not writable. This is a convenience, so it must never take the
+            # rest of the installer down with it.
+            if ! run xattr -dr com.apple.quarantine "$target"; then
+                say "    could not clear it (not fatal). If the engine will not run:"
+                say "      sudo xattr -dr com.apple.quarantine '$target'"
+            fi
         else
             say "    not flagged: $target"
         fi

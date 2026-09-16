@@ -332,8 +332,19 @@ class Discovery:
         return None
 
 
+def _data_home() -> str:
+    """The same data directory paths() uses.
+
+    The installer writes a downloaded engine under this, so discovery has to
+    derive it the same way. Hard-coding ~/.local/share here would put the
+    engine somewhere the tool never looks for anyone who sets XDG_DATA_HOME.
+    """
+    return _expand(os.path.join(os.environ.get("XDG_DATA_HOME") or "~/.local/share", APP_NAME))
+
+
 def _candidate_bin_dirs() -> List[str]:
-    directories: List[str] = [_expand(d) for d in STANDALONE_DIRS]
+    directories: List[str] = [os.path.join(_data_home(), "engine")]
+    directories += [_expand(d) for d in STANDALONE_DIRS]
     for root in BUNDLE_ROOTS:
         expanded = _expand(root)
         for sub in BUNDLE_BIN_SUBPATHS:
@@ -369,6 +380,7 @@ def _candidate_model_dirs(bin_path: Optional[str]) -> List[str]:
                         directories.append(os.path.join(bundle, sub))
             except OSError:
                 pass
+    directories.append(os.path.join(_data_home(), "engine", "models"))
     directories.extend(_expand(d) for d in EXTRA_MODEL_DIRS)
     return directories
 
