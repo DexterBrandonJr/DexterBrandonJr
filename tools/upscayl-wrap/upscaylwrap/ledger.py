@@ -62,7 +62,11 @@ class Row:
     status: str
     ts_start: str
     ts_end: Optional[str] = None
+    # Wall-clock for the whole job: probing, gating, checksums and all.
     duration_seconds: Optional[float] = None
+    # Time inside the engine alone, summed over every attempt. Predictions are
+    # learned from and scored against this one, so both measure the same span.
+    engine_seconds: Optional[float] = None
 
     # What was asked for.
     action: str = "upscale"

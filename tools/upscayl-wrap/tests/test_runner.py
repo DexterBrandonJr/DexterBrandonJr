@@ -40,7 +40,7 @@ class RunnerCase(Workspace):
             **kwargs,
         )
 
-    def request(self, name="photo.png", width=8, height=6, **overrides) -> JobRequest:
+    def request(self, name="photo.png", width=64, height=48, **overrides) -> JobRequest:
         source = make_png(os.path.join(self.inputs, name), width, height)
         values = dict(
             input_path=source,
@@ -67,11 +67,11 @@ class Discovery(RunnerCase):
 
 class HappyPath(RunnerCase):
     def test_a_job_produces_an_image_of_the_predicted_size(self):
-        result = self.runner().run(self.request(width=10, height=5))
+        result = self.runner().run(self.request(width=64, height=40))
         self.assertEqual(result.status, STATUS_OK, result.message)
         self.assertTrue(os.path.isfile(result.row.output_path))
-        self.assertEqual(result.row.output_width, 40)
-        self.assertEqual(result.row.output_height, 20)
+        self.assertEqual(result.row.output_width, 256)
+        self.assertEqual(result.row.output_height, 160)
 
     def test_the_row_records_the_whole_job(self):
         result = self.runner().run(self.request())
@@ -106,8 +106,19 @@ class HappyPath(RunnerCase):
 class TheEngineLies(RunnerCase):
     """Every one of these exits 0 or leaves something that looks like output."""
 
-    def test_success_with_no_output_file_is_a_failure(self):
+    def test_an_error_on_the_stream_is_a_failure_despite_the_exit_code(self):
+        # The engine prints an error and exits 0. The message quotes what it
+        # actually said rather than the generic "no output" line, because the
+        # error stream is more informative than the missing file.
         self.set_mode("silent-failure")
+        result = self.runner().run(self.request())
+        self.assertEqual(result.status, STATUS_FAILED)
+        self.assertIn("could not process image", result.message)
+
+    def test_a_silent_disappearance_is_still_a_failure(self):
+        # Nothing written and nothing said. Here the file-existence check is
+        # the only thing standing between this and a recorded success.
+        self.set_mode("vanishes")
         result = self.runner().run(self.request())
         self.assertEqual(result.status, STATUS_FAILED)
         self.assertIn("wrote no output", result.message)
@@ -148,7 +159,7 @@ class TheEngineLies(RunnerCase):
         # The output here is a perfectly valid PNG. Only the prediction made
         # before the run reveals that it is half the size it should be.
         self.set_mode("wrong-scale")
-        result = self.runner().run(self.request(width=10, height=10))
+        result = self.runner().run(self.request(width=64, height=64))
         self.assertEqual(result.status, STATUS_OK)
         self.assertEqual(result.row.score["verdict"], "wrong")
         self.assertIn("WARNING", result.message)
@@ -282,9 +293,6 @@ class Command(RunnerCase):
         self.assertEqual(command[command.index("-c") + 1], "20")
 
 
-if __name__ == "__main__":
-    unittest.main()
-
 
 class TheWorstFailure(RunnerCase):
     """A complete, valid image file that is not a picture of anything.
@@ -297,7 +305,7 @@ class TheWorstFailure(RunnerCase):
 
     def test_a_valid_but_garbage_output_is_still_a_failure(self):
         self.set_mode("black-image")
-        result = self.runner().run(self.request(width=10, height=10))
+        result = self.runner().run(self.request(width=64, height=64))
         self.assertEqual(result.status, STATUS_FAILED)
         self.assertEqual(result.row.reason_key, "gpu_out_of_memory")
 
@@ -388,3 +396,7 @@ class SmallAndTransparentInputs(RunnerCase):
         result = self.runner().run(self.request(name="tiny.png", width=4, height=4))
         self.assertEqual(result.status, STATUS_REJECTED)
         self.assertIn("pixels on a side", result.message)
+
+
+if __name__ == "__main__":
+    unittest.main()

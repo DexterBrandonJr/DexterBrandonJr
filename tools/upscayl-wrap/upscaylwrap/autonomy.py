@@ -136,6 +136,11 @@ class Autonomy:
         self.state.halted = False
         self.state.halt_reason = None
         self.state.halted_at = None
+        # Set here rather than relying on halt() having done it. A halt file
+        # can appear without halt() ever running against this state — somebody
+        # can write one by hand to stop an unattended sweep — and the message
+        # this prints promises stage 1 either way.
+        self.state.stage = STAGE_APPROVE_EVERYTHING
         self.save()
         return existed
 

@@ -196,6 +196,22 @@ def build_command(
     return command
 
 
+def models_dir_for(discovery: Discovery, model_name: Optional[str]) -> Optional[str]:
+    """The directory holding this particular model.
+
+    Models are collected from several places — the application bundle, a
+    folder for ones added by hand — but only the first of those becomes the
+    discovery's headline directory. Passing that one for a model that lives
+    somewhere else sends the engine looking in the wrong folder, and it
+    reports a missing model rather than a misdirected one.
+    """
+    if model_name:
+        model = discovery.model_named(model_name)
+        if model and model.directory:
+            return model.directory
+    return discovery.models_dir
+
+
 def gather_facts(
     request: JobRequest,
     config: Config,
@@ -222,7 +238,7 @@ def gather_facts(
         output_format=request.output_format,
         output_exists=os.path.exists(request.output_path),
         free_disk_bytes=free_disk_bytes(request.output_path),
-        models_dir=discovery.models_dir,
+        models_dir=models_dir_for(discovery, request.model_name),
         input_has_alpha=info.has_alpha,
         engine_present=bool(discovery.bin_path),
         engine_executable=bool(
@@ -434,6 +450,7 @@ class Runner:
 
         selected_model = self.discovery.model_named(request.model_name)
         native_scale = selected_model.native_scale if selected_model else None
+        job_models_dir = models_dir_for(self.discovery, request.model_name) or ""
         self.on_event("start", request, row)
 
         # --- run it, retrying smaller if the graphics processor gives out --
@@ -456,7 +473,7 @@ class Runner:
             command = build_command(
                 self.discovery.bin_path or "",
                 request,
-                self.discovery.models_dir or "",
+                job_models_dir,
                 temp_output,
                 model_native_scale=native_scale,
                 tile_override=tile_size,
@@ -527,6 +544,13 @@ class Runner:
 
         row.stderr_tail = stderr_text.strip()[-2000:] or None
         row.attempts = attempts
+        # Total time inside the engine, across every attempt. The prediction
+        # is learned from this and scored against it, so both describe the
+        # same stretch of time. Scoring against one attempt while learning
+        # from the whole job would mark every healthy job that happened to
+        # retry as slower than predicted.
+        total_engine_seconds = round(sum(a.get("seconds") or 0.0 for a in attempts), 3)
+        row.engine_seconds = total_engine_seconds
 
         # --- verify, rather than trust the exit code -----------------------
         if timed_out:
@@ -592,7 +616,7 @@ class Runner:
             actual_width=row.output_width,
             actual_height=row.output_height,
             actual_bytes=row.output_bytes,
-            actual_duration=engine_seconds,
+            actual_duration=total_engine_seconds,
             scored_at=now_iso(),
         )
 
@@ -607,7 +631,7 @@ class Runner:
                 "comparison": counterfactual_module.compare(
                     baseline,
                     {
-                        "duration_seconds": engine_seconds,
+                        "duration_seconds": total_engine_seconds,
                         "output_bytes": row.output_bytes,
                         "output_width": row.output_width,
                         "output_height": row.output_height,

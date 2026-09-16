@@ -80,7 +80,10 @@ def seconds_per_output_megapixel(
             continue
         if model and row.get("model") != model:
             continue
-        duration = row.get("duration_seconds")
+        # Prefer the engine-only time. Rows written before that was recorded
+        # fall back to the whole-job time, which is close enough for a
+        # starting estimate and is replaced as new rows accumulate.
+        duration = row.get("engine_seconds") or row.get("duration_seconds")
         width, height = row.get("output_width"), row.get("output_height")
         if not duration or not width or not height:
             continue

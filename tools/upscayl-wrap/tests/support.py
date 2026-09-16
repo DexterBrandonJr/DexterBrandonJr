@@ -32,7 +32,16 @@ SHIPPED_MODELS = (
 )
 
 
-def make_png(path: str, width: int = 8, height: int = 6, value: int = 200) -> str:
+# Comfortably above the gate's 32-pixel floor. Images below that really do
+# reset the graphics processor, so the rule is right and the fixtures were
+# wrong: a suite that cannot get past its own gate tests nothing.
+FIXTURE_WIDTH = 64
+FIXTURE_HEIGHT = 48
+
+
+def make_png(
+    path: str, width: int = FIXTURE_WIDTH, height: int = FIXTURE_HEIGHT, value: int = 200
+) -> str:
     row = b"\x00" + bytes([value, value, value]) * width
     compressed = zlib.compress(row * height, 6)
 
@@ -160,5 +169,7 @@ class Workspace(unittest.TestCase):
     def set_mode(self, mode: str) -> None:
         os.environ["FAKE_UPSCAYL_MODE"] = mode
 
-    def an_image(self, name: str = "photo.png", width: int = 8, height: int = 6) -> str:
+    def an_image(
+        self, name: str = "photo.png", width: int = FIXTURE_WIDTH, height: int = FIXTURE_HEIGHT
+    ) -> str:
         return make_png(os.path.join(self.inputs, name), width, height)

@@ -17,6 +17,8 @@ Its failure modes are what make it worth having. Set ``FAKE_UPSCAYL_MODE``:
   truncated       write a PNG with its ending cut off
   wrong-scale     quietly produce 2x when asked for 4x
   empty           create the output file with nothing in it
+  vanishes        write nothing, print nothing, exit 0 — the case where the
+                  error stream gives no clue at all
   crash           fail during start-up: a graphics-device error and a
                   non-zero exit, which is the only way the real engine can
                   exit non-zero
@@ -170,6 +172,8 @@ def main(argv: "list[str]") -> int:
         return 0  # The dangerous one: an error message and a success code.
     if mode == "empty":
         open(output_path, "wb").close()
+        return 0
+    if mode == "vanishes":
         return 0
     if mode == "wrong-scale":
         write_png(output_path, width * 2, height * 2)

@@ -213,7 +213,6 @@ class Config:
     # processor runs out of memory or is reset.
     tile_retry_attempts: int = 2
     gpu_id: Optional[int] = None  # None lets the engine choose.
-    jobs: int = 1                 # Upscaling is GPU-bound; parallelism hurts.
     out_dir: Optional[str] = None
     inbox_dir: Optional[str] = None
     # Refuse any job whose predicted output exceeds this many megapixels.
@@ -221,8 +220,11 @@ class Config:
     # Refuse to start if the predicted output would leave less than this much
     # free disk, in megabytes.
     min_free_disk_mb: int = 2048
-    # Autonomy stage: 1 approve everything, 2 adjust within approved, 3 act alone.
-    stage: int = 1
+    # The autonomy stage deliberately does NOT live here. It belongs to the
+    # state file, which the halt also writes. A second copy in the config
+    # would let "config --set stage=3" look like it worked while the gate
+    # carried on reading the real one.
+    #
     # Consecutive failures that trip the halt and drop back to stage 1.
     failure_halt_threshold: int = 3
     # Run the cheap non-artificial-intelligence baseline on every Nth job so

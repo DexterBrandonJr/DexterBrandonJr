@@ -594,6 +594,12 @@ def command_watch(args) -> int:
     )
     exit_code = _run_jobs(namespace, [inbox], recursive=True)
 
+    # Re-read the autonomy state before touching it. The sweep above builds
+    # its own context, so a halt raised during it was written by a different
+    # instance than the one loaded here; saving this stale copy afterwards
+    # would erase the halt that had just fired.
+    autonomy = Autonomy(app_paths.state_file, app_paths.halt_file)
+
     # One review per day, written where the next sweep will read it.
     today = date.today().isoformat()
     if autonomy.state.last_review_date != today:
@@ -825,15 +831,40 @@ def command_uninstall_agent(args) -> int:
 # --------------------------------------------------------------------------
 
 def build_parser() -> argparse.ArgumentParser:
+    # Flags that must work on either side of the subcommand. Without this they
+    # are accepted only before it, and the scheduled sweep writes its own
+    # command line with --quiet at the end — so every tick would have died on
+    # an argument error before doing any work.
+    #
+    # SUPPRESS matters as much as the sharing does: argparse lets a subparser's
+    # defaults overwrite what the top-level parser already stored, so without
+    # it "upscayl-wrap --json doctor" would come out with json set back to
+    # false. Suppressed flags set nothing unless actually given, and main()
+    # fills in whatever is missing.
+    global_flags = argparse.ArgumentParser(add_help=False)
+    global_flags.add_argument(
+        "--json", action="store_true", default=argparse.SUPPRESS,
+        help="print machine-readable output",
+    )
+    global_flags.add_argument(
+        "--quiet", action="store_true", default=argparse.SUPPRESS, help="print less",
+    )
+    global_flags.add_argument(
+        "--config-file", dest="config_file", default=argparse.SUPPRESS,
+        help="use a different config file",
+    )
+
     parser = argparse.ArgumentParser(
         prog="upscayl-wrap",
+        parents=[global_flags],
         description="Drive Upscayl's upscaling engine from the command line, with a record of every job.",
     )
     parser.add_argument("--version", action="version", version="upscayl-wrap %s" % VERSION)
-    parser.add_argument("--json", action="store_true", help="print machine-readable output")
-    parser.add_argument("--config-file", dest="config_file", help="use a different config file")
-    parser.add_argument("--quiet", action="store_true", help="print less")
     subparsers = parser.add_subparsers(dest="command")
+
+    def add_parser(name: str, **kwargs) -> argparse.ArgumentParser:
+        """Every subcommand gets the global flags too."""
+        return subparsers.add_parser(name, parents=[global_flags], **kwargs)
 
     def add_job_flags(sub: argparse.ArgumentParser) -> None:
         sub.add_argument("-o", "--out", help="output directory")
@@ -852,66 +883,66 @@ def build_parser() -> argparse.ArgumentParser:
         sub.add_argument("--dry-run", action="store_true", help="check everything, run nothing")
         sub.add_argument("-y", "--yes", action="store_true", help="approve these jobs (required at stage 1)")
 
-    doctor = subparsers.add_parser("doctor", help="check that everything needed is present and working")
+    doctor = add_parser("doctor", help="check that everything needed is present and working")
     doctor.add_argument("-v", "--verbose", action="store_true", help="list every path searched")
     doctor.set_defaults(func=command_doctor)
 
-    models = subparsers.add_parser("models", help="list the models available")
+    models = add_parser("models", help="list the models available")
     models.set_defaults(func=command_models)
 
-    up = subparsers.add_parser("up", help="upscale one or more images")
+    up = add_parser("up", help="upscale one or more images")
     up.add_argument("inputs", nargs="+", help="image files")
     add_job_flags(up)
     up.set_defaults(func=command_up)
 
-    batch = subparsers.add_parser("batch", help="upscale a whole directory")
+    batch = add_parser("batch", help="upscale a whole directory")
     batch.add_argument("directory")
     batch.add_argument("-r", "--recursive", action="store_true", help="include subdirectories")
     add_job_flags(batch)
     batch.set_defaults(func=command_batch)
 
-    watch = subparsers.add_parser("watch", help="sweep the inbox once, then write the daily review")
+    watch = add_parser("watch", help="sweep the inbox once, then write the daily review")
     watch.add_argument("--inbox", help="directory to sweep")
     add_job_flags(watch)
     watch.set_defaults(func=command_watch, recursive=True)
 
-    report = subparsers.add_parser("report", help="what the record says")
+    report = add_parser("report", help="what the record says")
     report.add_argument("--last", type=int, default=0, help="only the last N jobs")
     report.add_argument("--compact", action="store_true", help="one line, suitable for a notification")
     report.set_defaults(func=command_report)
 
-    ledger_parser = subparsers.add_parser("ledger", help="show recent rows from the record")
+    ledger_parser = add_parser("ledger", help="show recent rows from the record")
     ledger_parser.add_argument("--tail", type=int, default=20)
     ledger_parser.set_defaults(func=command_ledger)
 
-    review_parser = subparsers.add_parser("review", help="right, wrong, could not have known, will do differently")
+    review_parser = add_parser("review", help="right, wrong, could not have known, will do differently")
     review_parser.add_argument("--last", type=int, default=0, help="only the last N jobs")
     review_parser.add_argument("--write", action="store_true", help="save it alongside the ledger")
     review_parser.set_defaults(func=command_review)
 
-    stage = subparsers.add_parser("stage", help="show or set how much the tool may do on its own")
+    stage = add_parser("stage", help="show or set how much the tool may do on its own")
     stage.add_argument("--set", type=int, choices=(1, 2, 3))
     stage.add_argument("--max-scale", type=int, help="the largest scale stage 2 may use unattended")
     stage.set_defaults(func=command_stage)
 
-    halt = subparsers.add_parser("halt", help="stop the tool acting until a person clears it")
+    halt = add_parser("halt", help="stop the tool acting until a person clears it")
     halt.add_argument("--reason")
     halt.set_defaults(func=command_halt)
 
-    resume = subparsers.add_parser("resume", help="clear a halt")
+    resume = add_parser("resume", help="clear a halt")
     resume.set_defaults(func=command_resume)
 
-    config_parser = subparsers.add_parser("config", help="show or change settings")
+    config_parser = add_parser("config", help="show or change settings")
     config_parser.add_argument("--set", action="append", metavar="KEY=VALUE")
     config_parser.set_defaults(func=command_config)
 
-    install_agent = subparsers.add_parser("install-agent", help="run the watch sweep on a schedule")
+    install_agent = add_parser("install-agent", help="run the watch sweep on a schedule")
     install_agent.add_argument("--inbox")
     install_agent.add_argument("--out")
     install_agent.add_argument("--interval", type=int, default=300, help="seconds between sweeps")
     install_agent.set_defaults(func=command_install_agent)
 
-    uninstall_agent = subparsers.add_parser("uninstall-agent", help="stop the scheduled sweep")
+    uninstall_agent = add_parser("uninstall-agent", help="stop the scheduled sweep")
     uninstall_agent.set_defaults(func=command_uninstall_agent)
 
     return parser
@@ -930,6 +961,15 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         ("quiet", False),
         ("json", False),
         ("out", None),
+        ("config_file", None),
+        ("model", None),
+        ("scale", None),
+        ("format", None),
+        ("tile", None),
+        ("gpu", None),
+        ("compression", None),
+        ("tta", False),
+        ("force", False),
     ):
         if not hasattr(args, name):
             setattr(args, name, default)

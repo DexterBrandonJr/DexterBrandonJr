@@ -95,7 +95,7 @@ class Models(Workspace):
 
 class Upscaling(Workspace):
     def test_one_image_end_to_end(self):
-        source = make_png(os.path.join(self.inputs, "a.png"), 8, 6)
+        source = make_png(os.path.join(self.inputs, "a.png"), 64, 48)
         code, output = run(["--json", "up", source, "-o", self.outputs, "-y"])
         payload = json.loads(output)
         self.assertEqual(code, cli.EXIT_OK)
@@ -104,24 +104,24 @@ class Upscaling(Workspace):
 
     def test_a_folder_end_to_end(self):
         for index in range(3):
-            make_png(os.path.join(self.inputs, "p%d.png" % index), 6, 6)
+            make_png(os.path.join(self.inputs, "p%d.png" % index), 64, 48)
         code, output = run(["--json", "batch", self.inputs, "-o", self.outputs, "-y"])
         self.assertEqual(json.loads(output)["counts"]["ok"], 3)
 
     def test_non_images_in_the_folder_are_ignored(self):
-        make_png(os.path.join(self.inputs, "real.png"), 6, 6)
+        make_png(os.path.join(self.inputs, "real.png"), 64, 48)
         with open(os.path.join(self.inputs, "notes.txt"), "w") as handle:
             handle.write("not an image")
         _, output = run(["--json", "batch", self.inputs, "-o", self.outputs, "-y"])
         self.assertEqual(json.loads(output)["counts"]["ok"], 1)
 
     def test_a_dry_run_writes_nothing(self):
-        source = make_png(os.path.join(self.inputs, "a.png"), 8, 6)
+        source = make_png(os.path.join(self.inputs, "a.png"), 64, 48)
         run(["--json", "up", source, "-o", self.outputs, "-y", "--dry-run"])
         self.assertEqual(os.listdir(self.outputs), [])
 
     def test_stage_one_refuses_without_approval(self):
-        source = make_png(os.path.join(self.inputs, "a.png"), 8, 6)
+        source = make_png(os.path.join(self.inputs, "a.png"), 64, 48)
         code, output = run(["--json", "up", source, "-o", self.outputs])
         self.assertEqual(code, cli.EXIT_REFUSED)
         self.assertEqual(json.loads(output)["counts"]["rejected"], 1)
@@ -129,7 +129,7 @@ class Upscaling(Workspace):
     def test_a_second_batch_does_not_eat_its_own_output(self):
         # Output goes inside the input folder here, which is the shape that
         # would loop forever if the walk did not skip it.
-        make_png(os.path.join(self.inputs, "a.png"), 6, 6)
+        make_png(os.path.join(self.inputs, "a.png"), 64, 48)
         nested = os.path.join(self.inputs, "upscaled")
         run(["--json", "batch", self.inputs, "-o", nested, "-y"])
         _, output = run(["--json", "batch", self.inputs, "-o", nested, "-y"])
@@ -141,7 +141,7 @@ class Upscaling(Workspace):
 
 class ReportingCommands(Workspace):
     def test_report_summarises_the_record(self):
-        source = make_png(os.path.join(self.inputs, "a.png"), 8, 6)
+        source = make_png(os.path.join(self.inputs, "a.png"), 64, 48)
         run(["up", source, "-o", self.outputs, "-y", "--quiet"])
         code, output = run(["--json", "report"])
         self.assertEqual(code, cli.EXIT_OK)
@@ -162,7 +162,7 @@ class ReportingCommands(Workspace):
         self.assertTrue(all(os.path.isfile(path) for path in written))
 
     def test_ledger_shows_rows(self):
-        source = make_png(os.path.join(self.inputs, "a.png"), 8, 6)
+        source = make_png(os.path.join(self.inputs, "a.png"), 64, 48)
         run(["up", source, "-o", self.outputs, "-y", "--quiet"])
         code, output = run(["--json", "ledger"])
         self.assertEqual(len(json.loads(output)), 1)
