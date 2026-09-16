@@ -461,3 +461,51 @@ whether a dangerous action was safe, and two pre-existing tests caught me
 reporting absent things as present. Neither would have fired without the
 other. The general lesson is not "trust the tests" or "think harder" but that
 the two are complementary and a change to a safety path deserves both.
+
+## 2026-09-16 — Overwhelmed does not mean keep away; and a chat does not transfer, a repo does
+
+**Decisions:** Two of Dex's asks this session were about people, not code,
+and both corrected a reading of mine.
+
+The first: a starter file for a friend who is new to Claude and "gets
+overwhelmed easily." The original ask said "via a terminal." I read
+*overwhelmed* as *keep them away from the terminal* and buried it as a phase
+that was never offered. Dex: "why aren't you adding in terminal for them to
+learn." The honest reading was **teach it gently** — one command per message,
+tried on their own files, a wrong command framed as "nothing happened."
+Overwhelm is not protected by withholding a skill; it is protected by pace,
+shape, and stakes. Then he softened ("I guess you're right, if they have
+AuDHD they'll struggle") and delegated the judgment. The answer was neither
+extreme: two doors, chosen once, neither hidden, neither forced.
+
+The second: "is there a way to transfer all information and data shared to
+a new chat?" There is no conversation-transfer mechanism. A new chat starts
+cold. **The repos are the transfer** — a memory store plus a `SessionStart`
+hook that reads it plus a `CLAUDE.md` read unconditionally. The private
+project repo had the store and, for days, nothing that read it: a record
+and a hope are different things, and the difference is a hook.
+
+**Facts / preferences:**
+- When Dex says a person *learns* something, that word is load-bearing.
+  "Learn the terminal" means a lesson plan, not a link to docs.
+- Don't put a diagnosis into a file the person will read when Dex himself
+  said "if." Describe the needs — starting is harder than doing, surprises
+  cost more than effort, little stays in the head, choices are expensive,
+  time is hard to feel, mistakes sting, let them stay in the zone — and
+  design for all of them whether or not there's a name.
+- **Scheduled routines are bound to the session that created them.** Moving
+  a project to a new chat moves none of its check-ins; they keep firing into
+  the old one. Say so when a split is proposed, and either leave them and
+  relay, or recreate them from the new chat once it exists.
+- Three iterations on one file in one evening was the right pace: each of
+  Dex's corrections changed the centre of the design, not a detail. A
+  version that lands on `main` and is being shared is worth replacing fast.
+
+**Artifacts:** `DexterBrandonJr/trading-engine` pull request 149 (the hook
+and `CLAUDE.md` for the private repo — a new chat scoped there now starts
+warm); `share/claude-starter/START-HERE.md` here, three revisions merged the
+same evening (pull requests 26, 28, 30); the handoff prompt for the new
+trading chat was given in-conversation, not committed.
+
+**Open threads:** Dex has not yet started the separate trading chat as of
+this entry; the routines still fire here, and this session keeps relaying.
