@@ -1,3 +1,4 @@
+- [Upscayl Wrap](topics/upscayl-wrap.md) — updated 2026-09-16 — Upscayl CLI wrapper built; engine exit code carries no information
 - [Workhorse](topics/workhorse.md) — updated 2026-09-15 — the scaffold script run for the first time (proven, 10 files, one trading leak found); the domains playbook now derives a row for any topic instead of listing seven
 - [Working With Claude](topics/working-with-claude.md) — updated 2026-09-15 — four ways a check can look right and establish nothing: a derived id whose suffix broke five readers, a vendor doc believed over a measurement, a safety state inferred from control flow, and "could not determine" collapsed into yes
 - [Trading Engine](topics/trading-engine.md) — updated 2026-09-10 — moved to the private repo; a history rewrite would NOT remove it (GitHub PR refs), checked and recorded
