@@ -55,6 +55,12 @@ files were done.
 output and it will upscale its results, then upscale those. A 4x upscale of a
 48-megapixel photo is 768 megapixels, and nothing warns you first.
 
+**It cannot read the photos on your phone.** The engine decodes JPEG, PNG,
+WebP and BMP and nothing else. No HEIC, which is what an iPhone photographs
+in, and no AVIF or TIFF. In its own folder mode it skips them without saying
+so. This converts them to PNG first with `sips`, on a copy, and records that
+it did.
+
 **Nothing remembers.** No history, so no way to answer whether a model got
 slower, which photos justify the cost, or what failed last Tuesday.
 
@@ -103,6 +109,11 @@ upscayl-wrap review                     # right, wrong, and what to change
 Results are named `photo_4x.png`, so an upscale is never mistaken for its
 original. Every command takes `--json` and prints a machine-readable object
 instead of prose.
+
+Input can be JPEG, PNG, WebP, BMP, HEIC, AVIF, TIFF or GIF. The last four the
+engine cannot read at all, so they are converted to PNG first on a copy, which
+is deleted afterwards. Your original is never touched and the ledger row says
+what actually went into the engine.
 
 The `-y` approves the jobs. It is required until you raise the autonomy stage,
 which is explained below.
@@ -179,6 +190,8 @@ Every rule exists because the failure it prevents is silent.
 | A job that would leave under 2 gigabytes free | A full disk mid-batch corrupts the file being written. |
 | A truncated input | It produces a truncated output, and the engine does not always complain. |
 | An incomplete model | Half a model gives an error message that is hard to trace back. |
+| `--compression` with PNG output | The engine reuses that number as a compression level, where 0 means maximum and anything over 9 is invalid. It is a quality setting for `jpg` and `webp` only. |
+| A models path over 200 characters | The engine writes it into a fixed 256-byte buffer with no bounds check, so a long one corrupts its stack rather than erroring. |
 | An image under 32 pixels on a side | A four-pixel-wide image resets the graphics device as reliably as an enormous one. |
 | Transparency written out as a JPEG | The engine says it is converting the transparency away, then does not, and every transparent area arrives black. Use `png` or `webp`. |
 | A PNG output over about 715 megapixels | The encoder sizes its buffer with 32-bit arithmetic and overflows past that, failing after the whole job has run. A bigger Mac does not help. |
@@ -279,13 +292,16 @@ whatever is broken, including the exact command to run.
 | "engine was not found" | Upscayl is not installed, or is somewhere unusual. `upscayl-wrap doctor -v` lists every path searched. Set `UPSCAYL_BIN` to point at it directly. |
 | The engine is found but nothing runs | macOS quarantine. Open Upscayl once from Finder, or `xattr -dr com.apple.quarantine /Applications/Upscayl.app`. |
 | Crashes or runs out of memory on large photos | The tool already retries at half the tile size twice. To start lower, use `--tile 128`. |
-| A result that is solid black | The graphics device failed mid-job. This is caught and reported as a failure rather than saved, so if you have a black file it came from somewhere else. |
+| A result that is solid black | The graphics device failed mid-job, or a model file could not be read. Both are caught and reported as failures rather than saved, so a black file in your output folder came from somewhere else. |
+| "the engine cannot read heif" | `sips` is missing or the file is damaged. Convert it by hand: `sips -s format png photo.heic --out photo.png`. |
 | Everything refused at once | Probably halted. `upscayl-wrap stage` says so; `upscayl-wrap resume` clears it. |
 | Failed jobs leave nothing to look at | They do. Partial outputs are kept in `~/.local/share/upscayl-wrap/quarantine` rather than deleted. |
 
-A Vulkan-capable graphics processor is required. Vulkan is the graphics
-programming interface the engine uses; on a Mac it runs through MoltenVK,
-which translates it to Apple's Metal. Apple Silicon is supported natively.
+The engine draws on the graphics processor through Vulkan, a graphics
+programming interface, which on a Mac runs via MoltenVK, a translation layer
+onto Apple's Metal. Every Apple Silicon Mac can run it. Upstream warns that
+most integrated graphics cannot, but that warning is about other platforms:
+an M-series graphics processor is integrated and works fine.
 
 ---
 
@@ -314,6 +330,7 @@ and every command takes `--json`.
 | `upscaylwrap/autonomy.py` | Stages and the halt. |
 | `upscaylwrap/counterfactual.py` | The cheap alternative, measured. |
 | `upscaylwrap/enginefaults.py` | The engine's known failure signatures, and the retry ladder. |
+| `upscaylwrap/transcode.py` | Converting HEIC and friends into something the engine can read. |
 | `upscaylwrap/launchagent.py` | The scheduled sweep. |
 | `upscaylwrap/cli.py` | The commands. |
 

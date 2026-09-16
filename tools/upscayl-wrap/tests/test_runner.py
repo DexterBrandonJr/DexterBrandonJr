@@ -15,7 +15,7 @@ from support import Workspace, make_png
 from upscaylwrap.autonomy import Autonomy
 from upscaylwrap.config import Config, discover, paths
 from upscaylwrap.ledger import Ledger, STATUS_FAILED, STATUS_OK, STATUS_REJECTED, STATUS_SKIPPED
-from upscaylwrap.runner import JobRequest, Runner, build_command
+from upscaylwrap.runner import JobRequest, Runner, _valid_jobs_spec, build_command
 
 
 class RunnerCase(Workspace):
@@ -360,6 +360,27 @@ class RetryLadder(RunnerCase):
         result = self.runner().run(self.request(tile_size=512))
         self.assertEqual(result.status, STATUS_FAILED)
         self.assertEqual(len(result.row.attempts), 1)
+
+
+class ThreadFlagSafety(RunnerCase):
+    """The -j flag crashes the engine outright if it is malformed."""
+
+    def test_a_complete_triple_is_accepted(self):
+        self.assertTrue(_valid_jobs_spec("1:2:2"))
+        self.assertTrue(_valid_jobs_spec("1:2,2,2:2"))
+
+    def test_anything_without_two_colons_is_rejected(self):
+        # The engine looks for a colon and adds one to the result without
+        # checking it found anything, so this is a signal death, not an error.
+        for bad in ("4", "1:2", "", "abc", "1:2:2:2", "1::2"):
+            self.assertFalse(_valid_jobs_spec(bad), bad)
+
+    def test_a_malformed_value_is_never_put_on_the_command_line(self):
+        command = build_command(
+            "engine", self.request(), self.models_dir, "/tmp/out.png",
+            model_native_scale=4, jobs_spec="4",
+        )
+        self.assertNotIn("-j", command)
 
 
 class SmallAndTransparentInputs(RunnerCase):

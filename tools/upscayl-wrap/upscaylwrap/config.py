@@ -82,8 +82,20 @@ EXTRA_MODEL_DIRS = (
     "~/.upscayl-cli/models",
 )
 
-_SCALE_SUFFIX = re.compile(r"(?<![0-9])(\d+)x(?![0-9])", re.IGNORECASE)
-_SCALE_PREFIX = re.compile(r"(?<![0-9])x(\d+)(?![0-9])", re.IGNORECASE)
+# The order here is not tidiness, it is a bug being mirrored deliberately.
+# The engine decides a model's scale by searching its NAME for these tokens in
+# exactly this order and taking the first hit. Because it tests "x1" before
+# "x16", and "x16" contains "x1", a model called something-x16 is read by the
+# engine as scale 1. Matching its order means this tool predicts what the
+# engine will actually do rather than what the name appears to say.
+_ENGINE_SCALE_TOKENS = (
+    (1, ("x1", "1x")),
+    (2, ("x2", "2x")),
+    (3, ("x3", "3x")),
+    (4, ("x4", "4x")),
+    (8, ("x8", "8x")),
+    (16, ("x16", "16x")),
+)
 
 
 def _expand(path: str) -> str:
@@ -160,22 +172,27 @@ class Model:
 
 
 def native_scale_of(model_name: str) -> Optional[int]:
-    """Read a model's built-in scale factor out of its name.
+    """Work out what scale the engine will decide this model is.
 
-    Model names encode it two ways — ``upscayl-standard-4x`` and
-    ``realesrgan-x4plus`` — so both spellings are handled. Returns None when
-    the name says nothing, which the gate treats as "cannot verify" rather
-    than "any scale is fine".
+    This deliberately reproduces the engine's own logic, including where that
+    logic is wrong. It searches the model's name for a scale token and takes
+    the first match in a fixed order that tests "x1" before "x16" — so a model
+    named ``something-x16`` is treated as scale 1 by the engine, and therefore
+    reported as scale 1 here.
+
+    Reporting the true intent instead would be worse than useless: the
+    prediction would disagree with the engine on every job, and the scorer
+    would raise a false alarm every time. What this needs to answer is not
+    "what does the name mean" but "what is about to happen".
+
+    Returns None when the name carries no token at all, which the gate treats
+    as "cannot verify" rather than "any scale is fine". All seven models that
+    ship end in -4x, so in practice this is always 4.
     """
-    for pattern in (_SCALE_SUFFIX, _SCALE_PREFIX):
-        match = pattern.search(model_name)
-        if match:
-            try:
-                value = int(match.group(1))
-            except ValueError:
-                continue
-            if 1 <= value <= 16:
-                return value
+    lowered = model_name.lower()
+    for value, tokens in _ENGINE_SCALE_TOKENS:
+        if any(token in lowered for token in tokens):
+            return value
     return None
 
 

@@ -80,6 +80,9 @@ class Row:
     input_width: Optional[int] = None
     input_height: Optional[int] = None
     input_format: Optional[str] = None
+    # Set when the input had to be converted before the engine could read it,
+    # so a row says what actually went in, not only what was asked for.
+    converted_input: Optional[Dict[str, Any]] = None
 
     # What came out.
     output_path: Optional[str] = None

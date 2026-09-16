@@ -66,10 +66,12 @@ FAULTS: List[Fault] = [
     Fault(
         key="no_gpu",
         pattern=r"vkEnumeratePhysicalDevices failed|vkCreateInstance failed|"
-        r"no vulkan device|failed to create instance",
+        r"no vulkan device|Invalid GPU Device|failed to create instance",
         meaning="no usable graphics device was found",
-        remedy="this engine needs a Vulkan-capable graphics processor; on a Mac "
-        "that goes through MoltenVK, which most integrated graphics do not support",
+        remedy="every Apple Silicon Mac can run this, so on one of those it "
+        "usually means the engine could not start rather than that the hardware "
+        "is unsuitable; check 'upscayl-wrap doctor' and that nothing else is "
+        "holding the graphics processor",
     ),
     Fault(
         key="model_unreadable",

@@ -70,9 +70,21 @@ _JPEG_SOF_MARKERS = {
 # Markers that stand alone — they carry no length field to skip over.
 _JPEG_STANDALONE = {0x01, 0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7, 0xD8}
 
-# Formats the upscaler can read, and formats it can write. Kept here rather
-# than in the gate so there is one list, not two that drift apart.
-READABLE_FORMATS = frozenset({"png", "jpeg", "webp", "tiff", "heif", "avif", "bmp", "gif"})
+# What the engine can actually decode. This is a short list, and shorter than
+# it looks: it has no decoder for HEIC, AVIF, TIFF or GIF, and in its own
+# directory mode it skips them without saying so. Anything outside this set
+# has to be converted before it reaches the engine — see transcode.py, which
+# does exactly that, because HEIC is what an iPhone photographs in.
+ENGINE_READABLE_FORMATS = frozenset({"png", "jpeg", "webp", "bmp"})
+
+# What this tool accepts from a person, which is larger, because it converts
+# the difference rather than refusing it.
+READABLE_FORMATS = frozenset(
+    {"png", "jpeg", "webp", "bmp", "tiff", "heif", "avif", "gif"}
+)
+
+# The engine writes three formats. Note the asymmetry: BMP goes in but never
+# comes out.
 WRITABLE_FORMATS = frozenset({"png", "jpg", "webp"})
 
 # Extension the tool writes for each output format keyword.

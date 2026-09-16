@@ -113,6 +113,12 @@ class JobFacts:
     engine_executable: bool = False
     models_dir: Optional[str] = None
     input_has_alpha: Optional[bool] = None
+    # Whether the engine can decode this format itself, and whether we can
+    # convert it into one that it can.
+    input_engine_readable: bool = True
+    input_can_be_converted: bool = False
+    # Only meaningful for JPEG and WebP output. See the rule below.
+    compression: Optional[int] = None
 
     # Budgets and policy.
     max_output_megapixels: float = 400.0
@@ -247,6 +253,16 @@ def evaluate(facts: JobFacts) -> Decision:
         facts.input_format is None or facts.input_format in facts.readable_formats,
         "input format %s is not supported" % facts.input_format,
     )
+    # The engine decodes JPEG, PNG, WebP and BMP and nothing else — no HEIC,
+    # which is what an iPhone photographs in. Anything else has to be
+    # converted first, and this rule is about whether that is possible, not
+    # about whether it is needed.
+    add(
+        "input_readable_or_convertible",
+        facts.input_engine_readable or facts.input_can_be_converted,
+        "the engine cannot read %s, and it could not be converted first "
+        "(that needs sips, which is part of macOS)" % facts.input_format,
+    )
     add(
         "input_has_dimensions",
         bool(facts.input_width and facts.input_height),
@@ -302,6 +318,32 @@ def evaluate(facts: JobFacts) -> Decision:
         not (facts.input_has_alpha and facts.output_format == "jpg"),
         "this image has transparency, and the engine writes transparent areas "
         "out as black when the output is a JPEG. Use --format png or webp.",
+    )
+    # The engine writes its own buffer sizes into fixed 256-byte stack arrays
+    # with no bounds check, so a long enough models path corrupts its stack
+    # rather than producing an error. The standard path is nowhere near this;
+    # a deep custom directory could be.
+    model_path_length = (
+        len(facts.models_dir or "") + len(facts.model_name or "") + len("/.param")
+    )
+    add(
+        "model_path_short_enough",
+        model_path_length < 200,
+        "the models path and model name come to %d characters together; the "
+        "engine writes that into a fixed 256-byte buffer with no bounds check, "
+        "so move the models somewhere with a shorter path" % model_path_length,
+    )
+    # The compression flag means one thing for JPEG and WebP, where it is
+    # quality, and something else entirely for PNG, where the same number is
+    # used as a zlib compression level. Zero becomes maximum compression and
+    # anything from ten upwards is outside the valid range altogether. Rather
+    # than quietly dropping the flag, say why it cannot be honoured.
+    add(
+        "compression_meaningful",
+        facts.compression is None or facts.output_format != "png",
+        "--compression does not mean anything sensible for PNG output: the "
+        "engine reuses the number as a compression level, where 0 is maximum "
+        "and anything above 9 is invalid. Use it with --format jpg or webp.",
     )
     add(
         "output_format_writable",

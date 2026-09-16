@@ -40,7 +40,7 @@ from typing import Any, Dict, List, Optional
 from . import counterfactual as counterfactual_module
 from . import enginefaults
 from . import gate as gate_module
-from . import imageprobe, scorer
+from . import imageprobe, scorer, transcode
 from .autonomy import Autonomy
 from .config import Config, Discovery
 from .ledger import (
@@ -57,6 +57,24 @@ from .ledger import (
 # Written next to the final output while the engine works, then renamed on
 # success. The leading dot keeps it out of the way in Finder.
 TEMP_PREFIX = ".upscayl-wrap-tmp-"
+
+
+def _valid_jobs_spec(spec: str) -> bool:
+    """Is this safe to hand to the engine's -j flag?
+
+    Must be load:proc:save, where the middle part may itself be a
+    comma-separated list for multiple graphics processors. Anything without
+    two colons crashes the engine outright.
+    """
+    parts = spec.split(":")
+    if len(parts) != 3:
+        return False
+    for index, part in enumerate(parts):
+        pieces = part.split(",") if index == 1 else [part]
+        for piece in pieces:
+            if not piece.isdigit():
+                return False
+    return True
 
 
 @dataclass
@@ -114,6 +132,7 @@ def build_command(
     *,
     model_native_scale: Optional[int] = None,
     tile_override: Optional[int] = None,
+    input_override: Optional[str] = None,
     verbose: bool = True,
     jobs_spec: Optional[str] = None,
 ) -> List[str]:
@@ -142,7 +161,7 @@ def build_command(
     """
     command = [
         engine,
-        "-i", request.input_path,
+        "-i", input_override or request.input_path,
         "-o", temp_output,
         "-m", os.path.abspath(models_dir),
         "-n", request.model_name,
@@ -159,7 +178,12 @@ def build_command(
         command += ["-t", str(int(tile))]
     if request.gpu_id is not None:
         command += ["-g", str(request.gpu_id)]
-    if jobs_spec:
+    if jobs_spec and _valid_jobs_spec(jobs_spec):
+        # Only ever sent in the full load:proc:save form. The engine looks for
+        # the colon with strchr and adds one to the result without checking it
+        # found anything, so a value with no colon in it dereferences a null
+        # pointer and takes the process down with a signal rather than an
+        # error message.
         command += ["-j", jobs_spec]
     if request.compression is not None:
         # The engine rounds this to the nearest ten internally, so anything
@@ -204,6 +228,9 @@ def gather_facts(
         engine_executable=bool(
             discovery.bin_path and os.access(discovery.bin_path, os.X_OK)
         ),
+        input_engine_readable=info.fmt in imageprobe.ENGINE_READABLE_FORMATS,
+        input_can_be_converted=transcode.can_convert(info.fmt),
+        compression=request.compression,
         max_output_megapixels=config.max_output_megapixels,
         min_free_disk_mb=config.min_free_disk_mb,
         readable_formats=imageprobe.READABLE_FORMATS,
@@ -364,6 +391,30 @@ class Runner:
             self._record(row)
             return JobResult(status=STATUS_FAILED, row=row, message=row.reason)
 
+        # The engine cannot decode HEIC, AVIF, TIFF or GIF. Convert to PNG
+        # first when that is what we have, feeding the engine the copy while
+        # every rule above stays about the person's real file. Done after the
+        # gate so a job that was going to be refused costs nothing.
+        engine_input = request.input_path
+        conversion: Optional[Dict[str, Any]] = None
+        if transcode.needed(info.fmt):
+            converted, conversion = transcode.to_png(
+                request.input_path, work_dir=self.quarantine_dir + "-work"
+            )
+            row.converted_input = conversion
+            if converted is None:
+                row.finish(STATUS_FAILED, started_monotonic)
+                row.reason = "could not convert %s for the engine: %s" % (
+                    info.fmt,
+                    conversion.get("note", "unknown reason"),
+                )
+                self._record(row)
+                return JobResult(status=STATUS_FAILED, row=row, message=row.reason)
+            engine_input = converted
+
+        # The output file's extension is what actually picks the encoder: the
+        # -f flag is validated and then ignored for a single image. They are
+        # both set from the same place here so they cannot disagree.
         extension = imageprobe.OUTPUT_EXTENSION.get(request.output_format, ".png")
         temp_output = os.path.join(output_dir, TEMP_PREFIX + row.id + extension)
 
@@ -377,6 +428,7 @@ class Runner:
             row.gate_checks = recheck.as_dicts()
             row.finish(STATUS_REJECTED, started_monotonic)
             row.reason = "conditions changed before starting: %s" % recheck.reason
+            transcode.cleanup(conversion)
             self._record(row)
             return JobResult(status=STATUS_REJECTED, row=row, message=row.reason)
 
@@ -408,6 +460,7 @@ class Runner:
                 temp_output,
                 model_native_scale=native_scale,
                 tile_override=tile_size,
+                input_override=engine_input,
             )
             row.command = list(command)
             row.tile_size = tile_size
@@ -521,6 +574,7 @@ class Runner:
 
         if failure_reason is not None:
             quarantined = _quarantine(temp_output, self.quarantine_dir)
+            transcode.cleanup(conversion)
             row.finish(STATUS_FAILED, started_monotonic)
             row.reason = failure_reason
             if quarantined:
@@ -567,6 +621,7 @@ class Runner:
         except OSError as exc:
             quarantined = _quarantine(temp_output, self.quarantine_dir)
             row.finish(STATUS_FAILED, started_monotonic)
+            transcode.cleanup(conversion)
             row.reason = "could not move the finished image into place: %s" % exc
             if quarantined:
                 row.reason += " (result kept at %s)" % quarantined
@@ -579,6 +634,7 @@ class Runner:
             if os.path.isfile(request.input_path)
             else None
         )
+        transcode.cleanup(conversion)
         row.finish(STATUS_OK, started_monotonic)
         self._record(row)
         self.on_event("done", request, row)

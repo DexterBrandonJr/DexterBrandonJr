@@ -221,6 +221,45 @@ class RulesFromKnownEngineFailures(unittest.TestCase):
         self.assertFalse(failed(decision, "within_encoder_limit"))
 
 
+class FormatsTheEngineCannotRead(unittest.TestCase):
+    def test_a_format_it_cannot_read_is_allowed_when_it_can_be_converted(self):
+        decision = gate.evaluate(
+            facts(input_format="heif", input_engine_readable=False, input_can_be_converted=True)
+        )
+        self.assertTrue(decision.allowed, decision.reason)
+
+    def test_the_same_format_is_refused_when_it_cannot_be_converted(self):
+        decision = gate.evaluate(
+            facts(input_format="heif", input_engine_readable=False, input_can_be_converted=False)
+        )
+        self.assertFalse(decision.allowed)
+        self.assertTrue(failed(decision, "input_readable_or_convertible"))
+
+
+class RulesProtectingTheEngineFromItself(unittest.TestCase):
+    def test_a_models_path_long_enough_to_smash_the_stack_is_refused(self):
+        decision = gate.evaluate(facts(models_dir="/models" + "/verylongdirectory" * 15))
+        self.assertFalse(decision.allowed)
+        self.assertTrue(failed(decision, "model_path_short_enough"))
+
+    def test_an_ordinary_models_path_is_fine(self):
+        self.assertTrue(gate.evaluate(facts()).allowed)
+
+    def test_compression_with_png_output_is_refused(self):
+        # The engine reuses the number as a compression level, where 0 means
+        # maximum and anything over 9 is invalid. Silently dropping the flag
+        # would be worse than saying so.
+        decision = gate.evaluate(facts(compression=80, output_format="png"))
+        self.assertFalse(decision.allowed)
+        self.assertTrue(failed(decision, "compression_meaningful"))
+
+    def test_compression_with_jpeg_output_is_fine(self):
+        self.assertTrue(gate.evaluate(facts(compression=80, output_format="jpg")).allowed)
+
+    def test_no_compression_is_always_fine(self):
+        self.assertTrue(gate.evaluate(facts(compression=None, output_format="png")).allowed)
+
+
 class EngineRules(unittest.TestCase):
     def test_a_missing_engine_is_refused(self):
         decision = gate.evaluate(facts(engine_present=False))

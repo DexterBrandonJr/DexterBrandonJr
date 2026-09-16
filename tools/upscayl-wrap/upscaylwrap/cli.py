@@ -842,7 +842,11 @@ def build_parser() -> argparse.ArgumentParser:
         sub.add_argument("-f", "--format", choices=sorted(imageprobe.WRITABLE_FORMATS), help="output format")
         sub.add_argument("--tile", type=int, help="tile size; 0 is automatic, lower it if the engine runs out of memory")
         sub.add_argument("--gpu", type=int, help="graphics processor id")
-        sub.add_argument("--compression", type=int, help="0-100; the engine rounds this to the nearest 10")
+        sub.add_argument(
+            "--compression",
+            type=int,
+            help="0-100, for jpg and webp only; the engine rounds it to the nearest 10",
+        )
         sub.add_argument("--tta", action="store_true", help="test-time augmentation: slower, sometimes cleaner")
         sub.add_argument("--force", action="store_true", help="replace an existing output")
         sub.add_argument("--dry-run", action="store_true", help="check everything, run nothing")
