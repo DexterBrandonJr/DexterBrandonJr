@@ -102,10 +102,22 @@ def build(rows: Iterable[Dict[str, Any]], *, window_label: str) -> Dict[str, Any
     slow = [d for d in duration_scores if (d.get("relative_error") or 0) > 0.5]
     if duration_scores:
         hits = [d for d in duration_scores if d.get("verdict") == "right"]
-        right.append(
-            "Timing predictions landed within tolerance on %d of %d jobs (%s)."
-            % (len(hits), len(duration_scores), _percent(len(hits), len(duration_scores)))
+        line = "Timing predictions landed within tolerance on %d of %d jobs (%s)." % (
+            len(hits), len(duration_scores), _percent(len(hits), len(duration_scores))
         )
+        # A miss rate this high is not a success worth reporting as one. It
+        # usually just means the machine has no history yet and the built-in
+        # starting figure is nowhere near, which is expected and self-correcting
+        # — so say that rather than filing it under what went right.
+        if len(hits) * 2 >= len(duration_scores):
+            right.append(line)
+        else:
+            wrong.append(
+                line
+                + " Early on this is normal: the first estimates come from a "
+                "built-in figure rather than from this machine, and they improve "
+                "as the record fills up."
+            )
     if len(slow) >= 3:
         wrong.append(
             "%d jobs took more than half again as long as predicted. The machine is "
