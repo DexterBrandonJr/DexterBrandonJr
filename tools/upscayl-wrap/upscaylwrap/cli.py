@@ -20,6 +20,7 @@ from datetime import date
 from typing import Any, Dict, List, Optional, Sequence
 
 from . import counterfactual as counterfactual_module
+from . import gate as gate_module
 from . import imageprobe, launchagent, review as review_module
 from .autonomy import Autonomy, STAGE_NAMES
 from .config import Config, VERSION, discover, paths, pick_default_model
@@ -70,6 +71,18 @@ def _resolve(path: str) -> str:
     return os.path.realpath(os.path.abspath(os.path.expanduser(path)))
 
 
+# A Mac's boot volume does not distinguish letter case, and realpath does not
+# correct it either, so two spellings of one directory come back as two
+# different strings. Every comparison between paths here goes through the same
+# normalisation the gate uses, so the collector and the gate always agree on
+# what counts as the same place.
+CASE_BLIND = sys.platform == "darwin"
+
+
+def _same_place(path: str) -> str:
+    return gate_module.normalise(path, CASE_BLIND)
+
+
 def _default_out_dir(config: Config, first_input: str) -> str:
     if config.out_dir:
         return _resolve(config.out_dir)
@@ -107,13 +120,16 @@ def output_path_for(
             subdirectory = relative
 
     candidate = os.path.join(out_root, subdirectory, "%s_%dx%s" % (stem, scale, extension))
-    if taken is not None and candidate in taken:
+    # Membership is tested on the normalised form: on a Mac, img_01_4x.png and
+    # IMG_01_4x.png are one file, so treating them as two names would plan a
+    # second job straight on top of the first.
+    if taken is not None and _same_place(candidate) in taken:
         suffix = original_ext.lstrip(".").lower() or "img"
         candidate = os.path.join(
             out_root, subdirectory, "%s_%s_%dx%s" % (stem, suffix, scale, extension)
         )
         counter = 2
-        while candidate in taken:
+        while _same_place(candidate) in taken:
             candidate = os.path.join(
                 out_root,
                 subdirectory,
@@ -121,7 +137,7 @@ def output_path_for(
             )
             counter += 1
     if taken is not None:
-        taken.add(candidate)
+        taken.add(_same_place(candidate))
     return candidate
 
 
@@ -150,7 +166,7 @@ def _collect_inputs(targets: Sequence[str], recursive: bool, skip_root: Optional
             continue
         if recursive:
             for directory, subdirectories, filenames in os.walk(resolved):
-                if skip and (_resolve(directory) == skip or _resolve(directory).startswith(skip + os.sep)):
+                if skip and gate_module.is_within(_resolve(directory), skip, CASE_BLIND):
                     subdirectories[:] = []
                     continue
                 subdirectories[:] = [d for d in subdirectories if not d.startswith(".")]
@@ -168,7 +184,7 @@ def _collect_inputs(targets: Sequence[str], recursive: bool, skip_root: Optional
     # Keep only things that are actually images, by content rather than name.
     images: List[str] = []
     for candidate in found:
-        if skip and _resolve(candidate).startswith(skip + os.sep):
+        if skip and gate_module.is_within(_resolve(candidate), skip, CASE_BLIND):
             continue
         try:
             with open(candidate, "rb") as handle:

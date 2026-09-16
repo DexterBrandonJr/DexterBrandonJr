@@ -370,6 +370,76 @@ class RetryLadder(RunnerCase):
         self.assertEqual(len(result.row.attempts), 1)
 
 
+class OutputOwnership(RunnerCase):
+    """An existing output only means "done" if it came from this input."""
+
+    def test_the_same_input_twice_is_skipped(self):
+        first = self.request()
+        self.runner().run(first)
+        again = self.runner().run(self.request())
+        self.assertEqual(again.status, STATUS_SKIPPED)
+
+    def test_a_different_input_with_the_same_name_is_refused(self):
+        # Cameras number their files, so two folders of photographs routinely
+        # both hold an IMG_1234. Silently skipping the second, or overwriting
+        # the first, both lose a photo.
+        other_dir = os.path.join(self.root, "second-folder")
+        os.makedirs(other_dir, exist_ok=True)
+        first = self.request(name="IMG_1234.png")
+        self.runner().run(first)
+
+        clash = make_png(os.path.join(other_dir, "IMG_1234.png"), 64, 48, value=30)
+        result = self.runner().run(
+            JobRequest(
+                input_path=clash,
+                output_path=first.output_path,
+                output_root=self.outputs,
+                scale=4,
+                model_name="upscayl-standard-4x",
+                human_approved=True,
+            )
+        )
+        self.assertEqual(result.status, STATUS_REJECTED)
+        self.assertIn("different image", result.message)
+
+    def test_that_refusal_does_not_destroy_the_first_result(self):
+        first = self.request(name="IMG_1234.png")
+        done = self.runner().run(first)
+        before = open(done.row.output_path, "rb").read()
+
+        other_dir = os.path.join(self.root, "second-folder")
+        os.makedirs(other_dir, exist_ok=True)
+        clash = make_png(os.path.join(other_dir, "IMG_1234.png"), 64, 48, value=30)
+        self.runner().run(
+            JobRequest(
+                input_path=clash, output_path=first.output_path, output_root=self.outputs,
+                scale=4, model_name="upscayl-standard-4x", human_approved=True, force=True,
+            )
+        )
+        self.assertEqual(open(done.row.output_path, "rb").read(), before)
+
+
+class NothingLeftBehind(RunnerCase):
+    def test_an_unexpected_exception_does_not_strand_a_partial_output(self):
+        # An interrupt part-way through a batch raises out of the middle of a
+        # job, past every cleanup branch. A half-written 4x image is large.
+        from upscaylwrap import imageprobe as probe_module
+
+        original = probe_module.sha256_file
+
+        def explode(*_args, **_kwargs):
+            raise KeyboardInterrupt("user pressed Ctrl-C")
+
+        probe_module.sha256_file = explode
+        self.addCleanup(setattr, probe_module, "sha256_file", original)
+
+        with self.assertRaises(KeyboardInterrupt):
+            self.runner().run(self.request())
+
+        leftovers = [n for n in os.listdir(self.outputs) if n.startswith(".upscayl-wrap-tmp-")]
+        self.assertEqual(leftovers, [], "a temporary file was stranded")
+
+
 class ThreadFlagSafety(RunnerCase):
     """The -j flag crashes the engine outright if it is malformed."""
 

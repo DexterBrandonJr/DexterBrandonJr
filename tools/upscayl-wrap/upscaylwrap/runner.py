@@ -306,6 +306,9 @@ class Runner:
         self.dry_run = dry_run
         self.on_event = on_event or (lambda *_args, **_kwargs: None)
         self._history: Optional[List[Dict[str, Any]]] = None
+        # Files in flight, reclaimed by run() however the job ends.
+        self._pending_temp: Optional[str] = None
+        self._pending_conversion: Optional[Dict[str, Any]] = None
 
     # --- helpers -----------------------------------------------------------
 
@@ -334,6 +337,18 @@ class Runner:
             tool_version=VERSION,
         )
 
+    def _input_behind(self, output_path: str) -> Optional[str]:
+        """Which input produced the file currently at this path, if we know.
+
+        None means the record has nothing to say, which is treated as "assume
+        it is ours" rather than as a collision — a ledger that was cleared
+        should not start refusing every rerun.
+        """
+        for row in reversed(self.history()):
+            if row.get("output_path") == output_path and row.get("status") == STATUS_OK:
+                return row.get("input_path")
+        return None
+
     def _record(self, row: Row) -> None:
         self.ledger.append(row)
         if self._history is not None:
@@ -342,6 +357,30 @@ class Runner:
     # --- the one public entry point ---------------------------------------
 
     def run(self, request: JobRequest) -> JobResult:
+        """Run one job, and leave nothing behind however it ends.
+
+        The work itself is in ``_run_job``. This wrapper exists for the
+        interrupt: pressing Ctrl-C part-way through a batch raises straight
+        out of the middle of a job, past every cleanup branch, and a
+        half-written 4x image can easily be hundreds of megabytes sitting in
+        the output folder with nothing that will ever remove it.
+        """
+        self._pending_temp = None
+        self._pending_conversion = None
+        try:
+            return self._run_job(request)
+        finally:
+            # Anything still pending was never published, so it is debris.
+            # The partial output is quarantined rather than deleted, on the
+            # same reasoning as a failed job's: it is small, and it is
+            # evidence.
+            if self._pending_temp and os.path.exists(self._pending_temp):
+                _quarantine(self._pending_temp, self.quarantine_dir)
+            transcode.cleanup(self._pending_conversion)
+            self._pending_temp = None
+            self._pending_conversion = None
+
+    def _run_job(self, request: JobRequest) -> JobResult:
         """Gate, predict, run, verify, score, record. In that order."""
         started_monotonic = time.monotonic()
         row = self._new_row(request, STATUS_REJECTED)
@@ -354,12 +393,31 @@ class Runner:
         row.input_format = info.fmt
 
         # --- skip work already done --------------------------------------
-        if os.path.exists(request.output_path) and not request.force:
-            row.finish(STATUS_SKIPPED, started_monotonic)
-            row.reason = "output already exists"
-            self._record(row)
-            self.on_event("skip", request, row)
-            return JobResult(status=STATUS_SKIPPED, row=row, message="already done")
+        #
+        # "Already done" has to mean done *from this input*. Cameras number
+        # their files, so two folders of photographs routinely both contain an
+        # IMG_1234, and sending both to one output folder would otherwise make
+        # the second silently skip — or, with --force, overwrite the first.
+        # The record knows which input produced each output, so ask it.
+        if os.path.exists(request.output_path):
+            previous_input = self._input_behind(request.output_path)
+            same_input = previous_input is None or previous_input == request.input_path
+            if not same_input:
+                row.finish(STATUS_REJECTED, started_monotonic)
+                row.reason = (
+                    "%s already holds the upscale of a different image (%s). Two "
+                    "inputs share a filename; upscale them into separate folders, "
+                    "or rename one." % (request.output_path, previous_input)
+                )
+                self._record(row)
+                self.on_event("reject", request, row)
+                return JobResult(status=STATUS_REJECTED, row=row, message=row.reason)
+            if not request.force:
+                row.finish(STATUS_SKIPPED, started_monotonic)
+                row.reason = "output already exists"
+                self._record(row)
+                self.on_event("skip", request, row)
+                return JobResult(status=STATUS_SKIPPED, row=row, message="already done")
 
         # --- the gate -----------------------------------------------------
         facts = gather_facts(request, self.config, self.discovery, self.autonomy, info)
@@ -427,12 +485,14 @@ class Runner:
                 self._record(row)
                 return JobResult(status=STATUS_FAILED, row=row, message=row.reason)
             engine_input = converted
+            self._pending_conversion = conversion
 
         # The output file's extension is what actually picks the encoder: the
         # -f flag is validated and then ignored for a single image. They are
         # both set from the same place here so they cannot disagree.
         extension = imageprobe.OUTPUT_EXTENSION.get(request.output_format, ".png")
         temp_output = os.path.join(output_dir, TEMP_PREFIX + row.id + extension)
+        self._pending_temp = temp_output
 
         # --- re-check at the moment of acting ------------------------------
         # Between the check above and this line the disk may have filled or
@@ -651,6 +711,9 @@ class Runner:
                 row.reason += " (result kept at %s)" % quarantined
             self._record(row)
             return JobResult(status=STATUS_FAILED, row=row, message=row.reason)
+
+        # Published. Nothing left for the cleanup to reclaim.
+        self._pending_temp = None
 
         row.output_sha256 = imageprobe.sha256_file(request.output_path)
         row.input_sha256 = (

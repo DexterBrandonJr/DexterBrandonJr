@@ -46,6 +46,27 @@ class OutputNaming(unittest.TestCase):
         ]
         self.assertEqual(len(set(paths)), 4)
 
+    def test_names_differing_only_by_case_collide_on_a_mac(self):
+        # A Mac's volume does not distinguish letter case, so img_01_4x.png
+        # and IMG_01_4x.png are one file. Planning both would put the second
+        # job straight on top of the first.
+        original = cli.CASE_BLIND
+        cli.CASE_BLIND = True
+        self.addCleanup(setattr, cli, "CASE_BLIND", original)
+        taken = set()
+        first = cli.output_path_for("/a/img_01.jpg", "/out", 4, "png", taken=taken)
+        second = cli.output_path_for("/b/IMG_01.png", "/out", 4, "png", taken=taken)
+        self.assertNotEqual(first.lower(), second.lower())
+
+    def test_case_is_respected_where_the_filesystem_respects_it(self):
+        original = cli.CASE_BLIND
+        cli.CASE_BLIND = False
+        self.addCleanup(setattr, cli, "CASE_BLIND", original)
+        taken = set()
+        first = cli.output_path_for("/a/img_01.jpg", "/out", 4, "png", taken=taken)
+        second = cli.output_path_for("/b/IMG_01.jpg", "/out", 4, "png", taken=taken)
+        self.assertNotEqual(first, second)
+
     def test_subdirectories_are_preserved_in_a_recursive_run(self):
         path = cli.output_path_for(
             "/in/holiday/beach.jpg", "/out", 4, "png", relative_to="/in"
