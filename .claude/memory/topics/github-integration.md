@@ -172,7 +172,13 @@ three still on the default branch.
 request on the private repo; `ci_cost.py` (phased-build skill) prices a
 merge cycle at 12 job-minutes after it, from 16.
 
-**Open threads:** Dex sets the budget or waits for the reset — nothing on
-this side can spend minutes on his behalf. The hourly "card countdown"
-job is the next lever (fifteen one-minute runs a day); moving it to the
-Mac's launchd would cost zero minutes.
+**Open threads:** Dex chose to wait for the reset rather than set a
+budget. The cost of that choice is the whole scheduled loop dark for the
+rest of the month — and for a system whose scorer can only measure a
+horizon in the window after it elapses, dark nights are signals lost for
+good, not delayed. Two mitigations were offered, neither built: jobs that
+need only the database credential can run from the Mac's launchd, and the
+hourly "card countdown" job (fifteen one-minute runs a day) should move
+there regardless. The general lesson: price every scheduled job in
+minutes per month before it ships, and put a job's cap on the thing that
+grows (here, the test count), not on wall time.
