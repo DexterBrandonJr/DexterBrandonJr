@@ -1,0 +1,114 @@
+<title>NAME THE PAGE</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Tokens: light on bare :root, dark redefined twice (system + explicit). Swap hues per subject; keep the roles. */
+  :root {
+    --bg: #F3F5F7; --surface: #FFFFFF; --surface-2: #E9EDF1;
+    --ink: #16202B; --muted: #5C6B7A; --line: #D5DCE3;
+    --accent: #0F766E; --accent-soft: #D9F0EC;
+    --you: #B45309; --you-soft: #FBE8D3;
+    --proven: #1F7A4D; --proven-soft: #DDF3E6;
+    --tested: #2B5FAD; --tested-soft: #DFE8F8;
+    --expected: #6B7280; --expected-soft: #E8EAEE;
+    --display: "Sora", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+    --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0F1620; --surface: #17202B; --surface-2: #1F2A37;
+      --ink: #E6ECF2; --muted: #98A6B5; --line: #2A3644;
+      --accent: #2DD4BF; --accent-soft: #123A36;
+      --you: #F59E0B; --you-soft: #3D2A0B;
+      --proven: #4ADE80; --proven-soft: #163A27;
+      --tested: #93B4F0; --tested-soft: #1B2D4D;
+      --expected: #A3ADB8; --expected-soft: #2A3340;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0F1620; --surface: #17202B; --surface-2: #1F2A37;
+    --ink: #E6ECF2; --muted: #98A6B5; --line: #2A3644;
+    --accent: #2DD4BF; --accent-soft: #123A36;
+    --you: #F59E0B; --you-soft: #3D2A0B;
+    --proven: #4ADE80; --proven-soft: #163A27;
+    --tested: #93B4F0; --tested-soft: #1B2D4D;
+    --expected: #A3ADB8; --expected-soft: #2A3340;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; }
+  .wrap { max-width: 780px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 80px; }
+  .eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px; }
+  h1 { font-family: var(--display); font-weight: 700; font-size: 2rem; line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 1.3rem; margin: 0 0 12px; text-wrap: balance; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 1rem; margin: 18px 0 6px; }
+  p { margin: 0 0 12px; max-width: 66ch; }
+  .lede { font-size: 1.08rem; color: var(--muted); margin-bottom: 22px; }
+  section { margin: 0 0 44px; }
+  code { font-family: var(--mono); font-size: 0.86em; background: var(--surface-2); padding: 0.08em 0.35em; border-radius: 4px; }
+  a { color: var(--accent); }
+  figure { margin: 18px 0; } figure svg { display: block; width: 100%; height: auto; max-width: 100%; }
+  figcaption { font-size: 0.9rem; color: var(--muted); margin-top: 8px; }
+  .tier { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
+  .tier.proven { background: var(--proven-soft); color: var(--proven); }
+  .tier.tested { background: var(--tested-soft); color: var(--tested); }
+  .tier.expected { background: var(--expected-soft); color: var(--expected); }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0 0 18px; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 15px; }
+  .tile .k { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0 0 5px; }
+  .tile h4 { font-family: var(--display); font-size: 0.98rem; margin: 0 0 4px; }
+  .tile p { font-size: 0.9rem; color: var(--muted); margin: 0; }
+  .tile.you .k { color: var(--you); }
+  .callout { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 0 0 16px; }
+  .callout.you { border-left-color: var(--you); background: var(--you-soft); }
+  .callout .k { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 4px; color: var(--accent); }
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; margin: 0 0 16px; }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.92rem; }
+  th { text-align: left; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); padding: 9px 11px; border-bottom: 1px solid var(--line); }
+  td { padding: 9px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: none; } td:first-child { font-weight: 600; }
+  details { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 0 16px; margin: 0 0 12px; }
+  summary { cursor: pointer; padding: 12px 0; font-family: var(--display); font-weight: 600; }
+  .timeline { list-style: none; padding: 0; margin: 0 0 16px; border-left: 2px solid var(--line); }
+  .timeline li { position: relative; padding: 0 0 14px 18px; }
+  .timeline li::before { content: ""; position: absolute; left: -7px; top: 7px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); }
+  .timeline .when { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); display: block; }
+  .moves { display: flex; flex-direction: column; gap: 8px; margin: 0 0 16px; }
+  .move { display: grid; grid-template-columns: 34px 1fr; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .move .n { font-family: var(--display); font-weight: 700; color: var(--accent); font-size: 1.1rem; }
+  .move h4 { margin: 0 0 3px; font-family: var(--display); font-size: 0.98rem; } .move p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+  .vocab { display: grid; gap: 6px; margin: 0 0 12px; }
+  .vocab div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 0.92rem; }
+  .vocab b { font-family: var(--mono); font-weight: 600; font-size: 0.85rem; color: var(--accent); }
+  .sources { font-size: 0.88rem; color: var(--muted); }
+  footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 0.74rem; color: var(--muted); }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } h1 { font-size: 1.6rem; } body { font-size: 16px; } }
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">Innovation brief · MONTH YEAR</p>
+  <h1>THE QUESTION AS A HEADLINE</h1>
+  <p class="lede">The six tiles are the whole answer. Everything below is there when a piece needs proving.</p>
+
+  <section id="start"><div class="grid">
+    <div class="tile"><p class="k">The answer</p><h4></h4><p></p></div>
+    <div class="tile"><p class="k">The shape</p><h4></h4><p></p></div>
+    <div class="tile"><p class="k">What's new</p><h4></h4><p></p></div>
+    <div class="tile"><p class="k">What it costs now</p><h4></h4><p></p></div>
+    <div class="tile you"><p class="k">Your machines</p><h4></h4><p></p></div>
+    <div class="tile you"><p class="k">What I need</p><h4></h4><p></p></div>
+  </div></section>
+
+  <section id="capability"><h2>1 · The honest capability map</h2><div class="tablewrap"><table><thead><tr><th>Claim</th><th>Mechanism</th><th>Tier</th></tr></thead><tbody></tbody></table></div></section>
+  <section id="mechanism"><h2>2 · The mechanism</h2><figure><!-- inline SVG, arrows labeled --><figcaption></figcaption></figure></section>
+  <section id="map"><h2>3 · The mind map</h2><figure><!-- inline SVG --><figcaption></figcaption></figure></section>
+  <section id="math"><h2>4 · The math</h2><p></p></section>
+  <section id="psych"><h2>5 · Why it fits how your head works</h2><div class="tablewrap"><table><thead><tr><th>Effect</th><th>What it says</th><th>Where it lives</th></tr></thead><tbody></tbody></table></div></section>
+  <section id="field"><h2>6 · What the field is doing, and where this goes past it</h2></section>
+  <section id="history"><h2>7 · How we got here</h2><ul class="timeline"></ul></section>
+  <section id="vocab"><h2>8 · Eight words</h2><div class="vocab"></div></section>
+  <section id="moves"><h2>9 · First three moves</h2><div class="moves"></div></section>
+  <section id="sources"><h2>Sources</h2><ul class="sources"></ul></section>
+  <footer>tiers: proven = seen · tested = asserted in code · expected = reasoning</footer>
+</div>
