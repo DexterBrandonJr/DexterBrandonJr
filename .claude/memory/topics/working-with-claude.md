@@ -509,3 +509,37 @@ trading chat was given in-conversation, not committed.
 
 **Open threads:** Dex has not yet started the separate trading chat as of
 this entry; the routines still fire here, and this session keeps relaying.
+
+## 2026-09-25 — A brief before a build: the innovation-brief skill, and the memory hub it was first used on
+
+**Decisions:** When a build idea arrives as "brainstorm this, do deep
+research, show me visually, is this really the best way" — that is a
+brief, not a design from memory. The `innovation-brief` skill now holds
+the method: prove what is in reach before reading anything (list the
+connectors, make one real call), scan the field from primary sources,
+run four lenses (psychology, probability, habits, systems), tier every
+claim Proven / Tested / Expected, and publish a page whose first screen
+is six tiles that carry the whole answer. The chat reply stays short:
+findings that change the picture, the link, one decision.
+
+**Facts / preferences:**
+- First used on a cross-surface memory design ("one hub, every Claude a
+  client"). Two capabilities were proven from the session rather than
+  assumed: the Artifact tool lists and reads every artifact on the
+  account, and a Claude Code session's transcript is a file on disk.
+  Claude in the app can search its own past chats on paid plans, which
+  makes the app the scraper for chat history — no export needed for
+  targeted backfill.
+- The motivating message was long and personal on purpose. That is a
+  deposit, not a detour: it goes to the private doctrine and changes
+  what gets built; it is not reflected back at length.
+- Pushback that reads as doubt in the project costs more than a wrong
+  design. State a real limit once, in one sentence, beside what is
+  possible — then build.
+
+**Artifacts:** `.claude/skills/innovation-brief/` (SKILL.md, a lenses
+question bank, a page skeleton); the brief itself is a private artifact.
+
+**Open threads:** The hub build waits on one word. The skill's trigger
+has been eyeballed, not eval-tested — worth a should/shouldn't set the
+first time it misfires.
