@@ -182,3 +182,21 @@ hourly "card countdown" job (fifteen one-minute runs a day) should move
 there regardless. The general lesson: price every scheduled job in
 minutes per month before it ships, and put a job's cap on the thing that
 grows (here, the test count), not on wall time.
+
+## 2026-09-24 — Silencing a spent Actions quota without a settings switch
+
+**Decisions:** Dex asked to stop every workflow until the reset because the
+dead runs kept mailing failures. The GitHub tools here cannot disable a
+workflow or the repository's Actions switch, so each scheduled job got
+`if: ${{ false }}` under a PAUSED comment, merged as one commit. A skipped
+job costs no minutes and sends no mail; the `schedule:` blocks stay, so
+tests that pin cron times still pass and manual dispatch still works.
+Restore is a revert of that one commit, armed as a dated check-in.
+
+**Facts / preferences:**
+- Markdown-only changes can still land while the quota is spent, when the
+  test workflow ignores `**/*.md` — no job is created, so nothing fails.
+- The skip does not cover PR-triggered runs; only the owner's
+  Settings → Actions → General → Disable actions does that.
+- Order on restore matters: merge the fix for whatever burned the minutes
+  before reverting the pause, or the first night repeats the burn.
