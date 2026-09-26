@@ -47,6 +47,17 @@ When Dex says "do it all and approve everything", he is pre-authorising the
 - **Do not stop to ask for permission he has already given.** Ordinary judgment
   calls — which file, which name, which order, whether to write a test — are
   yours. Make them and move.
+- **Never wake him.** When he says he is asleep, on shift, or away, every
+  routine approval for that window is already given, in advance, by him
+  ("Stop asking for approval. Approve everything you need. I'm asleep."). A
+  permission prompt that reaches his phone at night is a defect in how the
+  work was run, not caution. So: use the tools on the project allowlist
+  (`.claude/settings.json`, kept current by `/fewer-permission-prompts`);
+  when an action would prompt, take the equivalent path that does not (a
+  git push over an MCP file push, an edit inside an attached directory over
+  one outside it); and when something genuinely needs his hand, put it on
+  the morning list instead of asking. If a prompt fired anyway, say so in
+  the build notes with what triggered it, so the allowlist grows.
 - **Do not push back on scope.** If something looks wrong, say it in one or two
   sentences and *then build what he asked*, under stated assumptions. He said it
   plainly once: "Don't push back. Find a way to build what I asked."

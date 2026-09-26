@@ -543,3 +543,18 @@ question bank, a page skeleton); the brief itself is a private artifact.
 **Open threads:** The hub build waits on one word. The skill's trigger
 has been eyeballed, not eval-tested — worth a should/shouldn't set the
 first time it misfires.
+
+## 2026-09-26 — Never wake him for approval: standing approval inside a named window
+
+**Decisions:**
+- Dex, at night, after permission prompts reached his phone during the hub build: "Stop asking for approval. Approve everything you need. I'm asleep and can't check my phone every time … Put that in your build notes, especially when it's a particular time frame." So: when he names a window (asleep, on shift, away), every routine approval inside it is already given. A prompt that reaches his phone at night is a defect in how the work was run, not caution.
+- The remedy is structural: the tools a build uses are on the project allowlist in `.claude/settings.json` (named tools and specific scripts only; nothing that runs arbitrary code, nothing that can place a trade), the attached repos are listed as additional directories so edits there do not prompt, and anything that truly needs his hand goes on the morning list.
+- Written into the `phased-build` execution contract ("Never wake him"), the private doctrine §3, the hub's working agreement, and the hub itself as a boot rule every surface reads.
+
+**Facts / preferences:**
+- The prompts that fired tonight came from edits to files outside the primary working directory (the doctrine repo's project register) and from write tools that the auto permission mode still refers to a human. Both classes are now covered.
+- Not allowlisted on purpose: interpreters and shells as wildcards, and every broker order tool. The one prompt that should ever reach him is a live trade.
+
+**Artifacts:** `.claude/settings.json` (permissions), `.claude/skills/phased-build/SKILL.md` (the "Never wake him" rule).
+
+**Open threads:** If a prompt fires anyway in a future session, the build notes name what triggered it and the allowlist grows.
