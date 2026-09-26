@@ -22,3 +22,13 @@
 **Facts / preferences:** Dex wants both detailed execution plans (not just a task list) and a visual system map when asking for follow-up work like this — delivered as `references/roadmap.md` (protocol per item) plus the "Efficiency Web" artifact (diagram of how the pieces feed back into each other).
 **Artifacts:** `scripts/scan_for_secrets.py`, `scripts/list_topics.py` (new), `scripts/session_start_hook.sh` (index cap added), `SKILL.md` Saving section (reordered), `references/roadmap.md` (new — protocol for all 9 items). Also fixed a real bug found via testing: `skill-builder/scripts/validate_skill.py` was flagging valid repo-root-relative script references as missing. Efficiency Web diagram: https://claude.ai/code/artifact/c85cb13b-e96c-4ef2-bf8a-76f0c19d8a9d
 **Open threads:** The 5 deferred items above remain open, each with a protocol written but not executed — see `references/roadmap.md` for what "done" looks like on each before picking one up.
+
+## 2026-09-26 — new_entry.py leaves the index out of recency order
+
+**Decisions:** Found a real bug in the tooling rather than in an entry. `new_entry.py` updates a topic's `updated` date in `INDEX.md` **in place**, without moving its line, so adding an entry to an older topic leaves it sitting below newer ones. Caught it when the check-in-cadence topic, dated that day, appeared below entries from the sixth. Re-sorted by hand (stable sort on the date, descending, trailing comment block preserved) and committed the fix to the file, but **the script itself is unchanged and will do it again**.
+
+**Facts / preferences:** Recency order is the one property the index exists for — the `SessionStart` hook injects it whole every session, and its value is that the freshest topics are the ones read first. A silent re-order defeats that without anything looking wrong, which puts it in the same family as the other checks-that-establish-nothing collected in `working-with-claude.md`.
+
+**Artifacts:** Hand fix in commit `e72b56f`. The bug is in `scripts/new_entry.py`, in whichever step rewrites the pointer line.
+
+**Open threads:** New roadmap item, on top of the five still deferred from round 2: **make `new_entry.py` re-sort the whole index after updating a pointer line**, rather than editing it where it sits. Small and self-contained — the sort is by the date in each line, descending, stable within a date, leaving the trailing HTML comment alone. Worth doing before the next time someone trusts the order.

@@ -128,3 +128,13 @@ is to pay it only when the stale version being live costs more.
 
 **Artifacts:** `DexterBrandonJr/trading-engine` pull requests 148→149 and
 this repo's 27→28 and 29→30 are the close-and-recreate pairs.
+
+## 2026-09-26 — The draft-to-ready flip worked; send it alone
+
+**Decisions:** Flipped [DexterBrandonJr#32](https://github.com/DexterBrandonJr/DexterBrandonJr/pull/32) from draft to ready for review with `update_pull_request` and `draft: false`, and it went through first try. No rate limit, so the close-and-recreate workaround was not needed and the pull request number stayed intact. Sent `draft: false` on its own, with no title or body in the same call — deliberately, because of the partial-application trap in the entry above: one call carrying both can apply the REST fields and then fail on the GraphQL one, leaving a pull request retitled but still a draft. Read the state back afterwards rather than trusting the empty-looking success.
+
+**Facts / preferences:** The GraphQL rate limit is **intermittent, not a standing condition**. It blocked this same operation repeatedly on 2026-09-16 and was completely clear ten days later. So the order of preference is: try the flip alone first, read back to confirm, and only reach for close-and-recreate if it actually fails *and* the stale version being live is costing something. Do not skip straight to the workaround on the strength of the earlier entry.
+
+**Artifacts:** Pull request 32 — flipped 2026-09-16 15:34 UTC, confirmed `draft: false` and `mergeable_state: clean` by reading it back. No close-and-recreate pair this time, unlike 148→149, 27→28 and 29→30.
+
+**Open threads:** None. The two paths are now both recorded with the condition that picks between them.
