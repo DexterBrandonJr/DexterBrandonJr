@@ -127,3 +127,21 @@
 
 **Open threads:**
 - The first unattended nightly with the three new steps runs 27 Sep. Dex creates the worker routine in the Claude app so the field, the aliases and the plan run without a chat. From any chat: say `plan`, accept one small item, finish it, say `done`.
+
+## 2026-09-26 — Scenarios live in the hub; the database upgrade checked; model by work
+
+**Decisions:**
+- Scenarios is part of the hub (private repo, migration 0017): the same engine as the public skill, run inside the database, with runs and observations kept forever and append-only, forecasts on the hub's ledger, a nightly re-run of stale scenarios, a route intent for plain words ("what if", "which is better", "simulate"), a digest line and a weekly paragraph. No brief section: the brief is at its cap.
+- The database upgrade Supabase announced (PostgreSQL 17.6 to 17.11) was checked against the hub's four risk areas: nothing applies, no action needed.
+- Model by work: routine chats and Code sessions on Opus 5.5; Fable 5.1 for the brief and the hardest phase of a large build. The hub's backlog names the model per size.
+
+**Facts / preferences:**
+- Proven live: self-test 84 checks, gate 4 of 4, the new functions identical live and local; two worked scenarios defined and run with the same answers as the portable engine.
+- The daily workers still wait on Dex: a routine made from a Code session cannot carry the database connector on this plan.
+
+**Artifacts:**
+- Private repo: `0017_scenarios.sql`, docs/SCENARIOS.md, three failure classes in the working agreement, predictions 24 to 26.
+- This repo: `.claude/skills/scenarios/`, the hub skill's what-if row, `CLAUDE.md`.
+
+**Open threads:**
+- Dex: log a real workout against the training-day scenario (done or skipped) so the model starts learning from his record; create the worker routine in the Claude app.

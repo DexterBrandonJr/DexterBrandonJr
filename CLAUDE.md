@@ -21,6 +21,13 @@ things with Claude Code.
   systems built (the eight parts, the rhythm, the confidence contract), and
   how to reach the full doctrine in the private `DexterBrandonJr/workhorse`
   repo. Triggers on any new build in any domain.
+- `.claude/skills/scenarios/` — settles a what-if with a Monte Carlo
+  simulation that stops as soon as the answer is settled (1 to 10,000 runs),
+  compares configurations on the same random draws, and labels every factor
+  measured, estimated, emerging or speculative from a 129-node catalog
+  (`references/domains.json`). `scripts/scenarios.py` runs anywhere; the
+  private hub runs the same engine in the database and matches it draw for
+  draw.
 - `.claude/memory/` — the actual memory store (`INDEX.md` + `topics/`).
   **This repo is public** — nothing sensitive goes in here. See the skill's
   public/private/never-in-git guidance before writing an entry; some things
