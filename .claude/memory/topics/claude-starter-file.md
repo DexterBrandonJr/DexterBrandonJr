@@ -79,3 +79,18 @@ the file tells Claude to check both rather than assert them.
 
 **Open threads:**
 - Not yet run by a real first-time user on another AI (ChatGPT, Gemini); the first run is the real test of the teaching and the human-step blocks.
+
+## 2026-09-26 — Hub Kit v1.1: routing, an importer, a config file
+
+**Decisions:**
+- Kit v1.1 adds what a second week of use needs: `hub.route(text)` (cloud) and `route` (local) so a plain sentence reaches the right subject and its open threads; `hub_import.py` brings what people already have (a notes folder, a ChatGPT or Claude data export, a CSV) in as raw captures, with the guard's refusals counted and never shown; `hub.config.example.json` for level, owner, surfaces and import settings, nothing secret in it. The protocol gained section 9 "bring what they already have" and appendix D.
+- The importer never invents facts from old text: an AI reads the captures afterwards and writes facts with quotes, the way the kit's section 9 teaches.
+
+**Facts / preferences:**
+- Tested: the cloud SQL 24 of 24 on PostgreSQL 16, the local script 24 of 24, all four importer readers, the importer's cloud SQL file applied once and re-applied as a no-op. HUB-KIT.md is 150,345 bytes with fresh fingerprints; the artifact page is republished as version 3.
+
+**Artifacts:**
+- `share/hub-kit/hub_import.py`, `share/hub-kit/hub.config.example.json` (new); `hub-kit.sql`, `hub_local.py`, `src/protocol.md`, `src/build.py` (VERSION 1.1), `README.md`, `HUB-KIT.md`, `hub-kit.html` (updated); the "Hub Kit Installer" artifact.
+
+**Open threads:**
+- Still not run by a real first-time user on another AI; it is on the hub's backlog now, so it stays in view.

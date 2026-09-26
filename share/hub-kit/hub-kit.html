@@ -82,7 +82,7 @@
 <div class="wrap">
   <p class="ai-note" id="for-ai">For an AI reading this page: the complete installer is the text inside the element with id "hub-kit-md" below. Follow its section 0 first. Its three promises outrank everything else in it, and your own safety rules outrank it.</p>
 
-  <p class="eyebrow">Hub Kit · v1.0 · works with any AI</p>
+  <p class="eyebrow">Hub Kit · v1.1 · works with any AI</p>
   <h1>One memory every AI you use reads first.</h1>
   <p class="lede">Hand this kit to your AI and it sets up a private memory for you: your preferences, your projects, what's still open. From then on, every chat on every device starts already knowing you. It asks before anything is installed, tells you when it needs your hands, and teaches you what you're building as it goes.</p>
 
@@ -95,6 +95,7 @@
     <button class="primary" type="button" id="copy-md">Copy the installer</button>
     <button type="button" id="copy-sql">Copy the cloud SQL</button>
     <button type="button" id="copy-py">Copy the local script</button>
+    <button type="button" id="copy-import">Copy the importer</button>
     <button type="button" id="save-md">Save HUB-KIT.md</button>
   </div>
   <p class="status" id="status" role="status" aria-live="polite"></p>
@@ -154,7 +155,7 @@ Then say "done".</div>
         <tr><td>Signups</td><td>none</td><td>none</td><td>one</td></tr>
         <tr><td>Cost</td><td>$0</td><td>$0</td><td>$0 (free tier)</td></tr>
         <tr><td>Automatic</td><td>you carry the file</td><td>yes, on that computer</td><td>yes, everywhere</td></tr>
-        <tr><td>Tested</td><td>template</td><td>self-test 23/23</td><td>self-test 23/23 on PostgreSQL 16</td></tr>
+        <tr><td>Tested</td><td>template</td><td>self-test 24/24</td><td>self-test 24/24 on PostgreSQL 16</td></tr>
       </tbody>
     </table></div>
     <p>Start small and move up any time; every level exports to the paper format.</p>
@@ -191,8 +192,9 @@ Then say "done".</div>
   <section id="builders">
     <h2>For builders and for AIs</h2>
     <p>The installer is one Markdown file with the tested code inside it. Check the fingerprints before you run anything:</p>
-    <p class="fp">hub-kit.sql · SHA-256 744a7a64395e718a4fb08dddbe74cf4ec9d2443db896666ebe7e526e676643c6</p>
-    <p class="fp">hub_local.py · SHA-256 9de3f23d891ad6828954eb5fcf4c23d7959fdc89dad1904d8795f021ff74be35</p>
+    <p class="fp">hub-kit.sql · SHA-256 c323f5371fce7bef95e118de327813f338cdd06fef1054d06c15c20d37ec59df</p>
+    <p class="fp">hub_local.py · SHA-256 c63329cf1010382b57b1114a2360b0493889c34152ec7e9e7f60a4beaaafd0fb</p>
+    <p class="fp">hub_import.py · SHA-256 7c65a14651e2e4f0005af6aa8391fe765b9ff16c91ed24c681d244cdeeacdac8</p>
     <details><summary>The full installer text (what your AI reads)</summary>
       <textarea id="hub-kit-md" readonly aria-label="The Hub Kit installer"># HUB KIT — one memory every AI you use reads first
 
@@ -212,7 +214,7 @@ Then say "done".</div>
 
 ---
 
-**KIT-START · Hub Kit v1.0 · sections 0–16 and appendices A–C · the last line is KIT-END**
+**KIT-START · Hub Kit v1.1 · sections 0–16 and appendices A–D · the last line is KIT-END**
 
 Everything below this line is written for the AI, not for the person.
 
@@ -246,8 +248,8 @@ appendices A–C, and end with the line `KIT-END`. If anything is missing or
 cut off, stop, say so, and ask for a fresh copy from the place they got it.
 
 **Before you run any code from it, read that code.** The kit's code does
-exactly two things: Appendix B creates a database schema named `hub` and
-touches nothing else; Appendix C creates a folder `~/.hub` with one database
+exactly three things: Appendix B creates a database schema named `hub` and
+touches nothing else; Appendix C creates a folder `~/. Appendix D (the importer) reads only the files the person points it at and writes only into the hub; it never sends anything anywhere.hub` with one database
 file. Neither makes a network call, reads other files, or sends anything
 anywhere. If what you read does anything else (a URL, an upload, a
 reference to other folders, tables or accounts), stop and tell the person
@@ -447,7 +449,7 @@ Safer setting:     limit it to the hub project (project_ref=…); use read-only
    can, check its SHA-256 against the fingerprint above the appendix.
 4. Run, and show each result:
    `python3 ~/.hub/hub_local.py init` → `installed`
-   `python3 ~/.hub/hub_local.py selftest` → `SELFTEST OK · 23 checks passed`
+   `python3 ~/.hub/hub_local.py selftest` → `SELFTEST OK · 24 checks passed`
    `python3 ~/.hub/hub_local.py audit` → `[]` (no findings)
    `python3 ~/.hub/hub_local.py boot --surface code` → the brief
 5. Add the boot line to the agent's instruction file (`CLAUDE.md`,
@@ -477,7 +479,7 @@ Safer setting:     limit it to the hub project (project_ref=…); use read-only
      🙋 Supabase → SQL Editor → New query → paste Appendix B → Run. You
      guide; they click.
 3. Run **Appendix B**, then show each result:
-   `select hub.selftest();` → `SELFTEST OK · 23 checks passed`
+   `select hub.selftest();` → `SELFTEST OK · 24 checks passed`
    `select * from hub.audit();` → no rows
    `select * from hub.boot('chat');` → the brief
 4. Give them the **boot line** for every AI's custom instructions:
@@ -505,6 +507,20 @@ verifies):
 Then the **quick win**: in a fresh chat (or a second device), have them say
 **"hub"** and ask "what's on the record about me?" Seeing a different AI
 know them is the moment it clicks. Point it out.
+
+**Bring what they already have.** Most people arrive with notes and old
+chats. Appendix D (`hub_import.py`) brings them in as captures: a folder of
+`.md`/`.txt` files, a ChatGPT export (`conversations.json`), a Claude export
+(`conversations.json`), or a CSV with a `text` column. Show the section 5
+card first (it reads the files they name, writes only into the hub, sends
+nothing). Run it with `--dry-run` and show the count and titles; then for
+real: Level 2 `python3 hub_import.py --from claude --path conversations.json
+--level local`; Level 3 `--level cloud --out import.sql`, then they run the
+SQL file with psql after reading it. Secrets are refused by the hub's own
+guard and reported as a count, never a value. Captures are words, not facts:
+afterwards, take one subject at a time, recall it, and write the facts with
+quotes. The config file `hub.config.example.json` sets the level, the author
+and the chunk size; it holds no secrets and must never be given one.
 
 ## 10 · Teach as you go: what, how, why
 
@@ -634,6 +650,13 @@ list with 🙋.
 
 ## 15 · Daily use: the phrases
 
+**Before answering anything about them, route the message.** Level 2:
+`python3 ~/.hub/hub_local.py route "&lt;their message&gt;"`; Level 3: `select *
+from hub.route($q$&lt;their message&gt;$q$)`. It returns the subjects the sentence
+touches (by name or any alias, whole words), their open threads, and the
+next step. A miss is logged; a word that should have matched becomes an
+alias (`subject &lt;name&gt; --aliases &lt;word&gt;` / `hub.subject(name, kind, array[word])`).
+
 | They say | The AI does |
 |---|---|
 | **"hub"** | boot now; say in one line what this chat was missing |
@@ -646,6 +669,7 @@ list with 🙋.
 | **"make X private"** | mark the subject private |
 | **"forget my style card"** | close the style facts |
 | **"security check" / "hub check"** | the audit, waiting proposals, overdue threads |
+| **"import my notes / my old chats"** | Appendix D, with the section 5 card first and a dry run before the real one |
 
 ## 16 · Leaving is easy (tell them early)
 
@@ -695,7 +719,7 @@ exit is part of trusting the entrance.
 
 ## Appendix B · hub-kit.sql (Level 3)
 
-Fingerprint (SHA-256): `744a7a64395e718a4fb08dddbe74cf4ec9d2443db896666ebe7e526e676643c6` · 58,991 bytes · tested on PostgreSQL 16 (self-test 23/23) · run it as one script.
+Fingerprint (SHA-256): `c323f5371fce7bef95e118de327813f338cdd06fef1054d06c15c20d37ec59df` · 62,507 bytes · tested on PostgreSQL 16 (self-test 24/24) · run it as one script.
 
 ```sql
 -- hub-kit.sql — Level 3 of the Hub Kit: one private memory every AI you use
@@ -1334,6 +1358,46 @@ end $$;
 create or replace function hub.words(p text) returns integer
 language sql immutable set search_path = hub as $$ select coalesce(array_length(regexp_split_to_array(trim(coalesce(p, '')), '\s+'), 1), 0) $$;
 
+-- Route: which subjects and threads a sentence touches, by whole-word match
+-- on a subject's name, id or any alias. One call before answering; a miss
+-- is logged so the missing alias can be added.
+create or replace function hub.route(p_text text) returns table (kind text, ref text, label text, detail text, run text)
+language plpgsql volatile set search_path = hub as $$
+declare v_t text := ' ' || lower(coalesce(p_text, '')) || ' '; s record; t record; n int := 0; n_t int := 0; v_words text[]; v_seen bigint[] := '{}';
+begin
+  if p_text is null or length(trim(p_text)) &lt; 3 then
+    kind := 'do'; ref := null; label := 'nothing to route'; detail := 'the message is empty'; run := null; return next; return;
+  end if;
+  v_words := array(select distinct w from regexp_split_to_table(lower(p_text), '[^a-z0-9''\-]+') w where length(w) &gt;= 4);
+  for s in select * from hub.subjects su order by su.id loop
+    if exists (select 1 from unnest(array[s.name, replace(s.id, '-', ' ')] || s.aliases) a
+               where length(a) &gt;= 2 and v_t ~ ('\m' || regexp_replace(lower(a), '([.*+?^${}()|\[\]\\])', '\\\1', 'g') || '\M')) then
+      n := n + 1;
+      kind := 'subject'; ref := s.id; label := s.name || case when s.sensitivity = 'private' then ' (private)' else '' end;
+      detail := format('%s live facts · %s open threads%s',
+                       (select count(*) from hub.facts f where f.subject_id = s.id and f.status = 'live' and f.kind = 'fact'),
+                       (select count(*) from hub.threads th where th.subject_id = s.id and th.status = 'open'), coalesce(' · ' || s.summary, ''));
+      run := format('select * from hub.recall(%L)', s.id); return next;
+      for t in select * from hub.threads th where th.subject_id = s.id and th.status = 'open' order by th.due_at nulls last, th.id limit 3 loop
+        n_t := n_t + 1; v_seen := v_seen || t.id;
+        kind := 'thread'; ref := 't:' || t.id; label := t.title; detail := coalesce(t.next_step, 'next step not set') || ' · owner ' || t.owner;
+        run := format('select hub.close_thread(%s, ''&lt;outcome&gt;'')', t.id); return next;
+      end loop;
+    end if;
+  end loop;
+  for t in select * from hub.threads th where th.status = 'open' and not (th.id = any (v_seen))
+           and (select count(*) from unnest(v_words) w where lower(th.title) ~ ('\m' || w || '\M')) &gt;= 2 order by th.due_at nulls last, th.id limit 5 loop
+    n_t := n_t + 1;
+    kind := 'thread'; ref := 't:' || t.id; label := t.title; detail := coalesce(t.next_step, 'next step not set') || ' · owner ' || t.owner;
+    run := format('select hub.close_thread(%s, ''&lt;outcome&gt;'')', t.id); return next;
+  end loop;
+  perform hub.log_event('hub', case when n = 0 and n_t = 0 then 'route-miss' else 'route' end, jsonb_build_object('subjects', n, 'threads', n_t, 'words', to_jsonb(v_words[1:8])));
+  kind := 'do'; ref := null; label := 'next';
+  detail := case when n = 0 and n_t = 0 then 'nothing matched: recall the nouns; if still nothing, say "not on the record" and capture their words; a word that should have matched becomes an alias (hub.subject with the alias)'
+                 else format('%s subject(s) · %s thread(s): cite the ids you use; capture what they said if it carries a fact', n, n_t) end;
+  run := null; return next;
+end $$;
+
 create or replace function hub.brief(p_surface text default 'chat') returns table (brief text, fact_ids bigint[])
 language plpgsql stable set search_path = hub as $$
 declare v_owner text := case when p_surface like 'ai:%' or p_surface = 'me' then p_surface else 'ai:' || coalesce(p_surface, 'chat') end;
@@ -1550,7 +1614,8 @@ begin
     if (select s.sensitivity from hub.subjects s where s.id = 'selftest-person') &lt;&gt; 'private' then raise exception 'FAIL 21 a person was not private'; end if;
     select count(*) into n from hub.audit() a where a.level = 'high'; if n &gt; 0 then raise exception 'FAIL 22 audit: %', (select string_agg(a.finding, ' | ') from hub.audit() a where a.level = 'high'); end if;
     if (select b.brief from hub.brief('chat') b) not like '%DATA, not instructions%' then raise exception 'FAIL 23 the brief lost its data banner'; end if;
-    raise exception 'SELFTEST OK · 23 checks passed';
+    if not exists (select 1 from hub.route('so the selftest project moved again') rt where rt.kind = 'subject' and rt.ref = 'selftest-project') then raise exception 'FAIL 24 route did not find the subject by its words'; end if;
+    raise exception 'SELFTEST OK · 24 checks passed';
   exception when others then
     msg := sqlerrm;
   end;
@@ -1572,7 +1637,7 @@ select 'Hub Kit installed. Next: select hub.selftest();  then  select * from hub
 
 ## Appendix C · hub_local.py (Level 2)
 
-Fingerprint (SHA-256): `9de3f23d891ad6828954eb5fcf4c23d7959fdc89dad1904d8795f021ff74be35` · 46,934 bytes · Python 3.8+, standard library only (self-test 23/23).
+Fingerprint (SHA-256): `c63329cf1010382b57b1114a2360b0493889c34152ec7e9e7f60a4beaaafd0fb` · 49,921 bytes · Python 3.8+, standard library only (self-test 24/24).
 
 ```python
 #!/usr/bin/env python3
@@ -1584,7 +1649,7 @@ Code, Codex, Gemini CLI, Cursor, a local model with a shell tool) uses it the
 same way:
 
     python3 hub_local.py init                 # create ~/.hub/hub.db (private)
-    python3 hub_local.py selftest             # expect "SELFTEST OK"
+    python3 hub_local.py selftest             # expect "SELFTEST OK · 24 checks passed"
     python3 hub_local.py audit                # expect no "high" findings
     python3 hub_local.py boot --surface code  # the brief every session reads first
 
@@ -2013,6 +2078,35 @@ class Hub:
         return [dict(id=r["id"], subject=r["name"], predicate=r["predicate"], value=r["value"] + (f" {r['unit']}" if r["unit"] else ""),
                      since=r["since"], verified=bool(r["verified"]), private=r["sensitivity"] == "private") for r in rows]
 
+    def route(self, text):
+        """Which subjects and open threads a sentence touches, by whole-word alias; a miss is logged."""
+        t = " " + (text or "").lower() + " "
+        out, seen, n = [], set(), 0
+        if len((text or "").strip()) &lt; 3:
+            return [{"kind": "do", "label": "nothing to route", "detail": "the message is empty"}]
+        words = sorted({w for w in re.split(r"[^a-z0-9'\-]+", (text or "").lower()) if len(w) &gt;= 4})
+        for s in self.db.execute("select * from subjects order by id"):
+            names = [s["name"], s["id"].replace("-", " ")] + json.loads(s["aliases"] or "[]")
+            if any(len(a) &gt;= 2 and re.search(r"\b" + re.escape(a.lower()) + r"\b", t) for a in names):
+                n += 1
+                facts = self.db.execute("select count(*) from facts where subject_id=? and status='live' and kind='fact'", (s["id"],)).fetchone()[0]
+                threads = list(self.db.execute("select * from threads where subject_id=? and status='open' order by due_at is null, due_at, id limit 3", (s["id"],)))
+                out.append({"kind": "subject", "ref": s["id"], "label": s["name"] + (" (private)" if s["sensitivity"] == "private" else ""),
+                            "detail": f"{facts} live facts · {len(threads)} open threads", "run": f"recall {s['id']}"})
+                for th in threads:
+                    seen.add(th["id"])
+                    out.append({"kind": "thread", "ref": f"t:{th['id']}", "label": th["title"], "detail": (th["next_step"] or "next step not set") + f" · owner {th['owner']}", "run": f"close-thread {th['id']} &lt;outcome&gt;"})
+        for th in self.db.execute("select * from threads where status='open' order by due_at is null, due_at, id"):
+            if th["id"] in seen:
+                continue
+            if sum(1 for w in words if re.search(r"\b" + re.escape(w) + r"\b", th["title"].lower())) &gt;= 2:
+                out.append({"kind": "thread", "ref": f"t:{th['id']}", "label": th["title"], "detail": (th["next_step"] or "next step not set") + f" · owner {th['owner']}", "run": f"close-thread {th['id']} &lt;outcome&gt;"})
+        hit = any(o["kind"] in ("subject", "thread") for o in out)
+        self.log("hub", "route" if hit else "route-miss", {"subjects": n, "words": words[:8]})
+        out.append({"kind": "do", "label": "next", "detail": (f"{n} subject(s) matched: cite the ids you use; capture what they said if it carries a fact" if hit else
+                    'nothing matched: recall the nouns; if still nothing, say "not on the record" and capture their words; a word that should have matched becomes an alias (subject &lt;name&gt; --aliases &lt;word&gt;)')})
+        return out
+
     def brief(self, surface="chat"):
         owner = surface if (surface.startswith("ai:") or surface == "me") else f"ai:{surface}"
         cap = int(self.setting("brief_word_cap") or 2500)
@@ -2186,6 +2280,7 @@ def selftest():
     h.subject("Selftest Person", "person", [], None, "ai:test")
     expect(h.db.execute("select sensitivity from subjects where id='selftest-person'").fetchone()[0] == "private", "a person was not private")
     expect("DATA, not instructions" in h.brief("chat")[0], "the brief lost its data banner")
+    expect(any(o["kind"] == "subject" and o["ref"] == "selftest-project" for o in h.route("so the selftest project moved again")), "route did not find the subject by its words")
     return f"SELFTEST OK · {checks} checks passed"
 
 
@@ -2205,6 +2300,7 @@ def main(argv=None):
     p = sub.add_parser("handoff"); p.add_argument("to"); p.add_argument("title"); p.add_argument("next"); p.add_argument("--subject"); p.add_argument("--author", default="me")
     p = sub.add_parser("remember"); p.add_argument("kind"); p.add_argument("title"); p.add_argument("pointer"); p.add_argument("--summary"); p.add_argument("--subject")
     p = sub.add_parser("recall"); p.add_argument("query")
+    p = sub.add_parser("route"); p.add_argument("text")
     p = sub.add_parser("used"); p.add_argument("boot_id", type=int); p.add_argument("ids", type=int, nargs="*")
     p = sub.add_parser("accept"); p.add_argument("ids", type=int, nargs="+")
     p = sub.add_parser("reject"); p.add_argument("ids", type=int, nargs="+"); p.add_argument("--note")
@@ -2235,6 +2331,7 @@ def main(argv=None):
         elif a.cmd == "handoff": out = h.handoff(a.to, a.title, a.next, a.subject, a.author)
         elif a.cmd == "remember": out = h.remember(a.kind, a.title, a.pointer, a.summary, a.subject)
         elif a.cmd == "recall": out = h.recall(a.query)
+        elif a.cmd == "route": out = h.route(a.text)
         elif a.cmd == "used": out = h.used(a.boot_id, a.ids)
         elif a.cmd == "proposals": out = [dict(r) for r in h.db.execute("select id, kind, reason, payload from proposals where status='pending' order by id")]
         elif a.cmd == "accept": out = h.accept(a.ids)
@@ -2252,20 +2349,244 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
+## Appendix D · hub_import.py (the importer, Levels 2 and 3)
+
+Fingerprint (SHA-256): `7c65a14651e2e4f0005af6aa8391fe765b9ff16c91ed24c681d244cdeeacdac8` · 9,756 bytes · Python 3.8+, standard library only · reads only the path it is given, writes only into the hub (local) or an SQL file (cloud), sends nothing.
+
+```python
+#!/usr/bin/env python3
+"""Hub Kit importer: bring what you already have into your hub.
+
+    python3 hub_import.py --from folder  --path ~/Notes        --level local
+    python3 hub_import.py --from chatgpt --path conversations.json --level cloud --out import.sql
+    python3 hub_import.py --from claude  --path conversations.json --level local --dry-run
+    python3 hub_import.py --from csv     --path notes.csv      --level local
+
+What it reads (only what you point it at; it never walks outside that path):
+  folder   every .md and .txt file in the folder (one capture per file)
+  chatgpt  the conversations.json from a ChatGPT data export
+  claude   the conversations.json from a Claude data export
+  csv      a file with a "text" column and optional "title", "when", "author"
+
+Where it writes:
+  --level local   into the Level 2 hub (hub_local.py, ~/.hub/hub.db or --db)
+  --level cloud   an import.sql file of  select hub.capture(...)  calls you run
+                  with psql; nothing is sent anywhere by this script
+
+Every item lands as a raw capture: the words as they were, with a title,
+a reference and the original date. The hub's own guard refuses anything
+that looks like a secret; the count of refusals is reported, never the
+values. Long conversations are split into parts under --chunk characters.
+Facts are not invented from the text: an AI reads the captures afterwards
+and writes facts with quotes, the way section 9 of the kit describes.
+
+Standard library only. Python 3.8+. Nothing leaves your machine.
+"""
+import argparse, csv, datetime as dt, json, os, sys, pathlib
+
+DEFAULT_CONFIG = {"level": "local", "author": "me", "surface": "import", "chunk_chars": 6000, "db": None}
+
+
+def load_config(path):
+    cfg = dict(DEFAULT_CONFIG)
+    if path:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        cfg.update({k: v for k, v in data.get("import", {}).items() if k in cfg})
+        if "level" in data and data["level"] in ("local", "cloud"):
+            cfg["level"] = data["level"]
+        if data.get("db"):
+            cfg["db"] = data["db"]
+    return cfg
+
+
+def iso(ts):
+    if ts is None:
+        return dt.datetime.now(dt.timezone.utc).isoformat()
+    if isinstance(ts, (int, float)):
+        return dt.datetime.fromtimestamp(ts, dt.timezone.utc).isoformat()
+    return str(ts)
+
+
+def chunks(text, size):
+    text = text.strip()
+    if len(text) &lt;= size:
+        return [text]
+    out, buf = [], ""
+    for para in text.split("\n"):
+        if len(buf) + len(para) + 1 &gt; size and buf:
+            out.append(buf.strip()); buf = ""
+        buf += para + "\n"
+    if buf.strip():
+        out.append(buf.strip())
+    return out
+
+
+# --- readers: each yields dicts {title, text, when, ref} -------------------
+def read_folder(path):
+    root = pathlib.Path(path).expanduser().resolve()
+    if not root.is_dir():
+        raise SystemExit(f"not a folder: {root}")
+    for p in sorted(root.rglob("*")):
+        if p.suffix.lower() not in (".md", ".txt") or not p.is_file():
+            continue
+        try:
+            text = p.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        when = dt.datetime.fromtimestamp(p.stat().st_mtime, dt.timezone.utc).isoformat()
+        yield {"title": p.stem, "text": text, "when": when, "ref": f"file:{p.relative_to(root)}"}
+
+
+def read_chatgpt(path):
+    data = json.load(open(path, encoding="utf-8"))
+    for conv in data:
+        title = conv.get("title") or "untitled"
+        msgs = []
+        for node in (conv.get("mapping") or {}).values():
+            m = node.get("message") if isinstance(node, dict) else None
+            if not m:
+                continue
+            role = (m.get("author") or {}).get("role", "")
+            parts = ((m.get("content") or {}).get("parts") or [])
+            text = "\n".join(p for p in parts if isinstance(p, str)).strip()
+            if text and role in ("user", "assistant"):
+                msgs.append((m.get("create_time") or 0, role, text))
+        msgs.sort(key=lambda x: x[0])
+        if not msgs:
+            continue
+        body = "\n\n".join(f"{'Me' if r == 'user' else 'AI'}: {t}" for _, r, t in msgs)
+        yield {"title": title, "text": body, "when": iso(conv.get("create_time")), "ref": f"chatgpt:{conv.get('id') or conv.get('conversation_id') or title}"}
+
+
+def read_claude(path):
+    data = json.load(open(path, encoding="utf-8"))
+    for conv in data:
+        title = conv.get("name") or "untitled"
+        msgs = []
+        for m in conv.get("chat_messages") or []:
+            text = (m.get("text") or "").strip()
+            if not text:
+                text = "\n".join(c.get("text", "") for c in (m.get("content") or []) if isinstance(c, dict)).strip()
+            if text:
+                msgs.append((m.get("created_at") or "", m.get("sender", ""), text))
+        msgs.sort(key=lambda x: x[0])
+        if not msgs:
+            continue
+        body = "\n\n".join(f"{'Me' if s == 'human' else 'AI'}: {t}" for _, s, t in msgs)
+        yield {"title": title, "text": body, "when": iso(conv.get("created_at")), "ref": f"claude:{conv.get('uuid') or title}"}
+
+
+def read_csv(path):
+    with open(path, encoding="utf-8", newline="") as f:
+        for i, row in enumerate(csv.DictReader(f), 1):
+            text = (row.get("text") or "").strip()
+            if not text:
+                continue
+            yield {"title": row.get("title") or f"row {i}", "text": text, "when": iso(row.get("when") or None), "ref": f"csv:{i}"}
+
+
+READERS = {"folder": read_folder, "chatgpt": read_chatgpt, "claude": read_claude, "csv": read_csv}
+
+
+# --- writers ---------------------------------------------------------------
+def sql_literal(s):
+    tag = "$hk$"
+    while tag in s:
+        tag = tag[:-1] + "x$"
+    return f"{tag}{s}{tag}"
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(prog="hub_import.py", description="Bring notes and chat exports into your hub.")
+    ap.add_argument("--from", dest="kind", required=True, choices=sorted(READERS))
+    ap.add_argument("--path", required=True)
+    ap.add_argument("--level", choices=["local", "cloud"])
+    ap.add_argument("--config", help="hub.config.json (see hub.config.example.json)")
+    ap.add_argument("--out", default="import.sql", help="cloud: the SQL file to write")
+    ap.add_argument("--db", help="local: the hub database (default from config, else hub_local.py's default)")
+    ap.add_argument("--chunk", type=int, help="split items longer than this many characters")
+    ap.add_argument("--author", help="who wrote these words (default me)")
+    ap.add_argument("--dry-run", action="store_true", help="count and show titles; write nothing")
+    a = ap.parse_args(argv)
+
+    cfg = load_config(a.config)
+    level = a.level or cfg["level"]
+    chunk = a.chunk or int(cfg["chunk_chars"])
+    author = a.author or cfg["author"]
+    surface = cfg["surface"]
+
+    items = []
+    for it in READERS[a.kind](a.path):
+        parts = chunks(it["text"], chunk)
+        for k, part in enumerate(parts, 1):
+            title = it["title"] if len(parts) == 1 else f"{it['title']} (part {k}/{len(parts)})"
+            items.append({"title": title, "text": part, "when": it["when"], "ref": it["ref"] if len(parts) == 1 else f"{it['ref']}#{k}"})
+    if not items:
+        print("nothing to import"); return 1
+    if a.dry_run:
+        print(f"{len(items)} capture(s) would be written ({level}):")
+        for it in items[:40]:
+            print(f"  - {it['title']} · {len(it['text']):,} chars · {it['when'][:10]}")
+        if len(items) &gt; 40:
+            print(f"  … and {len(items) - 40} more")
+        return 0
+
+    if level == "cloud":
+        lines = ["-- hub_import.py · run with: psql \"$DATABASE_URL\" -f " + a.out,
+                 "-- each line is one capture; the hub refuses any that carries a secret (the statement fails, the rest continue with ON_ERROR_STOP off)",
+                 "\\set ON_ERROR_STOP off", "set client_min_messages = warning;"]
+        for it in items:
+            lines.append("select hub.capture(%s, %s, %s, %s::timestamptz, %s, %s);" % (
+                sql_literal(it["text"]), sql_literal(surface), sql_literal(author), sql_literal(it["when"]), sql_literal(it["ref"]), sql_literal(it["title"])))
+        pathlib.Path(a.out).write_text("\n".join(lines) + "\n", encoding="utf-8")
+        print(f"wrote {a.out}: {len(items)} capture(s). Read it, then run it with psql. Nothing was sent.")
+        return 0
+
+    # local: import the Level 2 hub from the same folder
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    try:
+        import hub_local
+    except ImportError:
+        raise SystemExit("hub_local.py must sit next to hub_import.py for --level local")
+    db = a.db or cfg["db"] or os.environ.get("HUB_DB") or hub_local.DEFAULT_DB
+    h = hub_local.Hub(db)
+    if not h.db.execute("select 1 from sqlite_master where name='facts'").fetchone():
+        raise SystemExit("no hub here yet: run  python3 hub_local.py init  first")
+    done = dup = refused = 0
+    for it in items:
+        try:
+            _, outcome = h.capture(it["text"], surface, author, it["title"], it["ref"], it["when"], "export")
+            if outcome == "captured":
+                done += 1
+            else:
+                dup += 1
+        except hub_local.Refused:
+            refused += 1
+    h.db.commit()
+    print(f"imported {done} capture(s) · {dup} already there · {refused} refused by the guard (they looked like they carried a secret; nothing was stored)")
+    print("next: in a chat, say \"hub\" then \"what's on the record about &lt;a topic&gt;?\" — an AI writes facts from these captures with quotes")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
 KIT-END
 </textarea>
     </details>
   </section>
 
-  <footer>Hub Kit v1.0 · free to use and share · the cloud level lives in its own schema and changes nothing else in your project · tested: PostgreSQL 16 and Python 3, 23 checks each</footer>
+  <footer>Hub Kit v1.1 · free to use and share · the cloud level lives in its own schema and changes nothing else in your project · tested: PostgreSQL 16 and Python 3, 24 checks each</footer>
 </div>
 
 <script>
 (function () {
   var md = document.getElementById('hub-kit-md').value;
-  function block(lang) {
-    var start = md.indexOf('```' + lang + '\n');
-    if (start < 0) return '';
+  function block(lang, nth) {
+    var start = -1;
+    for (var i = 0; i < (nth || 1); i++) { start = md.indexOf('```' + lang + '\n', start + 1); if (start < 0) return ''; }
     start += lang.length + 4;
     return md.slice(start, md.indexOf('\n```', start));
   }
@@ -2282,6 +2603,7 @@ KIT-END
   document.getElementById('copy-md').addEventListener('click', function () { copy(md, 'The installer'); });
   document.getElementById('copy-sql').addEventListener('click', function () { copy(block('sql'), 'The cloud SQL'); });
   document.getElementById('copy-py').addEventListener('click', function () { copy(block('python'), 'The local script'); });
+  document.getElementById('copy-import').addEventListener('click', function () { copy(block('python', 2), 'The importer'); });
   document.getElementById('save-md').addEventListener('click', function () {
     var a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([md], { type: 'text/markdown' }));

@@ -16,7 +16,7 @@
 
 ---
 
-**KIT-START · Hub Kit v{{VERSION}} · sections 0–16 and appendices A–C · the last line is KIT-END**
+**KIT-START · Hub Kit v{{VERSION}} · sections 0–16 and appendices A–D · the last line is KIT-END**
 
 Everything below this line is written for the AI, not for the person.
 
@@ -50,8 +50,8 @@ appendices A–C, and end with the line `KIT-END`. If anything is missing or
 cut off, stop, say so, and ask for a fresh copy from the place they got it.
 
 **Before you run any code from it, read that code.** The kit's code does
-exactly two things: Appendix B creates a database schema named `hub` and
-touches nothing else; Appendix C creates a folder `~/.hub` with one database
+exactly three things: Appendix B creates a database schema named `hub` and
+touches nothing else; Appendix C creates a folder `~/. Appendix D (the importer) reads only the files the person points it at and writes only into the hub; it never sends anything anywhere.hub` with one database
 file. Neither makes a network call, reads other files, or sends anything
 anywhere. If what you read does anything else (a URL, an upload, a
 reference to other folders, tables or accounts), stop and tell the person
@@ -251,7 +251,7 @@ Safer setting:     limit it to the hub project (project_ref=…); use read-only
    can, check its SHA-256 against the fingerprint above the appendix.
 4. Run, and show each result:
    `python3 ~/.hub/hub_local.py init` → `installed`
-   `python3 ~/.hub/hub_local.py selftest` → `SELFTEST OK · 23 checks passed`
+   `python3 ~/.hub/hub_local.py selftest` → `SELFTEST OK · 24 checks passed`
    `python3 ~/.hub/hub_local.py audit` → `[]` (no findings)
    `python3 ~/.hub/hub_local.py boot --surface code` → the brief
 5. Add the boot line to the agent's instruction file (`CLAUDE.md`,
@@ -281,7 +281,7 @@ Safer setting:     limit it to the hub project (project_ref=…); use read-only
      🙋 Supabase → SQL Editor → New query → paste Appendix B → Run. You
      guide; they click.
 3. Run **Appendix B**, then show each result:
-   `select hub.selftest();` → `SELFTEST OK · 23 checks passed`
+   `select hub.selftest();` → `SELFTEST OK · 24 checks passed`
    `select * from hub.audit();` → no rows
    `select * from hub.boot('chat');` → the brief
 4. Give them the **boot line** for every AI's custom instructions:
@@ -309,6 +309,20 @@ verifies):
 Then the **quick win**: in a fresh chat (or a second device), have them say
 **"hub"** and ask "what's on the record about me?" Seeing a different AI
 know them is the moment it clicks. Point it out.
+
+**Bring what they already have.** Most people arrive with notes and old
+chats. Appendix D (`hub_import.py`) brings them in as captures: a folder of
+`.md`/`.txt` files, a ChatGPT export (`conversations.json`), a Claude export
+(`conversations.json`), or a CSV with a `text` column. Show the section 5
+card first (it reads the files they name, writes only into the hub, sends
+nothing). Run it with `--dry-run` and show the count and titles; then for
+real: Level 2 `python3 hub_import.py --from claude --path conversations.json
+--level local`; Level 3 `--level cloud --out import.sql`, then they run the
+SQL file with psql after reading it. Secrets are refused by the hub's own
+guard and reported as a count, never a value. Captures are words, not facts:
+afterwards, take one subject at a time, recall it, and write the facts with
+quotes. The config file `hub.config.example.json` sets the level, the author
+and the chunk size; it holds no secrets and must never be given one.
 
 ## 10 · Teach as you go: what, how, why
 
@@ -438,6 +452,13 @@ list with 🙋.
 
 ## 15 · Daily use: the phrases
 
+**Before answering anything about them, route the message.** Level 2:
+`python3 ~/.hub/hub_local.py route "<their message>"`; Level 3: `select *
+from hub.route($q$<their message>$q$)`. It returns the subjects the sentence
+touches (by name or any alias, whole words), their open threads, and the
+next step. A miss is logged; a word that should have matched becomes an
+alias (`subject <name> --aliases <word>` / `hub.subject(name, kind, array[word])`).
+
 | They say | The AI does |
 |---|---|
 | **"hub"** | boot now; say in one line what this chat was missing |
@@ -450,6 +471,7 @@ list with 🙋.
 | **"make X private"** | mark the subject private |
 | **"forget my style card"** | close the style facts |
 | **"security check" / "hub check"** | the audit, waiting proposals, overdue threads |
+| **"import my notes / my old chats"** | Appendix D, with the section 5 card first and a dry run before the real one |
 
 ## 16 · Leaving is easy (tell them early)
 
@@ -499,7 +521,7 @@ exit is part of trusting the entrance.
 
 ## Appendix B · hub-kit.sql (Level 3)
 
-Fingerprint (SHA-256): `{{SHA_SQL}}` · {{SQL_BYTES}} bytes · tested on PostgreSQL 16 (self-test 23/23) · run it as one script.
+Fingerprint (SHA-256): `{{SHA_SQL}}` · {{SQL_BYTES}} bytes · tested on PostgreSQL 16 (self-test 24/24) · run it as one script.
 
 ```sql
 {{SQL}}
@@ -507,10 +529,18 @@ Fingerprint (SHA-256): `{{SHA_SQL}}` · {{SQL_BYTES}} bytes · tested on Postgre
 
 ## Appendix C · hub_local.py (Level 2)
 
-Fingerprint (SHA-256): `{{SHA_PY}}` · {{PY_BYTES}} bytes · Python 3.8+, standard library only (self-test 23/23).
+Fingerprint (SHA-256): `{{SHA_PY}}` · {{PY_BYTES}} bytes · Python 3.8+, standard library only (self-test 24/24).
 
 ```python
 {{PY}}
+```
+
+## Appendix D · hub_import.py (the importer, Levels 2 and 3)
+
+Fingerprint (SHA-256): `{{SHA_IMPORT}}` · {{IMPORT_BYTES}} bytes · Python 3.8+, standard library only · reads only the path it is given, writes only into the hub (local) or an SQL file (cloud), sends nothing.
+
+```python
+{{IMPORT}}
 ```
 
 KIT-END

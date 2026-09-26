@@ -3,7 +3,7 @@
 
     python3 share/hub-kit/src/build.py
 
-Reads src/protocol.md, ../hub-kit.sql and ../hub_local.py; writes
+Reads src/protocol.md, ../hub-kit.sql, ../hub_local.py and ../hub_import.py; writes
 ../HUB-KIT.md (the file a person gives their AI), ../hub-kit.html (a
 standalone page), and, when HUBKIT_ARTIFACT names a path, the same page
 without the document shell for publishing as an artifact. The fingerprints printed in the
@@ -12,23 +12,25 @@ can never drift apart.
 """
 import hashlib, html, pathlib, re
 
-VERSION = "1.0"
+VERSION = "1.1"
 HERE = pathlib.Path(__file__).resolve().parent
 KIT = HERE.parent
 
 sql = (KIT / "hub-kit.sql").read_text()
 py = (KIT / "hub_local.py").read_text()
+imp = (KIT / "hub_import.py").read_text()
 sha = lambda s: hashlib.sha256(s.encode()).hexdigest()
 
 md = (HERE / "protocol.md").read_text()
 for key, val in {"{{VERSION}}": VERSION, "{{SHA_SQL}}": sha(sql), "{{SQL_BYTES}}": f"{len(sql.encode()):,}",
-                 "{{SHA_PY}}": sha(py), "{{PY_BYTES}}": f"{len(py.encode()):,}", "{{SQL}}": sql.rstrip("\n"), "{{PY}}": py.rstrip("\n")}.items():
+                 "{{SHA_PY}}": sha(py), "{{PY_BYTES}}": f"{len(py.encode()):,}", "{{SHA_IMPORT}}": sha(imp), "{{IMPORT_BYTES}}": f"{len(imp.encode()):,}",
+                 "{{SQL}}": sql.rstrip("\n"), "{{PY}}": py.rstrip("\n"), "{{IMPORT}}": imp.rstrip("\n")}.items():
     md = md.replace(key, val)
 assert "{{" not in md, "unfilled placeholder"
 assert md.rstrip().endswith("KIT-END")
 for n in range(17):
     assert re.search(rf"^## {n} · ", md, re.M), f"section {n} missing"
-for a in "ABC":
+for a in "ABCD":
     assert f"## Appendix {a} · " in md, f"appendix {a} missing"
 (KIT / "HUB-KIT.md").write_text(md)
 
@@ -122,6 +124,7 @@ PAGE = r"""<title>Hub Kit Installer</title>
     <button class="primary" type="button" id="copy-md">Copy the installer</button>
     <button type="button" id="copy-sql">Copy the cloud SQL</button>
     <button type="button" id="copy-py">Copy the local script</button>
+    <button type="button" id="copy-import">Copy the importer</button>
     __SAVE_BUTTON__
   </div>
   <p class="status" id="status" role="status" aria-live="polite"></p>
@@ -181,7 +184,7 @@ Then say "done".</div>
         <tr><td>Signups</td><td>none</td><td>none</td><td>one</td></tr>
         <tr><td>Cost</td><td>$0</td><td>$0</td><td>$0 (free tier)</td></tr>
         <tr><td>Automatic</td><td>you carry the file</td><td>yes, on that computer</td><td>yes, everywhere</td></tr>
-        <tr><td>Tested</td><td>template</td><td>self-test 23/23</td><td>self-test 23/23 on PostgreSQL 16</td></tr>
+        <tr><td>Tested</td><td>template</td><td>self-test 24/24</td><td>self-test 24/24 on PostgreSQL 16</td></tr>
       </tbody>
     </table></div>
     <p>Start small and move up any time; every level exports to the paper format.</p>
@@ -220,20 +223,21 @@ Then say "done".</div>
     <p>The installer is one Markdown file with the tested code inside it. Check the fingerprints before you run anything:</p>
     <p class="fp">hub-kit.sql · SHA-256 __SHA_SQL__</p>
     <p class="fp">hub_local.py · SHA-256 __SHA_PY__</p>
+    <p class="fp">hub_import.py · SHA-256 __SHA_IMPORT__</p>
     <details><summary>The full installer text (what your AI reads)</summary>
       <textarea id="hub-kit-md" readonly aria-label="The Hub Kit installer">__MD__</textarea>
     </details>
   </section>
 
-  <footer>Hub Kit v__VERSION__ · free to use and share · the cloud level lives in its own schema and changes nothing else in your project · tested: PostgreSQL 16 and Python 3, 23 checks each</footer>
+  <footer>Hub Kit v__VERSION__ · free to use and share · the cloud level lives in its own schema and changes nothing else in your project · tested: PostgreSQL 16 and Python 3, 24 checks each</footer>
 </div>
 
 <script>
 (function () {
   var md = document.getElementById('hub-kit-md').value;
-  function block(lang) {
-    var start = md.indexOf('```' + lang + '\n');
-    if (start < 0) return '';
+  function block(lang, nth) {
+    var start = -1;
+    for (var i = 0; i < (nth || 1); i++) { start = md.indexOf('```' + lang + '\n', start + 1); if (start < 0) return ''; }
     start += lang.length + 4;
     return md.slice(start, md.indexOf('\n```', start));
   }
@@ -250,6 +254,7 @@ Then say "done".</div>
   document.getElementById('copy-md').addEventListener('click', function () { copy(md, 'The installer'); });
   document.getElementById('copy-sql').addEventListener('click', function () { copy(block('sql'), 'The cloud SQL'); });
   document.getElementById('copy-py').addEventListener('click', function () { copy(block('python'), 'The local script'); });
+  document.getElementById('copy-import').addEventListener('click', function () { copy(block('python', 2), 'The importer'); });
 __SAVE_SCRIPT__
 })();
 </script>
@@ -283,7 +288,7 @@ SAVE_CAPABILITY = """  var saveBtn = document.getElementById('save-md');
 
 def page(mode):
     button = '<button type="button" id="save-md"%s>Save HUB-KIT.md</button>' % (' hidden' if mode == "capability" else "")
-    return (PAGE.replace("__VERSION__", VERSION).replace("__SHA_SQL__", sha(sql)).replace("__SHA_PY__", sha(py))
+    return (PAGE.replace("__VERSION__", VERSION).replace("__SHA_SQL__", sha(sql)).replace("__SHA_PY__", sha(py)).replace("__SHA_IMPORT__", sha(imp))
                 .replace("__SAVE_BUTTON__", button)
                 .replace("__SAVE_SCRIPT__", SAVE_BLOB if mode == "blob" else SAVE_CAPABILITY)
                 .replace("__MD__", html.escape(md, quote=False)))
@@ -296,4 +301,4 @@ standalone = standalone.replace("</style>\n\n<div class=\"wrap\">", "</style>\n<
 import os
 if os.environ.get("HUBKIT_ARTIFACT"):  # the artifact variant (no document shell, no Save button) is written outside the repo
     pathlib.Path(os.environ["HUBKIT_ARTIFACT"]).write_text(page("capability"))
-print(f"HUB-KIT.md {len(md.encode()):,} bytes · sql {sha(sql)[:12]} · py {sha(py)[:12]} · hub-kit.html {len(standalone.encode()):,} bytes")
+print(f"HUB-KIT.md {len(md.encode()):,} bytes · sql {sha(sql)[:12]} · py {sha(py)[:12]} · import {sha(imp)[:12]} · hub-kit.html {len(standalone.encode()):,} bytes")

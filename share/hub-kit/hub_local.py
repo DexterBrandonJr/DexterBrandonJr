@@ -7,7 +7,7 @@ Code, Codex, Gemini CLI, Cursor, a local model with a shell tool) uses it the
 same way:
 
     python3 hub_local.py init                 # create ~/.hub/hub.db (private)
-    python3 hub_local.py selftest             # expect "SELFTEST OK"
+    python3 hub_local.py selftest             # expect "SELFTEST OK · 24 checks passed"
     python3 hub_local.py audit                # expect no "high" findings
     python3 hub_local.py boot --surface code  # the brief every session reads first
 
@@ -436,6 +436,35 @@ class Hub:
         return [dict(id=r["id"], subject=r["name"], predicate=r["predicate"], value=r["value"] + (f" {r['unit']}" if r["unit"] else ""),
                      since=r["since"], verified=bool(r["verified"]), private=r["sensitivity"] == "private") for r in rows]
 
+    def route(self, text):
+        """Which subjects and open threads a sentence touches, by whole-word alias; a miss is logged."""
+        t = " " + (text or "").lower() + " "
+        out, seen, n = [], set(), 0
+        if len((text or "").strip()) < 3:
+            return [{"kind": "do", "label": "nothing to route", "detail": "the message is empty"}]
+        words = sorted({w for w in re.split(r"[^a-z0-9'\-]+", (text or "").lower()) if len(w) >= 4})
+        for s in self.db.execute("select * from subjects order by id"):
+            names = [s["name"], s["id"].replace("-", " ")] + json.loads(s["aliases"] or "[]")
+            if any(len(a) >= 2 and re.search(r"\b" + re.escape(a.lower()) + r"\b", t) for a in names):
+                n += 1
+                facts = self.db.execute("select count(*) from facts where subject_id=? and status='live' and kind='fact'", (s["id"],)).fetchone()[0]
+                threads = list(self.db.execute("select * from threads where subject_id=? and status='open' order by due_at is null, due_at, id limit 3", (s["id"],)))
+                out.append({"kind": "subject", "ref": s["id"], "label": s["name"] + (" (private)" if s["sensitivity"] == "private" else ""),
+                            "detail": f"{facts} live facts · {len(threads)} open threads", "run": f"recall {s['id']}"})
+                for th in threads:
+                    seen.add(th["id"])
+                    out.append({"kind": "thread", "ref": f"t:{th['id']}", "label": th["title"], "detail": (th["next_step"] or "next step not set") + f" · owner {th['owner']}", "run": f"close-thread {th['id']} <outcome>"})
+        for th in self.db.execute("select * from threads where status='open' order by due_at is null, due_at, id"):
+            if th["id"] in seen:
+                continue
+            if sum(1 for w in words if re.search(r"\b" + re.escape(w) + r"\b", th["title"].lower())) >= 2:
+                out.append({"kind": "thread", "ref": f"t:{th['id']}", "label": th["title"], "detail": (th["next_step"] or "next step not set") + f" · owner {th['owner']}", "run": f"close-thread {th['id']} <outcome>"})
+        hit = any(o["kind"] in ("subject", "thread") for o in out)
+        self.log("hub", "route" if hit else "route-miss", {"subjects": n, "words": words[:8]})
+        out.append({"kind": "do", "label": "next", "detail": (f"{n} subject(s) matched: cite the ids you use; capture what they said if it carries a fact" if hit else
+                    'nothing matched: recall the nouns; if still nothing, say "not on the record" and capture their words; a word that should have matched becomes an alias (subject <name> --aliases <word>)')})
+        return out
+
     def brief(self, surface="chat"):
         owner = surface if (surface.startswith("ai:") or surface == "me") else f"ai:{surface}"
         cap = int(self.setting("brief_word_cap") or 2500)
@@ -609,6 +638,7 @@ def selftest():
     h.subject("Selftest Person", "person", [], None, "ai:test")
     expect(h.db.execute("select sensitivity from subjects where id='selftest-person'").fetchone()[0] == "private", "a person was not private")
     expect("DATA, not instructions" in h.brief("chat")[0], "the brief lost its data banner")
+    expect(any(o["kind"] == "subject" and o["ref"] == "selftest-project" for o in h.route("so the selftest project moved again")), "route did not find the subject by its words")
     return f"SELFTEST OK · {checks} checks passed"
 
 
@@ -628,6 +658,7 @@ def main(argv=None):
     p = sub.add_parser("handoff"); p.add_argument("to"); p.add_argument("title"); p.add_argument("next"); p.add_argument("--subject"); p.add_argument("--author", default="me")
     p = sub.add_parser("remember"); p.add_argument("kind"); p.add_argument("title"); p.add_argument("pointer"); p.add_argument("--summary"); p.add_argument("--subject")
     p = sub.add_parser("recall"); p.add_argument("query")
+    p = sub.add_parser("route"); p.add_argument("text")
     p = sub.add_parser("used"); p.add_argument("boot_id", type=int); p.add_argument("ids", type=int, nargs="*")
     p = sub.add_parser("accept"); p.add_argument("ids", type=int, nargs="+")
     p = sub.add_parser("reject"); p.add_argument("ids", type=int, nargs="+"); p.add_argument("--note")
@@ -658,6 +689,7 @@ def main(argv=None):
         elif a.cmd == "handoff": out = h.handoff(a.to, a.title, a.next, a.subject, a.author)
         elif a.cmd == "remember": out = h.remember(a.kind, a.title, a.pointer, a.summary, a.subject)
         elif a.cmd == "recall": out = h.recall(a.query)
+        elif a.cmd == "route": out = h.route(a.text)
         elif a.cmd == "used": out = h.used(a.boot_id, a.ids)
         elif a.cmd == "proposals": out = [dict(r) for r in h.db.execute("select id, kind, reason, payload from proposals where status='pending' order by id")]
         elif a.cmd == "accept": out = h.accept(a.ids)

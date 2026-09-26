@@ -64,6 +64,8 @@ recap, no ceremony.
 | "undo path for X: …" | `hub_undo('X', '…')` — where to go and what to press to revoke it; never a value |
 | "proof for t:6: …" | `hub_proof(6, '…')` — how we will know it is done |
 | the growth-profile phrases ("mirror", "checkin …", "wheel …", "practice …", "accept m:3") | the brief's rule *Mirror phrases* lists them; the profile is private and every claim in it is his to contest |
+| anything about a thing, a feeling, money, a task or security, in his own words | `select * from hub_route($q$<his message>$q$)` first; follow its `do` row; then answer. Words it cannot place are logged and learned; "alias weighed → fitness" / "reject alias project" run `hub_alias('fitness', 'weighed', 'dex')` / `hub_alias_reject('project', 'dex')` |
+| "backlog" / "plan" / "add to backlog: title — why" / "accept bl:3" / "drop bl:4: why" / "done bl:3: pointer" | `select * from backlog_ranked` / `select * from hub_backlog_plan()` / `hub_backlog_add(title, why, lens, size, 'dex')` / `hub_backlog_decide(3, 'accepted', 'dex')` / `hub_backlog_decide(4, 'dropped', 'dex', 'why')` / `hub_backlog_done(3, 'pointer', 'dex')`. The hub proposes and ranks its own backlog nightly; it never builds; propose freely with evidence, never accept your own proposal |
 
 ## 4. Writing back
 

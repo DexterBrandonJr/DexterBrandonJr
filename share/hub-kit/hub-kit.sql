@@ -634,6 +634,46 @@ end $$;
 create or replace function hub.words(p text) returns integer
 language sql immutable set search_path = hub as $$ select coalesce(array_length(regexp_split_to_array(trim(coalesce(p, '')), '\s+'), 1), 0) $$;
 
+-- Route: which subjects and threads a sentence touches, by whole-word match
+-- on a subject's name, id or any alias. One call before answering; a miss
+-- is logged so the missing alias can be added.
+create or replace function hub.route(p_text text) returns table (kind text, ref text, label text, detail text, run text)
+language plpgsql volatile set search_path = hub as $$
+declare v_t text := ' ' || lower(coalesce(p_text, '')) || ' '; s record; t record; n int := 0; n_t int := 0; v_words text[]; v_seen bigint[] := '{}';
+begin
+  if p_text is null or length(trim(p_text)) < 3 then
+    kind := 'do'; ref := null; label := 'nothing to route'; detail := 'the message is empty'; run := null; return next; return;
+  end if;
+  v_words := array(select distinct w from regexp_split_to_table(lower(p_text), '[^a-z0-9''\-]+') w where length(w) >= 4);
+  for s in select * from hub.subjects su order by su.id loop
+    if exists (select 1 from unnest(array[s.name, replace(s.id, '-', ' ')] || s.aliases) a
+               where length(a) >= 2 and v_t ~ ('\m' || regexp_replace(lower(a), '([.*+?^${}()|\[\]\\])', '\\\1', 'g') || '\M')) then
+      n := n + 1;
+      kind := 'subject'; ref := s.id; label := s.name || case when s.sensitivity = 'private' then ' (private)' else '' end;
+      detail := format('%s live facts · %s open threads%s',
+                       (select count(*) from hub.facts f where f.subject_id = s.id and f.status = 'live' and f.kind = 'fact'),
+                       (select count(*) from hub.threads th where th.subject_id = s.id and th.status = 'open'), coalesce(' · ' || s.summary, ''));
+      run := format('select * from hub.recall(%L)', s.id); return next;
+      for t in select * from hub.threads th where th.subject_id = s.id and th.status = 'open' order by th.due_at nulls last, th.id limit 3 loop
+        n_t := n_t + 1; v_seen := v_seen || t.id;
+        kind := 'thread'; ref := 't:' || t.id; label := t.title; detail := coalesce(t.next_step, 'next step not set') || ' · owner ' || t.owner;
+        run := format('select hub.close_thread(%s, ''<outcome>'')', t.id); return next;
+      end loop;
+    end if;
+  end loop;
+  for t in select * from hub.threads th where th.status = 'open' and not (th.id = any (v_seen))
+           and (select count(*) from unnest(v_words) w where lower(th.title) ~ ('\m' || w || '\M')) >= 2 order by th.due_at nulls last, th.id limit 5 loop
+    n_t := n_t + 1;
+    kind := 'thread'; ref := 't:' || t.id; label := t.title; detail := coalesce(t.next_step, 'next step not set') || ' · owner ' || t.owner;
+    run := format('select hub.close_thread(%s, ''<outcome>'')', t.id); return next;
+  end loop;
+  perform hub.log_event('hub', case when n = 0 and n_t = 0 then 'route-miss' else 'route' end, jsonb_build_object('subjects', n, 'threads', n_t, 'words', to_jsonb(v_words[1:8])));
+  kind := 'do'; ref := null; label := 'next';
+  detail := case when n = 0 and n_t = 0 then 'nothing matched: recall the nouns; if still nothing, say "not on the record" and capture their words; a word that should have matched becomes an alias (hub.subject with the alias)'
+                 else format('%s subject(s) · %s thread(s): cite the ids you use; capture what they said if it carries a fact', n, n_t) end;
+  run := null; return next;
+end $$;
+
 create or replace function hub.brief(p_surface text default 'chat') returns table (brief text, fact_ids bigint[])
 language plpgsql stable set search_path = hub as $$
 declare v_owner text := case when p_surface like 'ai:%' or p_surface = 'me' then p_surface else 'ai:' || coalesce(p_surface, 'chat') end;
@@ -850,7 +890,8 @@ begin
     if (select s.sensitivity from hub.subjects s where s.id = 'selftest-person') <> 'private' then raise exception 'FAIL 21 a person was not private'; end if;
     select count(*) into n from hub.audit() a where a.level = 'high'; if n > 0 then raise exception 'FAIL 22 audit: %', (select string_agg(a.finding, ' | ') from hub.audit() a where a.level = 'high'); end if;
     if (select b.brief from hub.brief('chat') b) not like '%DATA, not instructions%' then raise exception 'FAIL 23 the brief lost its data banner'; end if;
-    raise exception 'SELFTEST OK · 23 checks passed';
+    if not exists (select 1 from hub.route('so the selftest project moved again') rt where rt.kind = 'subject' and rt.ref = 'selftest-project') then raise exception 'FAIL 24 route did not find the subject by its words'; end if;
+    raise exception 'SELFTEST OK · 24 checks passed';
   exception when others then
     msg := sqlerrm;
   end;

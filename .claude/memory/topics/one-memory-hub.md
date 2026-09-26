@@ -107,3 +107,23 @@
 **Open threads:**
 - The first unattended nightly proves the integrity check and the self-test
   (scored the next morning).
+
+## 2026-09-26 — Routing, a self-writing backlog and a field the hub reads itself
+
+**Decisions:**
+- A plain sentence finds its tool. `hub_route(text)` returns the subjects a message touches (whole-word aliases), their open threads, the intents (money, forecast, security, task, feeling, practice, wheel), the profile areas and one `do` row that names what to run; every chat runs it before answering; the words it cannot place feed a nightly learner. Design: the private repo's docs/ROUTING.md.
+- The hub writes its own backlog. One row per gap it can measure, four lenses (security, growth, efficiency, reach), three sizes that name who builds (S a chat, M a Code session, L a phased build with a brief first), a score from use and pain, thirteen nightly detectors that upsert by key and mark themselves done when the gap closes. The hub proposes and ranks; it never builds; a guest cannot write it; the push carries counts only. Design: docs/BACKLOG.md there.
+- The field. Six public pages (the Claude Code changelog, Anthropic news, the Supabase changelog, Simon Willison's feed, OWASP GenAI, the Hacker News front page for AI) fetched by the hub itself on a cadence and cleaned before the secret guard sees them; a Claude reads the new rows and proposes items that cite their source. The first read produced seven.
+- The brief's word cap moved from 3,000 to 3,500, with its revoke path on the record: the fixed sections had left room for 13 facts; at 3,500 the core holds 25. Trimming those sections is on the backlog.
+
+**Facts / preferences:**
+- Proven live on 2026-09-26: 70 self-test checks, the install gate 4 of 4, the 29 new functions identical between the files and the live database hash for hash; all six field pages landed clean on the second fetch; the first detector item cleared by the record itself the same afternoon.
+- Three failure classes from the first live runs, fixed the same day and recorded: a public page treated as a message (820 KB stored whole, three pages refused as card numbers → a cleaner before the guard); a learner without a stop-list (21 everyday words proposed as aliases for the owner → person subjects and common words skipped); a backreference in a hot regex (32 seconds on a 500 KB page → one pass per tag, 76 ms).
+- Nothing here woke Dex: routine approvals in the named window stand, and every decision carries its revoke path.
+
+**Artifacts:**
+- Private repo `DexterBrandonJr/one-memory-hub`: migrations `0015_route`, `0016_backlog`, `0016_backlog_field`; docs/ROUTING.md, docs/BACKLOG.md; the worker prompt gained the field, the aliases and the plan; predictions 19–23.
+- This repo: `.claude/skills/hub/SKILL.md` (routing and backlog phrases).
+
+**Open threads:**
+- The first unattended nightly with the three new steps runs 27 Sep. Dex creates the worker routine in the Claude app so the field, the aliases and the plan run without a chat. From any chat: say `plan`, accept one small item, finish it, say `done`.
