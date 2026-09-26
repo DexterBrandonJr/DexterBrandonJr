@@ -55,3 +55,20 @@
 
 **Open threads:**
 - Dex runs the sweep from the phone, then once inside each Claude Project.
+
+## 2026-09-26 — Innovations test: guard, watch, ledgers, handoff
+
+**Decisions:**
+- Dex asked for an innovations test aimed at autonomy across every device, cybersecurity, and profitability. The finding that shaped everything: a memory every Claude reads is a lethal trifecta by construction (private data, untrusted content, a way out), the attack OWASP calls memory and context poisoning. The defences went in at write time, in code: secrets refused everywhere, provenance, instruction-shaped text held for a human, private subjects never pushed to the phone, and the public API roles locked out.
+- A nightly security watch audits the hub's own locks and a register of Dex's accounts (pointers only, never values). Money, unit economics and a scored forecast ledger give each project the three numbers a venture is decided on: burn, margin, break-even. Any device can hand work to Code through the hub.
+
+**Facts / preferences:**
+- Three classes were found and fixed within the hour: a lock scoped too narrowly (caught by the new watch in its first minute), the guard refusing honest text (a pattern tuned), and a leak by name in the phone push. The lessons went into the innovation-brief skill's quality-control lens, not only into memory.
+- A routine created from a Code session cannot carry connectors on this plan; an autonomous worker that needs a connector is created by Dex in the Claude app.
+
+**Artifacts:**
+- The page "Hub Innovations Test" (private artifact); the schema, tests and docs live in the private hub repo.
+- `.claude/skills/hub/SKILL.md` here gained the new phrases; `.claude/skills/innovation-brief/references/lenses.md` gained three quality-control questions.
+
+**Open threads:**
+- Four taps for Dex, tracked in the private hub: confirm two-factor, create the worker routine, pick the product blanks, settle the first forecasts.
