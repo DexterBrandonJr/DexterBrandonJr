@@ -37,6 +37,16 @@ things with Claude Code.
   a subdirectory here would load as directory-scoped instructions into
   Dex's own sessions. Generic and public-safe by design.
 
+## Read the hub first
+
+Dex keeps one memory for every Claude he talks to: a private Supabase
+project named `one-memory-hub` (its repo is `DexterBrandonJr/one-memory-hub`,
+private). At the start of a session that touches him, his projects or his
+preferences, run `select * from hub_boot('code')` through the Supabase
+connector on that project, follow the rules it returns, and write back last
+with `hub_capture` / `hub_write` / `hub_used`. The chat-memory files in this
+repo remain the per-repo record; the hub is the cross-surface one.
+
 ## Scope: skills, apps, functions, and tools — not just skills
 
 This chat isn't limited to building Claude Skills. Dexter also uses it to
