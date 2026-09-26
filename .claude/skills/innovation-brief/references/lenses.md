@@ -47,14 +47,37 @@ For each, one sentence naming the concrete thing in this build. A blank is a fin
 | The counterfactual | |
 | Staged autonomy | |
 
+## Quality control — the fifth lens
+
+Run it after the other four, as an adversary of the draft. Every "yes" needs the mechanism named on the page; every "no" is a finding, not a gap to hide. A brief with no "still unsolved" list has not run this lens.
+
+| Question | What a good answer looks like | Where the lesson came from |
+|---|---|---|
+| What decays, and what must never decay? | A `kind` on every row. Rules surface by trigger word and are never pruned by age; only facts age. | Link 3.0 measured recency decay and three other usage-aware rankings and declined them all: durable constraints do not become less true for going unread. |
+| Are two contradictory facts resolved at write or at read? | At write, by a pure function of document order; the loser kept as an audit row. No model is asked "which is current?". | memore, post-graph-rag, TOKI. |
+| Does every fact carry two clocks? | Valid time and belief time, and the date printed beside the fact wherever it is read. | Zep/Graphiti; post-graph-rag's largest single gain was validity dates in the prompt. |
+| What does "verified" prove? | That the quoted text exists in the source at that version. Not that it is true. Say so on the page. | Cortex. |
+| What is rejected before storage? | Pronoun subjects, predicates off the list, numbers without units; the refusal returned with its reason. | post-graph-rag's extraction-time gates. |
+| Is the format enforced by code or by instruction? | Typed parameters in, a view renders out. No free-form writes. | The gist's thread: fixed-header tables, programmatic formatting. |
+| Is stale / pending / gap a stored flag or a computed view? | Computed. A memory is questioned only when its pointer is missing now and existed before. | Link 3.0 `lnk stale`. |
+| Does the system know whether it is consulted at all? | Consult rate logged per session; precision (used ÷ sent) reported beside recall. | The thread; Link 3.0: recall alone scores 1.0 by returning everything. |
+| Who can write live, and who can only propose? | Verified writes from owned sources go live; rules, merges, guests and unverified extractions wait in proposals for one human tap. | The thread's write-gated proposals; TOKI's await-confirmation operator. |
+| What happens when the store is unreachable? | Capture never blocks: a fallback inbox, timestamped by send time, reconciled later. | The thread: fail-open capture. |
+| What is the benchmark, and can it rank anything? | An own probe set scored by exact match on an id, with a confidence interval; operations (update, forget, abstain) scored, not only answers. Never quote a public leaderboard about your own system. | The LoCoMo audit (6.4% of the key wrong; the judge accepts 62.8% of wrong answers); LongMemEval's five abilities; MemOps. |
+| What happens when a step cannot produce a well-formed record? | It fails loudly and drops the record. Never a placeholder to keep the pipeline moving: a stand-in is indistinguishable from real structure once stored, and a transient outage poisons the store for good. | post-graph-rag. |
+| Do the instructions describe shape or live values? | Shape only. No counts, ids or names in the boot line or the rules; live values come from a view, so nothing in the instructions can go stale. | MindBase's "state rule". |
+| What is honestly unsolved? | Named on the page with its mitigation and the mitigation's limit. | memore: the same subject phrased two ways agreed 58% of the time. |
+
 ## The field scan — where to look, in order
 
 1. The vendor's help center and platform docs (what the product does this month; features change monthly).
-2. Anthropic news and platform changelog (memory tool, context management, connectors).
-3. GitHub search and Product Hunt for the indie builders — the single-person versions are the closest to Dex's situation.
-4. One or two roundups, only to find primary sources you missed.
-5. The history: who named the idea first (academic paper, first open-source project), so the timeline is honest.
+2. The comment thread under the primary source, read as an adversary of your draft. The counterarguments, the "measured and declined" notes and the implementers' scars live there, not in the post.
+3. Anthropic news and platform changelog (memory tool, context management, connectors).
+4. GitHub search and Product Hunt for the indie builders — the single-person versions are the closest to Dex's situation. Read the release notes, not the README; that is where a team says what it tried and dropped.
+5. The audit of a benchmark before its leaderboard. If vendors dispute each other's numbers on it, the numbers rank nothing.
+6. One or two roundups, only to find primary sources you missed.
+7. The history: who named the idea first (academic paper, first open-source project), so the timeline is honest.
 
 ## Page section checklist
 
-Six tiles · capability map · mechanism figure · mind map · math · lenses table · field table + new ideas · history · vocabulary · first three moves · sources.
+Six tiles · capability map · mechanism figure · mind map · math · lenses table · field table + new ideas · quality control (write-path figure, lesson table, the field's quality table, own probes, the unsolved list) · history · vocabulary · first three moves · sources.
