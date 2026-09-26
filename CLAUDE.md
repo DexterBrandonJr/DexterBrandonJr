@@ -21,6 +21,13 @@ things with Claude Code.
   systems built (the eight parts, the rhythm, the confidence contract), and
   how to reach the full doctrine in the private `DexterBrandonJr/workhorse`
   repo. Triggers on any new build in any domain.
+- `.claude/skills/scenarios/` — settles a what-if with a Monte Carlo
+  simulation that stops as soon as the answer is settled (1 to 10,000 runs),
+  compares configurations on the same random draws, and labels every factor
+  measured, estimated, emerging or speculative from a 129-node catalog
+  (`references/domains.json`). `scripts/scenarios.py` runs anywhere; the
+  private hub runs the same engine in the database and matches it draw for
+  draw.
 - `.claude/memory/` — the actual memory store (`INDEX.md` + `topics/`).
   **This repo is public** — nothing sensitive goes in here. See the skill's
   public/private/never-in-git guidance before writing an entry; some things
@@ -36,6 +43,24 @@ things with Claude Code.
   plain-language cut of the workhorse build questions. Deliberately **not** named `CLAUDE.md`: a `CLAUDE.md` in
   a subdirectory here would load as directory-scoped instructions into
   Dex's own sessions. Generic and public-safe by design.
+
+- `share/hub-kit/` — the **Hub Kit**: `HUB-KIT.md` is one file anyone can
+  give to any AI ("Run the Hub Kit.") to install their own version of the
+  hub: paper, local (Python + SQLite) or cloud (a Postgres schema `hub`),
+  with consent cards before every signup, human-step blocks, teaching,
+  predictive answers, a self-test and a security audit. Generic and
+  public-safe; rebuild with `python3 share/hub-kit/src/build.py` after
+  editing `src/protocol.md`, `hub-kit.sql` or `hub_local.py`.
+
+## Read the hub first
+
+Dex keeps one memory for every Claude he talks to: a private Supabase
+project named `one-memory-hub` (its repo is `DexterBrandonJr/one-memory-hub`,
+private). At the start of a session that touches him, his projects or his
+preferences, run `select * from hub_boot('code')` through the Supabase
+connector on that project, follow the rules it returns, and write back last
+with `hub_capture` / `hub_write` / `hub_used`. The chat-memory files in this
+repo remain the per-repo record; the hub is the cross-surface one.
 
 ## Scope: skills, apps, functions, and tools — not just skills
 

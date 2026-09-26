@@ -553,3 +553,52 @@ trading chat was given in-conversation, not committed.
 
 **Open threads:** Dex has not yet started the separate trading chat as of
 this entry; the routines still fire here, and this session keeps relaying.
+
+## 2026-09-25 — A brief before a build: the innovation-brief skill, and the memory hub it was first used on
+
+**Decisions:** When a build idea arrives as "brainstorm this, do deep
+research, show me visually, is this really the best way" — that is a
+brief, not a design from memory. The `innovation-brief` skill now holds
+the method: prove what is in reach before reading anything (list the
+connectors, make one real call), scan the field from primary sources,
+run four lenses (psychology, probability, habits, systems), tier every
+claim Proven / Tested / Expected, and publish a page whose first screen
+is six tiles that carry the whole answer. The chat reply stays short:
+findings that change the picture, the link, one decision.
+
+**Facts / preferences:**
+- First used on a cross-surface memory design ("one hub, every Claude a
+  client"). Two capabilities were proven from the session rather than
+  assumed: the Artifact tool lists and reads every artifact on the
+  account, and a Claude Code session's transcript is a file on disk.
+  Claude in the app can search its own past chats on paid plans, which
+  makes the app the scraper for chat history — no export needed for
+  targeted backfill.
+- The motivating message was long and personal on purpose. That is a
+  deposit, not a detour: it goes to the private doctrine and changes
+  what gets built; it is not reflected back at length.
+- Pushback that reads as doubt in the project costs more than a wrong
+  design. State a real limit once, in one sentence, beside what is
+  possible — then build.
+
+**Artifacts:** `.claude/skills/innovation-brief/` (SKILL.md, a lenses
+question bank, a page skeleton); the brief itself is a private artifact.
+
+**Open threads:** The hub build waits on one word. The skill's trigger
+has been eyeballed, not eval-tested — worth a should/shouldn't set the
+first time it misfires.
+
+## 2026-09-26 — Never wake him for approval: standing approval inside a named window
+
+**Decisions:**
+- Dex, at night, after permission prompts reached his phone during the hub build: "Stop asking for approval. Approve everything you need. I'm asleep and can't check my phone every time … Put that in your build notes, especially when it's a particular time frame." So: when he names a window (asleep, on shift, away), every routine approval inside it is already given. A prompt that reaches his phone at night is a defect in how the work was run, not caution.
+- The remedy is structural: the tools a build uses are on the project allowlist in `.claude/settings.json` (named tools and specific scripts only; nothing that runs arbitrary code, nothing that can place a trade), the attached repos are listed as additional directories so edits there do not prompt, and anything that truly needs his hand goes on the morning list.
+- Written into the `phased-build` execution contract ("Never wake him"), the private doctrine §3, the hub's working agreement, and the hub itself as a boot rule every surface reads.
+
+**Facts / preferences:**
+- The prompts that fired tonight came from edits to files outside the primary working directory (the doctrine repo's project register) and from write tools that the auto permission mode still refers to a human. Both classes are now covered.
+- Not allowlisted on purpose: interpreters and shells as wildcards, and every broker order tool. The one prompt that should ever reach him is a live trade.
+
+**Artifacts:** `.claude/settings.json` (permissions), `.claude/skills/phased-build/SKILL.md` (the "Never wake him" rule).
+
+**Open threads:** If a prompt fires anyway in a future session, the build notes name what triggered it and the allowlist grows.

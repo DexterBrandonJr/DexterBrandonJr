@@ -129,6 +129,78 @@ is to pay it only when the stale version being live costs more.
 **Artifacts:** `DexterBrandonJr/trading-engine` pull requests 148→149 and
 this repo's 27→28 and 29→30 are the close-and-recreate pairs.
 
+## 2026-09-21 — Copilot credits are not Actions minutes; a job that dies in two seconds is a spent quota
+
+**Decisions:** Every scheduled workflow on the private project repo had
+been failing since a Saturday afternoon, each run "completing" 2–3 seconds
+after it was created with a single job that ran no steps. That signature is
+GitHub Actions refusing to start a job because the account's included
+minutes are spent, not a defect in any workflow. Dex had bought Copilot Pro
+the same weekend hoping it would help; it does not, and that is worth
+keeping so nobody buys it for this reason again.
+
+The cause was measured rather than assumed. One nightly job — the red-team
+runner that mutates each guard and runs the suite to see a test fail — had
+succeeded once, in three minutes, when the suite was small. Every night
+since, it ran the full suite once per mutation, overran its 45-minute cap,
+and was cancelled: nine nights of 45 minutes each, about a third of the
+month's allowance, producing nothing. The fix is in the runner, not the
+schedule: run the tests each probe names first and sweep the whole suite
+only when they do not all fail. Same verdicts, minutes instead of an hour.
+The pull-request matrix also went from three interpreters to one, with all
+three still on the default branch.
+
+**Facts / preferences:**
+- GitHub Pro's base plan ($4) carries the Actions allowance — 3,000 minutes
+  a month for private repositories, reset on the base plan's billing date.
+  Public repositories do not draw on it.
+- Copilot plans (Free, Pro, Pro+, Max) sell **AI credits** for Copilot
+  chat, agents and models. None of them add a single Actions minute.
+- A spent allowance stops every workflow in every private repository at
+  once, including `workflow_dispatch` from the API — a dispatch just makes
+  another 2-second failure. The unblock is a budget for Actions under
+  Settings → Billing and licensing → Budgets and alerts (usage is billed
+  per minute above the allowance), or waiting for the reset.
+- Each job is billed rounded up to a whole minute, so a 65-second test job
+  costs two, and a matrix of three interpreters costs six per push.
+- A mutation-testing job's cost is (probes × suite time). It grows with
+  the suite and with the probe list at once, so a cap that fit when it was
+  written fails silently later; the record shows "cancelled", which reads
+  as nothing.
+
+**Artifacts:** The runner change and the matrix narrowing are one pull
+request on the private repo; `ci_cost.py` (phased-build skill) prices a
+merge cycle at 12 job-minutes after it, from 16.
+
+**Open threads:** Dex chose to wait for the reset rather than set a
+budget. The cost of that choice is the whole scheduled loop dark for the
+rest of the month — and for a system whose scorer can only measure a
+horizon in the window after it elapses, dark nights are signals lost for
+good, not delayed. Two mitigations were offered, neither built: jobs that
+need only the database credential can run from the Mac's launchd, and the
+hourly "card countdown" job (fifteen one-minute runs a day) should move
+there regardless. The general lesson: price every scheduled job in
+minutes per month before it ships, and put a job's cap on the thing that
+grows (here, the test count), not on wall time.
+
+## 2026-09-24 — Silencing a spent Actions quota without a settings switch
+
+**Decisions:** Dex asked to stop every workflow until the reset because the
+dead runs kept mailing failures. The GitHub tools here cannot disable a
+workflow or the repository's Actions switch, so each scheduled job got
+`if: ${{ false }}` under a PAUSED comment, merged as one commit. A skipped
+job costs no minutes and sends no mail; the `schedule:` blocks stay, so
+tests that pin cron times still pass and manual dispatch still works.
+Restore is a revert of that one commit, armed as a dated check-in.
+
+**Facts / preferences:**
+- Markdown-only changes can still land while the quota is spent, when the
+  test workflow ignores `**/*.md` — no job is created, so nothing fails.
+- The skip does not cover PR-triggered runs; only the owner's
+  Settings → Actions → General → Disable actions does that.
+- Order on restore matters: merge the fix for whatever burned the minutes
+  before reverting the pause, or the first night repeats the burn.
+
 ## 2026-09-26 — The draft-to-ready flip worked; send it alone
 
 **Decisions:** Flipped [DexterBrandonJr#32](https://github.com/DexterBrandonJr/DexterBrandonJr/pull/32) from draft to ready for review with `update_pull_request` and `draft: false`, and it went through first try. No rate limit, so the close-and-recreate workaround was not needed and the pull request number stayed intact. Sent `draft: false` on its own, with no title or body in the same call — deliberately, because of the partial-application trap in the entry above: one call carrying both can apply the REST fields and then fail on the GraphQL one, leaving a pull request retitled but still a draft. Read the state back afterwards rather than trusting the empty-looking success.
