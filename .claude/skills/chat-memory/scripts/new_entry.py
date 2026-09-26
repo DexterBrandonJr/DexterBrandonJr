@@ -36,7 +36,21 @@ def slugify(raw: str) -> str:
     return slug
 
 
+# A pointer line carries a real date; the template line inside the index's
+# trailing comment says <YYYY-MM-DD> and never matches.
+POINTER = re.compile(r"^- \[.*?\]\(topics/[^)]+\.md\) — updated (\d{4}-\d{2}-\d{2}) — ")
+
+
 def update_index(index_path: Path, slug: str, title: str, summary: str, today: str):
+    """Write the topic's pointer line and keep the whole index newest first.
+
+    Updating a line in place left an older topic with a new date sitting below
+    newer ones, and the order is the one thing the index is read for (the
+    SessionStart hook injects it whole). So every pointer line is re-sorted by
+    its date, descending and stable within a date, with the line just written
+    first among today's. Lines that are not pointers, like the trailing
+    comment block, stay where they are.
+    """
     line = f"- [{title}](topics/{slug}.md) — updated {today} — {summary}"
 
     if not index_path.exists():
@@ -44,18 +58,26 @@ def update_index(index_path: Path, slug: str, title: str, summary: str, today: s
         return
 
     lines = index_path.read_text(encoding="utf-8").splitlines()
-    pattern = re.compile(rf"^- \[.*?\]\(topics/{re.escape(slug)}\.md\) — ")
-    replaced = False
-    new_lines = []
+    this_topic = re.compile(rf"^- \[.*?\]\(topics/{re.escape(slug)}\.md\) — ")
+    pointers, others, first_slot, in_comment = [], [], None, False
     for existing_line in lines:
-        if pattern.match(existing_line):
-            new_lines.append(line)
-            replaced = True
+        stripped = existing_line.strip()
+        if stripped.startswith("<!--"):
+            in_comment = True
+        if not in_comment and POINTER.match(existing_line):
+            if first_slot is None:
+                first_slot = len(others)
+            if not this_topic.match(existing_line):
+                pointers.append(existing_line)
         else:
-            new_lines.append(existing_line)
-    if not replaced:
-        new_lines.insert(0, line)
+            others.append(existing_line)
+        if "-->" in stripped:
+            in_comment = False
 
+    pointers.insert(0, line)
+    pointers.sort(key=lambda p: POINTER.match(p).group(1), reverse=True)
+    slot = 0 if first_slot is None else first_slot
+    new_lines = others[:slot] + pointers + others[slot:]
     index_path.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
 
 

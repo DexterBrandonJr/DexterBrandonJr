@@ -28,6 +28,16 @@ things with Claude Code.
   (`references/domains.json`). `scripts/scenarios.py` runs anywhere; the
   private hub runs the same engine in the database and matches it draw for
   draw.
+- `.claude/skills/qc-lead/` — how one chat leads quality control over many
+  parallel chats: it reads every change since its last pass, re-runs the
+  proof of what it built, gives every change one verdict (kept, folded,
+  fixed, reverted, flagged, noted, or one copy-paste prompt for Dex), and
+  closes a pass only when nothing is unread. `references/chat-report-prompt.md`
+  is what Dex pastes into every chat when the lead needs their state. The
+  private hub keeps the ledger.
+- `tools/upscayl-wrap/` — a command-line wrapper for the Upscayl photo
+  upscaling engine, built around what the engine gets wrong. Generic and
+  public-safe; its README and memory topic carry the details.
 - `.claude/memory/` — the actual memory store (`INDEX.md` + `topics/`).
   **This repo is public** — nothing sensitive goes in here. See the skill's
   public/private/never-in-git guidance before writing an entry; some things
@@ -61,6 +71,15 @@ preferences, run `select * from hub_boot('code')` through the Supabase
 connector on that project, follow the rules it returns, and write back last
 with `hub_capture` / `hub_write` / `hub_used`. The chat-memory files in this
 repo remain the per-repo record; the hub is the cross-surface one.
+
+## Parallel chats and the QC lead
+
+Several chats work on Dex's repos at once. One writer per repo: every
+session works in its own clone or worktree, lands changes through a pull
+request, and stops there. The QC lead, the chat named in the hub, merges
+other chats' pull requests, deletes branches and reconciles every change
+against the design (skill `qc-lead`). When a chat needs Dex to do
+something, it gives him one copy-paste prompt or command.
 
 ## Scope: skills, apps, functions, and tools — not just skills
 

@@ -1,5 +1,6 @@
+- [Chat Memory Roadmap](topics/chat-memory-roadmap.md) — updated 2026-09-26 — new_entry.py now re-sorts the whole index by date, newest first; the recency-order bug is fixed in the script, not by hand
+- [Qc Lead](topics/qc-lead.md) — updated 2026-09-26 — the QC lead chat reads every change, gives each one verdict, and closes a pass only when nothing is unread; one writer per repo everywhere
 - [Github Integration](topics/github-integration.md) — updated 2026-09-26 — The draft-to-ready flip worked; send it alone
-- [Chat Memory Roadmap](topics/chat-memory-roadmap.md) — updated 2026-09-26 — new_entry.py leaves the index out of recency order
 - [Working With Claude](topics/working-with-claude.md) — updated 2026-09-26 — when Dex says he is asleep, on shift or away, routine approvals for that window are already given; the tools go on the project allowlist, what truly needs his hand goes on the morning list
 - [Claude Starter File](topics/claude-starter-file.md) — updated 2026-09-26 — share/hub-kit v1.1: hub.route in SQL and Python (24/24 each), hub_import.py for notes folders and ChatGPT/Claude exports, hub.config.example.json; artifact republished
 - [Scenarios](topics/scenarios.md) — updated 2026-09-26 — skill scenarios: Monte Carlo that halts when settled (1 to 10,000 runs), arms on shared draws, every factor labeled measured/estimated/emerging/speculative from a 129-node catalog; Python and the hub's SQL engine agree draw for draw
