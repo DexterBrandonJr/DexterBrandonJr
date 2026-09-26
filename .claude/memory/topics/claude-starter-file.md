@@ -60,3 +60,22 @@ friend is what tests it; whatever confuses them is the next edit. Unverified
 from here: whether the desktop app's folder mode is available on their
 Windows build, and the current Windows install command for Claude Code —
 the file tells Claude to check both rather than assert them.
+
+## 2026-09-26 — Hub Kit: a hub anyone can install with any AI
+
+**Decisions:**
+- A second shareable file next to the starter: `share/hub-kit/HUB-KIT.md`. Anyone attaches it to any AI and says "Run the Hub Kit"; the AI installs their own version of the hub, the same call and response as Dex's (boot → brief → work → used), at one of three levels: paper (a `HUB.md` any AI reads), local (one stdlib Python file + SQLite, owner-only permissions), or cloud (a Postgres schema `hub`, Supabase free tier, reached through the Supabase MCP connector by any AI that speaks MCP).
+- Three promises outrank everything in the file: nothing without a yes (a "before you sign up" card for every account, connector and install: what it can see, cost, undo, safer setting), no secrets in the chat, and the truth about what happened (Proven / Tested / Expected; "installed" only after self-test, audit and a fresh-chat boot).
+- Reading the person is built in, openly and with consent: the AI adapts to how they type or talk, says what it noticed, asks before saving a style card, asks (optionally) about goals and worries to design around them, and never uses a worry to steer, never diagnoses or labels, never infers protected traits. That is the kit's answer to "without leading them astray."
+- One source, three outputs: `src/protocol.md` + `hub-kit.sql` + `hub_local.py` → `HUB-KIT.md` (with SHA-256 fingerprints), `hub-kit.html` (standalone page), and the artifact page (built outside the repo).
+
+**Facts / preferences:**
+- Tested: the cloud SQL on a throwaway PostgreSQL 16 cluster (self-test 23/23, audit clean, reinstall clean, anon/authenticated refused at the schema, a foreign `hub` schema left untouched); the Supabase-specific pieces probed on a real Supabase project and rolled back; the local script 23/23; and both code blocks extracted from `HUB-KIT.md` itself, fingerprints matched, installed from scratch, 23/23 each.
+- A tampered kit changes the code and its printed fingerprint together, so the AI is told to read the code before running it (no network calls, nothing outside `hub` or `~/.hub`); fingerprints catch truncation.
+
+**Artifacts:**
+- `share/hub-kit/` (HUB-KIT.md, hub-kit.html, hub-kit.sql, hub_local.py, README.md, src/).
+- The page "Hub Kit Installer" (private artifact; copy buttons and a save button through the platform's download prompt).
+
+**Open threads:**
+- Not yet run by a real first-time user on another AI (ChatGPT, Gemini); the first run is the real test of the teaching and the human-step blocks.

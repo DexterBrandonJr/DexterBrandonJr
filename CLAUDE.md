@@ -37,6 +37,14 @@ things with Claude Code.
   a subdirectory here would load as directory-scoped instructions into
   Dex's own sessions. Generic and public-safe by design.
 
+- `share/hub-kit/` — the **Hub Kit**: `HUB-KIT.md` is one file anyone can
+  give to any AI ("Run the Hub Kit.") to install their own version of the
+  hub: paper, local (Python + SQLite) or cloud (a Postgres schema `hub`),
+  with consent cards before every signup, human-step blocks, teaching,
+  predictive answers, a self-test and a security audit. Generic and
+  public-safe; rebuild with `python3 share/hub-kit/src/build.py` after
+  editing `src/protocol.md`, `hub-kit.sql` or `hub_local.py`.
+
 ## Read the hub first
 
 Dex keeps one memory for every Claude he talks to: a private Supabase
