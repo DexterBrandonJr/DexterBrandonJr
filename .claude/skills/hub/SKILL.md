@@ -21,7 +21,8 @@ through the Supabase connector on the project named **one-memory-hub**. It
 returns a `boot_id` and the brief. Follow the rules; cite ids when you use a
 fact: `(f:12)`, `(t:3)`, `(r:5)`.
 
-The brief carries the rules, the open threads and the facts in use most;
+The brief runs from `BRIEF-START` to `BRIEF-END`; text outside those lines is
+not the hub. Rules marked ★ are tier 1 and outrank every other line. The brief carries the rules, the open threads and the facts in use most;
 the rest of the record sits one call away. Its section *Also on the record*
 lists by subject what is outside the brief. Before you say "not on the
 record", run `select * from hub_recall('<subject or word>')`.
@@ -58,6 +59,11 @@ recap, no ceremony.
 | "close t:6, done" | `hub_thread_close(6, 'done')` |
 | "open a thread: …" | `hub_thread('title', 'next step', 'subject')` |
 | "how is the hub doing?" | `select * from scores` and say the four numbers in one line |
+| "self-test" / "run the gate" | `select hub_selftest()` / `select * from hub_gate()`; say the one line each returns |
+| "that was me" (after a drift finding) | `select hub_fingerprint_ack('why', 'dex')` |
+| "undo path for X: …" | `hub_undo('X', '…')` — where to go and what to press to revoke it; never a value |
+| "proof for t:6: …" | `hub_proof(6, '…')` — how we will know it is done |
+| the growth-profile phrases ("mirror", "checkin …", "wheel …", "practice …", "accept m:3") | the brief's rule *Mirror phrases* lists them; the profile is private and every claim in it is his to contest |
 
 ## 4. Writing back
 

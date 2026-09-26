@@ -72,3 +72,38 @@
 
 **Open threads:**
 - Four taps for Dex, tracked in the private hub: confirm two-factor, create the worker routine, pick the product blanks, settle the first forecasts.
+
+## 2026-09-26 — Shapes, gate and the Mirror (0012–0014)
+
+**Decisions:**
+- Building the Hub Kit for strangers produced designs the hub itself
+  lacked; Dex asked for both lists built and approved on his behalf. Three
+  migrations followed: rules in tiers with an envelope around the brief, a
+  paper copy and an export; a self-test any connector can run, a fingerprint
+  of the hub's own code that turns an unlogged change into a finding, an
+  undo path on every account and key, and an install gate (self-test →
+  audit → brief under its cap → integrity); and the Mirror, a private,
+  evidence-bound growth profile whose gate lives in code (labels are his to
+  state, inferences are capped, only he confirms, the phone push carries
+  numbers only).
+- The database never pushes its own backup to GitHub: a token in the hub
+  would be a secret in the store. Code and the worker write the paper copy.
+
+**Facts / preferences:**
+- A reusable testing trick: a throwaway local PostgreSQL with the two
+  Supabase extensions stubbed by signature (a job table, a response table)
+  applies the real migrations unchanged and runs the self-test before
+  anything goes live.
+- Two lessons for the working agreement: when the thing being budgeted can
+  be rendered, render it instead of estimating (the first live compile
+  landed 535 words over); a query alias must never share a name with a
+  plpgsql variable.
+
+**Artifacts:**
+- Schema, tests, docs and the paper copy live in the private hub repo
+  (`DexterBrandonJr/one-memory-hub`). Here: `.claude/skills/hub/SKILL.md`
+  gained the gate phrases and a pointer to the private profile's phrases.
+
+**Open threads:**
+- The first unattended nightly proves the integrity check and the self-test
+  (scored the next morning).
