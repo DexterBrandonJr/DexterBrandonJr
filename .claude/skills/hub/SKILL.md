@@ -1,6 +1,6 @@
 ---
 name: hub
-description: Dex's one memory across every Claude. Reads his private hub (the Supabase project named "one-memory-hub", through the Supabase connector) first and writes back last, so no chat starts at zero and nothing learned is lost. Trigger whenever a conversation touches Dex, his projects, his preferences, his machines or his history; whenever he says "read my hub", "hub", "boot", "what's on the record about …", "log this", "log this chat", "accept 3 5", "reject 4", "close t:6", "open a thread", or "how is the hub doing"; when an ongoing chat with history has never read the hub; and at the end of any chat that produced a decision, a fact or an open loop worth keeping. Not for chats that never mention him or his work.
+description: Dex's one memory across every Claude. Reads his private hub (the Supabase project named "one-memory-hub", through the Supabase connector) first and writes back last, so no chat starts at zero and nothing learned is lost. Trigger whenever a conversation touches Dex, his projects, his preferences, his machines or his history; whenever he says "read my hub", "hub", "boot", "what's on the record about …", "log this", "log this chat", "accept 3 5", "reject 4", "close t:6", "open a thread", "sweep my chats", "continue" (mid-sweep), or "how is the hub doing"; when an ongoing chat with history has never read the hub; and at the end of any chat that produced a decision, a fact or an open loop worth keeping. Not for chats that never mention him or his work.
 ---
 
 # The hub
@@ -21,6 +21,11 @@ through the Supabase connector on the project named **one-memory-hub**. It
 returns a `boot_id` and the brief. Follow the rules; cite ids when you use a
 fact: `(f:12)`, `(t:3)`, `(r:5)`.
 
+The brief carries the rules, the open threads and the facts in use most;
+the rest of the record sits one call away. Its section *Also on the record*
+lists by subject what is outside the brief. Before you say "not on the
+record", run `select * from hub_recall('<subject or word>')`.
+
 If the connector is not available in this chat, say so in one line ("the
 Supabase connector is off for this chat; switch it on in the tools menu")
 and answer without guessing anything about Dex. Never invent a fact to
@@ -37,9 +42,11 @@ recap, no ceremony.
 | He says | You run |
 |---|---|
 | "read my hub" / "hub" / "boot" | `hub_boot('<surface>')`, then the one-line delta |
-| "what's on the record about X?" | boot if you have not, then answer from the brief with ids; depth: `select * from facts where subject_id = '<id>' and status = 'live'` |
+| "what's on the record about X?" | boot if you have not, then `select * from hub_recall('X')`; answer with ids |
 | "log this: …" | `hub_capture('…', '<surface>', 'dex')`, then `hub_write` for each fact with a quote from that raw row |
 | "log this chat" | capture a short summary of what this conversation established, in his words where possible; then `hub_write` per fact with quotes; `hub_thread` for anything left undone |
+| "sweep my chats" | walk his chat history with chat search, newest first, ten chats per turn; skip this chat and any whose pointer `claude-chat:<chat id>` is already in `index_entries`; per chat: `hub_capture` a 5–12 line summary (author `claude:chat`, ref the pointer, sent_at the chat's date), `hub_index('chat', title, pointer, one line, subject, date, null, raw_id)`, `hub_recall(subject)`, `hub_write` only what is new with a quote copied from the summary, `hub_thread` for loose ends; end the turn with "done of total · facts · threads · say continue" |
+| "continue" (mid-sweep) | the next ten chats |
 | "accept 3 5" | `hub_accept(array[3,5], 'dex')` |
 | "reject 4: wrong" | `hub_reject(array[4], 'dex', 'wrong')` |
 | "close t:6, done" | `hub_thread_close(6, 'done')` |
@@ -62,6 +69,7 @@ recap, no ceremony.
    fact goes live. Without it the fact waits as a proposal, which is the
    correct outcome for anything you are not sure of. A bare number needs a
    `unit`. Predicates come from the list the function returns when refused.
+   Wrap text in `$q$ … $q$` so an apostrophe cannot break the statement.
 4. **Before you finish.** `hub_used(boot_id, array[ids you relied on])`.
    If you re-derived something the hub already held, `hub_regret(boot_id,
    array[ids])` so the miss is counted.

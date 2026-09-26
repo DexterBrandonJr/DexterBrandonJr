@@ -37,3 +37,21 @@
 - The morning list; the chat-search ingest from the phone; the weekly review and the counterfactual are the next increments (tracked in the private repo's build order).
 - Cowork transcripts in the data export: still unconfirmed.
 - The nightly export of the brief into a private repo through the GitHub contents API (git history as the undo button, no Actions minutes) is an idea, not a decision.
+
+## 2026-09-26 — Every artifact and Code session in; the chat sweep is one phrase
+
+**Decisions:**
+- A Code session cannot read claude.ai chats, so the chat sweep runs where the history is: Dex says "sweep my chats" in one phone chat, ten chats a turn, resumable with "continue". The phrase is a hub rule, so every surface knows it; the long paste and its limits are in the private repo (`docs/SWEEP.md`).
+- Every artifact and every Claude Code session on the account is indexed in the hub; the details stay in the private hub, not here.
+- Dex's Claude Projects write to the hub as trusted authors, like chat and Cowork.
+
+**Facts / preferences:**
+- The hub was already in use across surfaces before this session finished: chat, Cowork, a Project and Code all read it first and reported back.
+- Two classes the first real traffic found, fixed the same hour: a guard written for one kind of slot did not cover its sibling (duplicate lines from two writers), and a word cap that fixed sections consumed hid most of the record (now one recall call away, and the summary says so). Both are pinned by the hub's smoke test, now 24 checks.
+
+**Artifacts:**
+- `.claude/skills/hub/SKILL.md` here carries the new phrases ("sweep my chats", "continue") and the recall step.
+- In the private repo: three migrations, `docs/SWEEP.md`, updated boot and morning docs.
+
+**Open threads:**
+- Dex runs the sweep from the phone, then once inside each Claude Project.
