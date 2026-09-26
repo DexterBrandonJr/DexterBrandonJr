@@ -89,6 +89,26 @@ path, a binary, an installed tool — verify it in an environment built the way
 the real one is built, not in the one that happens to be to hand. And when
 reporting a suite as green, say which environment it was green in.
 
+**2026-09-16, the same rule inverted, which is harder to spot.** The Upscayl
+wrapper's suite went green in a cloud container *because the container is
+bare*. Its test workspace patched the config and data directories but not
+`HOME`, and the tool searches a list of `~/...` locations for an installed
+engine — one of which is exactly where its own installer puts one. So the test
+asking "what happens when no engine is present" quietly found a real engine on
+any machine that had one, and the assertions about which models exist were
+reporting on what happened to be installed rather than on the fixture.
+Patching `HOME` alone was not enough either: the application bundle paths are
+absolute, so a copy in `/Applications` was still found.
+
+The first version of this lesson was *green here, red there*. This one is
+**green here, red on the only machine that matters** — and it is worse,
+because the passing result comes from the environment being poorer than the
+real one, so nothing about working locally ever hints at it. The way it was
+settled is the part to keep: plant the thing the test claims is absent, run
+the suite, watch it fail five tests, apply the isolation, watch it pass. A
+test that has never been run against the condition it describes has not been
+tested, only written.
+
 ## A guessed interface is not a built feature — 2026-09-12
 
 Thirty-odd modules were built fast and deliberately untested, on Dex's
@@ -405,11 +425,12 @@ what it could not process — worth reaching for again rather than re-deriving.
 where a dependency writes to logs, or where one code path branches on another
 path's error message.
 
-## 2026-09-15 — Four ways a check can look right and establish nothing
+## 2026-09-15 — Six ways a check can look right and establish nothing
 
-A day of fixing guards that reported states they had never actually checked.
-All four are the same shape — something that *reads* as a safety check but
-whose answer was never connected to reality — and all four are worth
+A day of fixing guards that reported states they had never actually checked,
+plus two more of the same shape found later (2026-09-16, marked below).
+All six are the same shape — something that *reads* as a safety check but
+whose answer was never connected to reality — and all six are worth
 recognising in any codebase, not just the one they came from.
 
 **Decisions:**
@@ -461,6 +482,29 @@ whether a dangerous action was safe, and two pre-existing tests caught me
 reporting absent things as present. Neither would have fired without the
 other. The general lesson is not "trust the tests" or "think harder" but that
 the two are complementary and a change to a safety path deserves both.
+
+**A pattern that matches nothing looks exactly like a check that passes.**
+(2026-09-16.) The Upscayl wrapper detects a failed model load by matching the
+neural-network library's error output, because the engine discards the return
+codes and a failed load produces a black image under a success banner. Two of
+the patterns were written from memory: `load_param failed` and `load_model
+failed`. The library never prints either — it prints `layer load_model 12
+conv_first failed` and `ParamDict load_param 7 body.0 failed`. So the check ran
+on every job, matched nothing, and reported everything as fine. There is no
+symptom for this: a regular expression that never fires is indistinguishable
+from one that fires correctly and finds nothing wrong. **When a check exists
+to catch something that fails quietly, the string it matches has to be read
+out of the source that prints it, and a test has to pin each real message.**
+
+**A cleanup test that raises after the cleanup is moot proves only that the
+test runs.** (2026-09-16.) A test checked that interrupting a job leaves no
+half-written file behind. It forced the exception at a point after the result
+had already been moved into place — where there is nothing left to clean up —
+so it passed whether or not the cleanup existed. The fix was not a better
+assertion but a better *moment*: raise while the temporary file is still on
+disk and still owned by the job. **The way to know a test tests anything is to
+break the thing it guards and watch it go red.** Deleting the cleanup made the
+corrected test fail, which is the only evidence that it was ever a test.
 
 ## 2026-09-16 — Overwhelmed does not mean keep away; and a chat does not transfer, a repo does
 
