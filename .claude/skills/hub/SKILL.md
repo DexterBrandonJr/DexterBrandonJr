@@ -54,6 +54,8 @@ recap, no ceremony.
 | "have Code do: …" | `hub_handoff('code', title, next step, subject)` |
 | "2fa on for X" / "rotated X" / "make X private" | `hub_mfa('X')` / `hub_rotated('X')` / `hub_private('X')` |
 | "security check" | `select * from hub_security_audit()`; say the levels in one line |
+| "qc sweep" / "what changed" / "what did the other chats do" | in the QC lead chat: a pass (`hub_qc_begin`, `qc_inbox`, `qc_repos_status`, one `hub_qc_record` per change, `hub_qc_seen` per repo, `hub_qc_end`); see skill `qc-lead`. In any other chat: say which chat leads QC (the hub names it) and offer the chat-report prompt |
+| "chat report" | fill the block in `.claude/skills/qc-lead/references/chat-report-prompt.md`, capture it titled `CHAT REPORT — <chat name>`, and return the block for Dex to paste to the lead |
 | "accept 3 5" | `hub_accept(array[3,5], 'dex')` |
 | "reject 4: wrong" | `hub_reject(array[4], 'dex', 'wrong')` |
 | "close t:6, done" | `hub_thread_close(6, 'done')` |

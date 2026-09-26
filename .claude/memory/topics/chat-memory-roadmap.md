@@ -32,3 +32,13 @@
 **Artifacts:** Hand fix in commit `e72b56f`. The bug is in `scripts/new_entry.py`, in whichever step rewrites the pointer line.
 
 **Open threads:** New roadmap item, on top of the five still deferred from round 2: **make `new_entry.py` re-sort the whole index after updating a pointer line**, rather than editing it where it sits. Small and self-contained — the sort is by the date in each line, descending, stable within a date, leaving the trailing HTML comment alone. Worth doing before the next time someone trusts the order.
+
+## 2026-09-26 — new_entry.py keeps the index newest first
+
+**Decisions:** Fixed the recency-order bug in the script itself rather than by hand: after writing a pointer line, `new_entry.py` re-sorts every pointer line by its date, newest first, stable within a date, with the line just written first among today's. Lines that are not pointers (the trailing comment and the template line inside it) stay where they are.
+
+**Facts / preferences:** Proven on a scratch index: an older topic updated today moved to the top, a new topic went first, and the template line inside the comment was left alone. Proven again on this repo's own index by writing this entry and the qc-lead one.
+
+**Artifacts:** This change to `scripts/new_entry.py`.
+
+**Open threads:** The five items deferred from round 2 are unchanged.
