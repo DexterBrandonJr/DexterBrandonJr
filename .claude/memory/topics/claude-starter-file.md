@@ -60,3 +60,37 @@ friend is what tests it; whatever confuses them is the next edit. Unverified
 from here: whether the desktop app's folder mode is available on their
 Windows build, and the current Windows install command for Claude Code —
 the file tells Claude to check both rather than assert them.
+
+## 2026-09-26 — Hub Kit: a hub anyone can install with any AI
+
+**Decisions:**
+- A second shareable file next to the starter: `share/hub-kit/HUB-KIT.md`. Anyone attaches it to any AI and says "Run the Hub Kit"; the AI installs their own version of the hub, the same call and response as Dex's (boot → brief → work → used), at one of three levels: paper (a `HUB.md` any AI reads), local (one stdlib Python file + SQLite, owner-only permissions), or cloud (a Postgres schema `hub`, Supabase free tier, reached through the Supabase MCP connector by any AI that speaks MCP).
+- Three promises outrank everything in the file: nothing without a yes (a "before you sign up" card for every account, connector and install: what it can see, cost, undo, safer setting), no secrets in the chat, and the truth about what happened (Proven / Tested / Expected; "installed" only after self-test, audit and a fresh-chat boot).
+- Reading the person is built in, openly and with consent: the AI adapts to how they type or talk, says what it noticed, asks before saving a style card, asks (optionally) about goals and worries to design around them, and never uses a worry to steer, never diagnoses or labels, never infers protected traits. That is the kit's answer to "without leading them astray."
+- One source, three outputs: `src/protocol.md` + `hub-kit.sql` + `hub_local.py` → `HUB-KIT.md` (with SHA-256 fingerprints), `hub-kit.html` (standalone page), and the artifact page (built outside the repo).
+
+**Facts / preferences:**
+- Tested: the cloud SQL on a throwaway PostgreSQL 16 cluster (self-test 23/23, audit clean, reinstall clean, anon/authenticated refused at the schema, a foreign `hub` schema left untouched); the Supabase-specific pieces probed on a real Supabase project and rolled back; the local script 23/23; and both code blocks extracted from `HUB-KIT.md` itself, fingerprints matched, installed from scratch, 23/23 each.
+- A tampered kit changes the code and its printed fingerprint together, so the AI is told to read the code before running it (no network calls, nothing outside `hub` or `~/.hub`); fingerprints catch truncation.
+
+**Artifacts:**
+- `share/hub-kit/` (HUB-KIT.md, hub-kit.html, hub-kit.sql, hub_local.py, README.md, src/).
+- The page "Hub Kit Installer" (private artifact; copy buttons and a save button through the platform's download prompt).
+
+**Open threads:**
+- Not yet run by a real first-time user on another AI (ChatGPT, Gemini); the first run is the real test of the teaching and the human-step blocks.
+
+## 2026-09-26 — Hub Kit v1.1: routing, an importer, a config file
+
+**Decisions:**
+- Kit v1.1 adds what a second week of use needs: `hub.route(text)` (cloud) and `route` (local) so a plain sentence reaches the right subject and its open threads; `hub_import.py` brings what people already have (a notes folder, a ChatGPT or Claude data export, a CSV) in as raw captures, with the guard's refusals counted and never shown; `hub.config.example.json` for level, owner, surfaces and import settings, nothing secret in it. The protocol gained section 9 "bring what they already have" and appendix D.
+- The importer never invents facts from old text: an AI reads the captures afterwards and writes facts with quotes, the way the kit's section 9 teaches.
+
+**Facts / preferences:**
+- Tested: the cloud SQL 24 of 24 on PostgreSQL 16, the local script 24 of 24, all four importer readers, the importer's cloud SQL file applied once and re-applied as a no-op. HUB-KIT.md is 150,345 bytes with fresh fingerprints; the artifact page is republished as version 3.
+
+**Artifacts:**
+- `share/hub-kit/hub_import.py`, `share/hub-kit/hub.config.example.json` (new); `hub-kit.sql`, `hub_local.py`, `src/protocol.md`, `src/build.py` (VERSION 1.1), `README.md`, `HUB-KIT.md`, `hub-kit.html` (updated); the "Hub Kit Installer" artifact.
+
+**Open threads:**
+- Still not run by a real first-time user on another AI; it is on the hub's backlog now, so it stays in view.

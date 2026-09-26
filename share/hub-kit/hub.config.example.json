@@ -1,0 +1,21 @@
+{
+  "_": "Hub Kit configuration. Copy to hub.config.json and edit. Nothing here is a secret; keep it that way (no keys, no passwords, no connection strings).",
+  "level": "local",
+  "owner": "me",
+  "timezone": "America/New_York",
+  "surfaces": ["chat", "desktop", "code"],
+  "trusted_authors": "me,ai:*",
+  "brief_word_cap": 2500,
+  "db": null,
+  "import": {
+    "author": "me",
+    "surface": "import",
+    "chunk_chars": 6000
+  },
+  "route": {
+    "_": "extra words that should reach a subject; the AI adds them with `subject <name> --aliases` (local) or hub.subject(...) (cloud)",
+    "aliases": {
+      "example project": ["the project", "that build"]
+    }
+  }
+}

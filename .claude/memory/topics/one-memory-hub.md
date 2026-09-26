@@ -55,3 +55,93 @@
 
 **Open threads:**
 - Dex runs the sweep from the phone, then once inside each Claude Project.
+
+## 2026-09-26 — Innovations test: guard, watch, ledgers, handoff
+
+**Decisions:**
+- Dex asked for an innovations test aimed at autonomy across every device, cybersecurity, and profitability. The finding that shaped everything: a memory every Claude reads is a lethal trifecta by construction (private data, untrusted content, a way out), the attack OWASP calls memory and context poisoning. The defences went in at write time, in code: secrets refused everywhere, provenance, instruction-shaped text held for a human, private subjects never pushed to the phone, and the public API roles locked out.
+- A nightly security watch audits the hub's own locks and a register of Dex's accounts (pointers only, never values). Money, unit economics and a scored forecast ledger give each project the three numbers a venture is decided on: burn, margin, break-even. Any device can hand work to Code through the hub.
+
+**Facts / preferences:**
+- Three classes were found and fixed within the hour: a lock scoped too narrowly (caught by the new watch in its first minute), the guard refusing honest text (a pattern tuned), and a leak by name in the phone push. The lessons went into the innovation-brief skill's quality-control lens, not only into memory.
+- A routine created from a Code session cannot carry connectors on this plan; an autonomous worker that needs a connector is created by Dex in the Claude app.
+
+**Artifacts:**
+- The page "Hub Innovations Test" (private artifact); the schema, tests and docs live in the private hub repo.
+- `.claude/skills/hub/SKILL.md` here gained the new phrases; `.claude/skills/innovation-brief/references/lenses.md` gained three quality-control questions.
+
+**Open threads:**
+- Four taps for Dex, tracked in the private hub: confirm two-factor, create the worker routine, pick the product blanks, settle the first forecasts.
+
+## 2026-09-26 — Shapes, gate and the Mirror (0012–0014)
+
+**Decisions:**
+- Building the Hub Kit for strangers produced designs the hub itself
+  lacked; Dex asked for both lists built and approved on his behalf. Three
+  migrations followed: rules in tiers with an envelope around the brief, a
+  paper copy and an export; a self-test any connector can run, a fingerprint
+  of the hub's own code that turns an unlogged change into a finding, an
+  undo path on every account and key, and an install gate (self-test →
+  audit → brief under its cap → integrity); and the Mirror, a private,
+  evidence-bound growth profile whose gate lives in code (labels are his to
+  state, inferences are capped, only he confirms, the phone push carries
+  numbers only).
+- The database never pushes its own backup to GitHub: a token in the hub
+  would be a secret in the store. Code and the worker write the paper copy.
+
+**Facts / preferences:**
+- A reusable testing trick: a throwaway local PostgreSQL with the two
+  Supabase extensions stubbed by signature (a job table, a response table)
+  applies the real migrations unchanged and runs the self-test before
+  anything goes live.
+- Two lessons for the working agreement: when the thing being budgeted can
+  be rendered, render it instead of estimating (the first live compile
+  landed 535 words over); a query alias must never share a name with a
+  plpgsql variable.
+
+**Artifacts:**
+- Schema, tests, docs and the paper copy live in the private hub repo
+  (`DexterBrandonJr/one-memory-hub`). Here: `.claude/skills/hub/SKILL.md`
+  gained the gate phrases and a pointer to the private profile's phrases.
+
+**Open threads:**
+- The first unattended nightly proves the integrity check and the self-test
+  (scored the next morning).
+
+## 2026-09-26 — Routing, a self-writing backlog and a field the hub reads itself
+
+**Decisions:**
+- A plain sentence finds its tool. `hub_route(text)` returns the subjects a message touches (whole-word aliases), their open threads, the intents (money, forecast, security, task, feeling, practice, wheel), the profile areas and one `do` row that names what to run; every chat runs it before answering; the words it cannot place feed a nightly learner. Design: the private repo's docs/ROUTING.md.
+- The hub writes its own backlog. One row per gap it can measure, four lenses (security, growth, efficiency, reach), three sizes that name who builds (S a chat, M a Code session, L a phased build with a brief first), a score from use and pain, thirteen nightly detectors that upsert by key and mark themselves done when the gap closes. The hub proposes and ranks; it never builds; a guest cannot write it; the push carries counts only. Design: docs/BACKLOG.md there.
+- The field. Six public pages (the Claude Code changelog, Anthropic news, the Supabase changelog, Simon Willison's feed, OWASP GenAI, the Hacker News front page for AI) fetched by the hub itself on a cadence and cleaned before the secret guard sees them; a Claude reads the new rows and proposes items that cite their source. The first read produced seven.
+- The brief's word cap moved from 3,000 to 3,500, with its revoke path on the record: the fixed sections had left room for 13 facts; at 3,500 the core holds 25. Trimming those sections is on the backlog.
+
+**Facts / preferences:**
+- Proven live on 2026-09-26: 70 self-test checks, the install gate 4 of 4, the 29 new functions identical between the files and the live database hash for hash; all six field pages landed clean on the second fetch; the first detector item cleared by the record itself the same afternoon.
+- Three failure classes from the first live runs, fixed the same day and recorded: a public page treated as a message (820 KB stored whole, three pages refused as card numbers → a cleaner before the guard); a learner without a stop-list (21 everyday words proposed as aliases for the owner → person subjects and common words skipped); a backreference in a hot regex (32 seconds on a 500 KB page → one pass per tag, 76 ms).
+- Nothing here woke Dex: routine approvals in the named window stand, and every decision carries its revoke path.
+
+**Artifacts:**
+- Private repo `DexterBrandonJr/one-memory-hub`: migrations `0015_route`, `0016_backlog`, `0016_backlog_field`; docs/ROUTING.md, docs/BACKLOG.md; the worker prompt gained the field, the aliases and the plan; predictions 19–23.
+- This repo: `.claude/skills/hub/SKILL.md` (routing and backlog phrases).
+
+**Open threads:**
+- The first unattended nightly with the three new steps runs 27 Sep. Dex creates the worker routine in the Claude app so the field, the aliases and the plan run without a chat. From any chat: say `plan`, accept one small item, finish it, say `done`.
+
+## 2026-09-26 — Scenarios live in the hub; the database upgrade checked; model by work
+
+**Decisions:**
+- Scenarios is part of the hub (private repo, migration 0017): the same engine as the public skill, run inside the database, with runs and observations kept forever and append-only, forecasts on the hub's ledger, a nightly re-run of stale scenarios, a route intent for plain words ("what if", "which is better", "simulate"), a digest line and a weekly paragraph. No brief section: the brief is at its cap.
+- The database upgrade Supabase announced (PostgreSQL 17.6 to 17.11) was checked against the hub's four risk areas: nothing applies, no action needed.
+- Model by work: routine chats and Code sessions on Opus 5.5; Fable 5.1 for the brief and the hardest phase of a large build. The hub's backlog names the model per size.
+
+**Facts / preferences:**
+- Proven live: self-test 84 checks, gate 4 of 4, the new functions identical live and local; two worked scenarios defined and run with the same answers as the portable engine.
+- The daily workers still wait on Dex: a routine made from a Code session cannot carry the database connector on this plan.
+
+**Artifacts:**
+- Private repo: `0017_scenarios.sql`, docs/SCENARIOS.md, three failure classes in the working agreement, predictions 24 to 26.
+- This repo: `.claude/skills/scenarios/`, the hub skill's what-if row, `CLAUDE.md`.
+
+**Open threads:**
+- Dex: log a real workout against the training-day scenario (done or skipped) so the model starts learning from his record; create the worker routine in the Claude app.
