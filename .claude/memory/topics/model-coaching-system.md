@@ -46,7 +46,7 @@
 
 **Lesson:** a reported "selftest: PASS" is worthless if the test function was never confirmed present on the live target — always verify the self-test function *exists* (`pg_proc`) before trusting its reported pass count, not just that the aggregate number looks plausible.
 
-**Not fixed (flagged, out of scope):** hub brief is currently 3686/3600 words — over its own cap. This is the hub's own nightly-compiler mechanism (pre-existing, not part of this build); expected to self-correct on its next scheduled run rather than something to patch here.
+**Not fixed (flagged, out of scope):** ~~hub brief is currently 3686/3600 words — over its own cap.~~ Wrong — see the fifth pass: the gate reads 3534/3600; 3686 is a different measurement.
 
 **Status:** Coaching system now actually functional end-to-end, not just shipped-looking. Migration 0021 committed and pushed to main.
 
@@ -89,3 +89,31 @@
 ## 2026-09-27 — Fourth QA/QC pass (Opus 5.5, low): section 16 of the Hub Kit removed
 
 Section 16 ("Model coaching"), added to `share/hub-kit/HUB-KIT.md` in the post-merge phase, was hand-edited into a **build output**. `src/build.py` regenerates that file from `src/protocol.md`, so the next rebuild would have erased it, and it was never in the published `hub-kit.html`. Worse, the kit's own code (`hub-kit.sql`, `hub_local.py`) installs no coaching tables, so the section promised phrases ("suggest a model", "show my patterns") that a kit install cannot answer. That breaks the kit's third promise: say something worked only when you saw it work. Fixed by rebuilding from source (back to the 150,345-byte v1.1). If the kit ever gets coaching, it goes in `src/protocol.md` **and** the kit's SQL/Python together, then rebuild. Live hub data checked: no leftover test rows.
+
+## 2026-09-27 — Fifth QA/QC pass (Opus 5.5): replayed from git, found the system inert, wired it up
+
+**Decisions:**
+- Test the migrations the way a new install would meet them: replay `0020`→`0025` from git onto an empty Postgres 16 (local, with `hub_log`/`hub_migrated`/`log` stubs), then test the result. Every earlier pass had tested only the live hub, which was patched by hand between files.
+- Log a run only when the model **and** the effort are known (Dex stated them, or the session shows them). An unknown effort means no row — never a guess. Written into the hub skill, step 5 of *Writing back*.
+- Model facts come from the Claude API reference bundled with Claude Code (skill `claude-api`), not from memory. What can't be checked (plan limits) is left out, not estimated.
+
+**Facts / preferences:**
+- **The system was inert.** No job ran `coach_analyze_and_advise()` and no skill told any chat to call `coach_log_run()`. `coach_runs` held zero real rows. Now: `coach-nightly` at `50 7 * * *` UTC (declared in `settings.cron_allowlist`, since `hub_security_audit()` flags any undeclared job as high — it did, and that was right), and the hub skill logs runs.
+- **Advice never expired** (0023's staleness, one level up): runs aging out left their advice row served forever. Now deleted by the analysis, and `coach_recommend` ignores advice older than 30 days in case the job stops.
+- **Any outcome string was accepted**: `'success'` went in and counted as a failure. Check constraints now on outcome and phase.
+- **The catalog was wrong** (0020 was written from memory): Fable 5.1 is 1M context, not 200K; prices were $3/$15 across the board where they are Fable $10/$50, Opus 5.5 $4/$20, Opus 5 $5/$25, Sonnet 5 $2/$10, Haiku 4.5 $1/$5; Haiku's max output is 64K, not 128K. Effort "cost multipliers" had no source. `docs/MODELS.md` also carried a nonexistent `/slow` command and an invented `client.models.default`. Fixed in the DB (0025), `docs/MODELS.md` and `models.json`.
+- **The `dex` profile row was invented** on the first pass ("prefers Haiku at high effort", "values cost-efficient model selection") — guesses about Dex, which the hub forbids. Deleted; rebuilt from three real runs of this session (Sonnet 5 low, Sonnet 5 medium, Opus 5.5 low; all QA, phase test). Not logged: the Haiku 4.5 build (effort never stated) and the "ultracoded"/"ultracode" passes (not an effort level).
+- **Correction to the first QA pass above:** the brief was never over its cap. The gate's brief check reads 3534 words on the 3600 cap; the ~3690 in the self-test line is the full chat render, a different number I compared against the wrong limit.
+- **21 fake `coach-run` log rows** (ids 4988–5458) came from calling `_hub_selftest_coach()` directly in passes 1–3: it cleans its table rows, but `log` is append-only (trigger `log_append_only`, correctly). Correction entry `log` id 5896 names them. Run the self-test through `hub_selftest()` / `hub_gate()`, or inside `begin; … rollback;`.
+- Drift after the allowlist change was re-recorded with `hub_migrated('0024_coach_fix4')` (the change is in that migration's file), not `hub_fingerprint_ack` — that one takes a trusted author, which means Dex.
+
+**Artifacts:**
+- `supabase/migrations/0024_coach_fix4.sql` — constraints, advice expiry, stale filter, nightly job + allowlist, self-test to 6 checks.
+- `supabase/migrations/0025_coach_catalog.sql` — catalog corrected to the API reference.
+- `.claude/skills/hub/SKILL.md` — "what model should I use" / "show my model patterns" phrases; write-back step 5 logs the run.
+- `docs/MODELS.md`, `models.json` — rewritten: checked facts apart from house defaults; `models.json` `skill_phrases` dropped (nothing read it; the hub skill carries the phrases).
+- Gate after: selftest 100, audit clean, brief 3534/3600, integrity `migration:0025_coach_catalog`. Fresh replay of 0020–0025 from git: self-test 6/6.
+
+**Open threads:**
+- `coach_lessons`, `coach_runs.builder_lesson` and profile fields `known_constraints`, `prefers_speed`, `prefers_accuracy`, `cost_per_week_usd`, `last_phase_run`, `last_model_switch` still have no writer — a decision about what counts as a lesson, not a bug.
+- Advice appears once one model has 6 runs on one task type in 30 days; with 3 runs logged, `coach_recommend` correctly returns nothing yet.

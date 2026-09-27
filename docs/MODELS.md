@@ -1,219 +1,82 @@
-# Claude Model Coaching & Selection
+# Claude models: what they are, and how this repo picks one
 
-A guide to every Claude model, how to use it, effort levels, pricing per plan, and when each excels.
+Two kinds of statement live here, and they are kept apart:
 
-## The model lineup
+- **Checked** — model facts, verified on 2026-09-27 against the Claude API
+  reference bundled with Claude Code (skill `claude-api`, `shared/models.md`
+  and `shared/model-migration.md`). They change; re-check before quoting a
+  price.
+- **House defaults** — how Dex's phased builds pick a model. Judgement, not
+  measurement. The coaching system (below) exists to replace them with
+  numbers as runs accumulate.
 
-| Model | Capability | Best for | Context | Max Output | Cost | Notes |
-|---|---|---|---|---|---|---|
-| **Fable 5.1** | Most capable | Complex reasoning, coding, research, long agentic runs, thinking-intensive tasks | 200K | 128K | 50% weekly limits on Max plans; credits required | Fast, optimized for difficult problems; **default for debug & complex phases** |
-| **Opus 5.5** | Very capable + speed | Long agentic workflows, structured reasoning, multi-step tasks | 1M | 128K | Premium (Max/Team/Enterprise); native to fast mode | Balanced reasoning + output speed; **default for build & test phases** |
-| **Opus 5** | Very capable | Complex workflows, long agentic tasks | 1M | 128K | Max/Team/Enterprise only | Slightly slower than 5.5; same reasoning quality |
-| **Sonnet 5** | Capable | Most work: coding, analysis, writing, extraction, few-shot learning | 1M | 128K | All plans (free mentions) | Sweet spot for general purpose; good effort scaling |
-| **Haiku 4.5** | Capable + fast | Quick classification, summarization, drafting, training mode, rapid iteration | 200K | 128K | All plans (free mentions) | Cheapest; excellent for feedback loops and learning |
+Not recorded here: plan limits and what each consumer plan includes. They
+change often and could not be checked against a source, so this page makes
+no claim about them.
 
-## Availability by plan
+## The models (checked)
 
-### Free
-- Haiku 4.5
-- Sonnet 5
-- Limited usage; no Claude Code, API, or advanced features
-
-### Pro ($17–20/month)
-- Haiku 4.5 (primary)
-- Sonnet 5 (access)
-- Opus 5.5 (limited, via model picker or 3x multiplier if you switch)
-- Claude Code (included)
-- 1M requests/month cap
-
-### Max ($100/month, 5x usage)
-- All models: Haiku, Sonnet, Opus 5.5, Opus 5, Fable 5.1 (50% of Fable's weekly limits; needs credits for overages)
-- Claude Code (included)
-- Fast mode (2.5x output speed, premium pricing, Opus 5.5/5/4.8 only)
-- 5M requests/month effective cap (with usage multiplier)
-- Higher rate limits per second
-
-### Max 20x ($200/month, 20x usage)
-- Same as Max ($100) but with 20x multiplier
-- 20M requests/month effective cap
-
-### Team ($20–100/seat/month)
-- All models (depends on tier)
-- Workspace sharing, org-level settings
-- Custom rate limits
-
-### Enterprise
-- All models, unlimited
-- Custom everything
-
-## Effort levels
-
-Effort controls how hard the model thinks. Every model supports effort assignment (via `/effort`, settings, or API `budget_tokens` equivalent).
-
-| Effort | What it does | Good for | Cost |
-|---|---|---|---|
-| **low** | Fast, surface-level answers | Drafts, brainstorming, feedback loops, training runs | 1x |
-| **medium** | Default for Opus 5.5; standard reasoning | Most work: coding, analysis, writing | 1.5–2x |
-| **high** | Deliberate reasoning; default for Sonnet/Haiku | Problems that need thought; detailed answers | 2–3x |
-| **xhigh** | Extended thinking (Fable/Opus only); deep reasoning | Hard problems, novel approaches, edge cases | 4–6x |
-| **max** | Full thinking budget; very slow, most thorough | Research-grade reasoning only; debugging | 8–10x |
-
-**Key insight:** Haiku at high/xhigh effort can match Sonnet's results on many tasks. Sonnet at high effort often matches Opus. *Training* the system to recognize what effort each task truly needs saves money and trains lower-cost models faster.
-
-## Use-case matrix: which model when
-
-### Drafting & ideation
-- **Haiku (low)** — fastest feedback loop; train the system on what you actually want
-- Sonnet (low) — if Haiku is too constrained
-- *Goal:* iterate fast, don't think hard yet
-
-### Coding & debugging
-- **Fable 5.1** — use only for debug phase (when something's broken and you need it fixed)
-- **Opus 5.5 (medium–high)** — implement features, architect design, multi-file changes
-- Sonnet (high) — good for most changes if budget is tight
-- Haiku (xhigh) — acceptable if you're training the system to recognize patterns
-
-### Writing, analysis, research
-- **Opus 5.5 (medium)** — long-form, nuanced reasoning
-- Sonnet (medium–high) — good default; train it on your style
-- Haiku (high) — if iteration speed matters more than perfection
-- *Goal:* capture patterns so lower-cost models can replicate
-
-### Agentic work (long multi-step loops)
-- **Opus 5.5** — orchestrate long runs unattended; handles context window gracefully
-- Opus 5 — same capability, slightly slower
-- Sonnet (high) — works if you're monitoring and steering
-
-### Classification, extraction, QC
-- **Haiku (high–xhigh)** — these tasks are simple enough; train it here
-- Sonnet (medium) — overkill; use Haiku first
-- *Why:* scaling Haiku's performance on these benchmarks means cheaper downstream work
-
-## Pricing breakdown
-
-**Monthly cost estimates** (based on Max plan, assumed usage patterns):
-
-| Scenario | Haiku | Sonnet | Opus 5.5 | Fable 5.1 | Notes |
+| Model | API id | Context | Max output | $ per million tokens, in / out | Notes |
 |---|---|---|---|---|---|
-| Light use (10 requests/day, avg 5K input + 2K output) | <$0.50 | $2–5 | $10–15 | — | Haiku dominates |
-| Moderate (50 requests/day, avg 10K input + 3K output) | $2–3 | $10–20 | $40–60 | $20–30 (credits) | Sonnet is sweet spot |
-| Heavy (500 requests/day, large batches) | $20–30 | $100–150 | $400–600 | $200–300 (credits) | Opus 5.5 if speed matters; else mix models |
-| Debug/iteration (10 debug runs, Fable + re-runs) | — | — | $50–100 | $100–200 | Fable for hard parts only |
+| Fable 5.1 | `claude-fable-5-1` | 1M | 128K | 10 / 50 | Most capable widely released model. Thinking always on; effort can be set per message |
+| Opus 5.5 | `claude-opus-5-5` | 1M | 128K | 4 / 20 | Successor to Opus 5 for long agentic coding. Thinking can't be turned off; effort is the control, default `medium` |
+| Opus 5 | `claude-opus-5` | 1M | 128K | 5 / 25 | Full effort ladder through `max` |
+| Sonnet 5 | `claude-sonnet-5` | 1M | 128K | 2 / 10 | Near-Opus quality on coding and agentic work. Effort `low`, `medium`, `high`, `xhigh`, `max` |
+| Haiku 4.5 | `claude-haiku-4-5` (full id `claude-haiku-4-5-20251001`) | 200K | 64K | 1 / 5 | Fastest and cheapest. Predates adaptive thinking (models before 4.6 use `budget_tokens`); its effort support isn't stated in the reference |
 
-*All figures assume Max plan (5x multiplier). Pro plan costs are ~5x higher per request.*
+**Fast mode** is a research preview on the Claude API only, for Opus 5,
+Opus 5.5 and Opus 4.8, at twice the normal price (Opus 5: $10 / $50; Opus
+5.5: $8 / $40). In Claude Code, `/fast` toggles it. Fable, Sonnet and Haiku
+have no fast mode.
 
-## The phased-build workflow
+**Effort** controls how much the model thinks before answering. It changes
+how many tokens a request spends, not the price per token, so its cost shows
+up in the run log, not in a multiplier.
 
-Dexter's build system uses four sequential phases; each phase picks different models based on need:
+**Switching in Claude Code:** `/model <id>` (for example
+`/model claude-sonnet-5`). How effort is chosen depends on the surface; on the
+API it is the `effort` parameter.
 
-### Phase 1: Build (untested code, speed prioritized)
-- **Primary:** Opus 5.5 (medium effort, stream output)
-- **Fallback:** Sonnet (high effort) if speed or budget is tight
-- **Not:** Haiku (not good enough yet; xhigh effort too slow)
-- **Why:** You need fast, capable output; testing comes later
+## House defaults for a phased build
 
-### Phase 2: Test (run the suite)
-- **Primary:** Haiku (run fast feedback loops, catch obvious breaks)
-- **Secondary:** Sonnet (if Haiku misses edge cases)
-- **Not:** Fable/Opus yet; no complex reasoning needed
-- **Why:** iterate test failures quickly; keep running costs low
+Dex runs builds in four phases he starts himself (skill `phased-build`).
+The defaults:
 
-### Phase 3: Debug (root-cause real failures)
-- **Primary:** Fable 5.1 (xhigh effort, thinking; this is where it earns its cost)
-- **Secondary:** Opus 5.5 (medium effort, if Fable doesn't land)
-- **Fallback:** Sonnet (high effort) for narrow, known failures
-- **Why:** Real problems need hard thinking; this is the phase where Fable pays for itself
-
-### Phase 4: Fix & ship (implement, validate, merge)
-- **Primary:** Opus 5.5 (medium effort; you know what's broken now)
-- **Secondary:** Sonnet (high effort) for straightforward fixes
-- **Test with:** Haiku (train it on the actual fix)
-- **Why:** implement fast; verify with the cheap model; ship
-
-## Effort tuning by task type
-
-Start here if you're not sure what effort to pick:
-
-| Task | Start | Scale up if | Scale down if |
+| Phase | Start with | Fall back to | Why |
 |---|---|---|---|
-| Generate code | Opus (medium) | It's complex/novel | It's routine/templated |
-| Debug code | Fable (xhigh) | Didn't work | It's a typo/config |
-| Write docs/copy | Sonnet (medium) | It needs voice/nuance | It's boilerplate |
-| Extract data | Haiku (high) | It keeps missing fields | Pattern is obvious |
-| Long agentic run | Opus 5.5 (medium, stream) | Hitting token limits | Single step works fine |
-| Brainstorm ideas | Haiku (low) | Haiku's stuck | Ideas are good, ship them |
+| 1 · Build (untested) | Opus 5.5, medium | Sonnet 5, high | Fast, capable output; testing comes later |
+| 2 · Test | Sonnet 5 or Haiku 4.5 | Sonnet 5, higher effort | Cheap, quick loops over failures |
+| 3 · Debug | Fable 5.1, high or above | Opus 5.5 | Real failures earn the most capable model |
+| 4 · Fix and ship | Opus 5.5, medium | Sonnet 5, high | You know what's broken; implement and land it |
 
-## The coaching system: learning from every run
+A question worth measuring, not a fact: how far down the line (Sonnet, then
+Haiku) a task can go at higher effort before quality drops. That is what the
+run log is for.
 
-The hub logs every model invocation, effort level, task type, and outcome. Over time:
+## The coaching system (in the hub)
 
-1. **Patterns emerge:** "Haiku at high effort solves 70% of Sonnet's medium-effort work on this task type"
-2. **Boundaries are pushed:** Lower models learn to handle harder problems through training
-3. **Recommendations improve:** "For your coding style, Haiku at xhigh usually lands it in one shot"
-4. **Cost scales with capability:** You keep getting results while spending less
+Live in Dex's private hub (migrations `0020`–`0025` in `supabase/migrations/`):
 
-The coaching engine (migration 0020) tracks:
-- Which model + effort you used
-- What task type it was
-- Whether it succeeded / needed iteration
-- What the actual token cost was
-- Lessons learned (notes for next time)
+- **Every run is logged** with `coach_log_run(...)`: model, effort, task
+  type, outcome (`succeeded`, `needed_iteration`, `failed`, `partial`), build
+  phase, and optional tokens and cost. The hub skill's write-back step says
+  when: only when the model and effort are actually known.
+- **Every night at 07:50 UTC** `coach_analyze_and_advise()` looks at the last
+  30 days. A model with more than 5 runs on a task type gets an advice row:
+  its success rate, the effort that succeeded most, average cost. Advice
+  whose runs age out of the window is deleted.
+- **Ask for a pick** with `coach_recommend('<task_type>')`: the best model
+  and effort by success rate (at least 70%), plus a runner-up. It serves only
+  advice refreshed in the last 30 days, so nothing it says is stale.
+- **The profile** (`coach_builder_profile`, builder `dex`) is computed from
+  the runs: most-used model, effort that succeeds most, common task types,
+  current phase.
 
-This trains both you and the models you work with.
-
-## Model switching (Claude Code)
-
-If you need to change models mid-session:
-
-```bash
-/model fable        # Switch to Fable 5.1
-/model opus         # Opus 5.5 or 5 (resolved per plan)
-/model sonnet       # Sonnet 5
-/model haiku        # Haiku 4.5
-/model default      # Back to session default (from settings)
-
-/effort low         # For the next request
-/effort high        # Deep reasoning
-/effort xhigh       # Extended thinking (if supported)
-```
-
-Or set in `settings.json`:
-```json
-{
-  "model": "sonnet",
-  "effort": "high"
-}
-```
-
-## API model IDs
-
-When building against the Claude API:
-
-```
-claude-fable-5-1              # Fable 5.1
-claude-opus-5-5               # Opus 5.5
-claude-opus-5                 # Opus 5
-claude-sonnet-5               # Sonnet 5
-claude-haiku-4-5-20251001     # Haiku 4.5
-```
-
-Use aliases in client code when possible (`client.models.default`, etc.), not hardcoded IDs.
-
-## Fast mode
-
-Available on Max plans for Opus 5.5, Opus 5, and Opus 4.8. Produces output 2.5x faster but costs 1.5–2x per token. Not recommended for interactive use; excellent for batch/agentic work that must complete on schedule.
-
-```bash
-/fast               # Toggle on
-/slow               # Toggle off (normal speed, normal cost)
-```
-
-## Thinking (adaptive, all models)
-
-Newer models (Fable 5.1, Opus 5.5/5, Sonnet 5, Haiku 4.5) use adaptive thinking: the model decides whether it needs to think hard on this particular request. You don't control it directly; effort level affects how much thinking budget is available.
-
-On xhigh effort, expect thinking blocks for complex problems.
+Not built yet: "lessons" (`coach_lessons`) and several profile fields
+(`known_constraints`, `prefers_speed`, `prefers_accuracy`,
+`cost_per_week_usd`) have no writer. They wait on a decision about what
+counts as a lesson, not on code.
 
 ---
 
-Last updated: 2026-09-27 · See also: `models.json` (machine-readable catalog), hub migration 0020 (coaching schema)
+Machine-readable version: `models.json`. Last checked 2026-09-27.

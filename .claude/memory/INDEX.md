@@ -1,4 +1,4 @@
-- [Model Coaching System](topics/model-coaching-system.md) — updated 2026-09-27 — Three untested files for model coaching: comprehensive guide, catalog, DB schema for tracking runs and learning builder patterns
+- [Model Coaching System](topics/model-coaching-system.md) — updated 2026-09-27 — coaching system QA'd five times; live and wired: runs logged via the hub skill, advice nightly, catalog corrected to the API reference; 0020-0025 replay clean from git
 - [Chat Memory Roadmap](topics/chat-memory-roadmap.md) — updated 2026-09-26 — new_entry.py now re-sorts the whole index by date, newest first; the recency-order bug is fixed in the script, not by hand
 - [Qc Lead](topics/qc-lead.md) — updated 2026-09-26 — the QC lead chat reads every change, gives each one verdict, and closes a pass only when nothing is unread; one writer per repo everywhere
 - [Github Integration](topics/github-integration.md) — updated 2026-09-26 — The draft-to-ready flip worked; send it alone

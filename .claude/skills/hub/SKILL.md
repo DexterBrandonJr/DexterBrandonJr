@@ -1,6 +1,6 @@
 ---
 name: hub
-description: Dex's one memory across every Claude. Reads his private hub (the Supabase project named "one-memory-hub", through the Supabase connector) first and writes back last, so no chat starts at zero and nothing learned is lost. Trigger whenever a conversation touches Dex, his projects, his preferences, his machines or his history; whenever he says "read my hub", "hub", "boot", "what's on the record about …", "log this", "log this chat", "accept 3 5", "reject 4", "close t:6", "open a thread", "sweep my chats", "continue" (mid-sweep), "log money", "bet", "settle b:3", "2fa on for", "rotated", "make X private", "have Code do", "security check", or "how is the hub doing"; when an ongoing chat with history has never read the hub; and at the end of any chat that produced a decision, a fact or an open loop worth keeping. Not for chats that never mention him or his work.
+description: Dex's one memory across every Claude. Reads his private hub (the Supabase project named "one-memory-hub", through the Supabase connector) first and writes back last, so no chat starts at zero and nothing learned is lost. Trigger whenever a conversation touches Dex, his projects, his preferences, his machines or his history; whenever he says "read my hub", "hub", "boot", "what's on the record about …", "log this", "log this chat", "accept 3 5", "reject 4", "close t:6", "open a thread", "sweep my chats", "continue" (mid-sweep), "log money", "bet", "settle b:3", "2fa on for", "rotated", "make X private", "have Code do", "security check", "how is the hub doing", "what model should I use", or "what effort"; when an ongoing chat with history has never read the hub; and at the end of any chat that produced a decision, a fact or an open loop worth keeping. Not for chats that never mention him or his work.
 ---
 
 # The hub
@@ -68,6 +68,8 @@ recap, no ceremony.
 | the growth-profile phrases ("mirror", "checkin …", "wheel …", "practice …", "accept m:3") | the brief's rule *Mirror phrases* lists them; the profile is private and every claim in it is his to contest |
 | anything about a thing, a feeling, money, a task or security, in his own words | `select * from hub_route($q$<his message>$q$)` first; follow its `do` row; then answer. Words it cannot place are logged and learned; "alias weighed → fitness" / "reject alias project" run `hub_alias('fitness', 'weighed', 'dex')` / `hub_alias_reject('project', 'dex')` |
 | "backlog" / "plan" / "add to backlog: title — why" / "accept bl:3" / "drop bl:4: why" / "done bl:3: pointer" | `select * from backlog_ranked` / `select * from hub_backlog_plan()` / `hub_backlog_add(title, why, lens, size, 'dex')` / `hub_backlog_decide(3, 'accepted', 'dex')` / `hub_backlog_decide(4, 'dropped', 'dex', 'why')` / `hub_backlog_done(3, 'pointer', 'dex')`. The hub proposes and ranks its own backlog nightly; it never builds; propose freely with evidence, never accept your own proposal |
+| "what model should I use for X" / "what effort" / "suggest a model" | `select * from coach_recommend('<task_type>')`; task types are the list in `models.json` (`coaching_tracking.task_types`). No row means fewer than 6 runs of one model on that task in 30 days: say so, then give the starting point from `docs/MODELS.md` and call it a default, not a finding |
+| "show my model patterns" | `select * from coach_builder_profile where builder_id = 'dex'` and `select * from coach_advice order by task_type, confidence desc` |
 | "what if …" / "which is better …" / "simulate …" / "scenarios" | `select * from sc_scenarios_list`, then `select hub_scenario_report('<slug>')`; a new one: the skill `scenarios` writes the spec, `hub_scenario(spec)` stores it, `hub_scenario_run('<slug>')` runs it inside the database. Put a chance on the ledger with `hub_scenario_bet`, log reality with `hub_scenario_observe` |
 
 ## 4. Writing back
@@ -90,6 +92,16 @@ recap, no ceremony.
 4. **Before you finish.** `hub_used(boot_id, array[ids you relied on])`.
    If you re-derived something the hub already held, `hub_regret(boot_id,
    array[ids])` so the miss is counted.
+5. **Log the run, when you know the model and the effort.** One row per
+   piece of work Dex handed you:
+   `select coach_log_run('<surface>', '<model id>', '<effort>', '<task_type>', '<outcome>', null, null, null, null, $q$<one line: what was asked, what happened>$q$, '<session id>', 'dex', '<phase>')`.
+   The model id is exact (`claude-sonnet-5`, `claude-opus-5-5`, …; in Code,
+   `get_session` names it). The effort is one of low, medium, high, xhigh,
+   max, and only the one Dex stated or the session shows. Never guess it;
+   an unknown effort means no row. Outcome: `succeeded`, `needed_iteration`,
+   `failed` or `partial`, judged honestly (anything else is refused).
+   Phase: `build`, `test`, `debug` or `fix`. The nightly job turns these
+   rows into advice once a model has 6 runs on a task in 30 days.
 
 ## 5. Security, in every chat
 

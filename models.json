@@ -1,488 +1,76 @@
 {
-  "version": "1.0",
-  "date": "2026-09-27",
+  "version": "2.0",
+  "checked": "2026-09-27",
+  "source": "Claude API reference bundled with Claude Code (skill claude-api: shared/models.md, shared/model-migration.md). Re-check before quoting a price.",
+  "not_recorded": "Consumer plan limits and inclusions: they change often and could not be checked against a source.",
   "models": [
     {
       "id": "claude-fable-5-1",
       "name": "Fable 5.1",
-      "capability_tier": "most_capable",
-      "context_window": 200000,
+      "context_window": 1000000,
       "max_output_tokens": 128000,
-      "thinking_support": "adaptive",
-      "effort_levels": ["low", "medium", "high", "xhigh", "max"],
-      "default_effort": "high",
-      "use_cases": [
-        "complex_reasoning",
-        "novel_coding",
-        "research",
-        "debugging",
-        "thinking_intensive"
-      ],
-      "strengths": [
-        "hardest problems",
-        "novel approaches",
-        "edge case analysis",
-        "multi-step reasoning"
-      ],
-      "weaknesses": [
-        "overkill for simple tasks",
-        "expensive",
-        "slow at low effort"
-      ],
-      "pricing": {
-        "base_per_mtok_input": 3.0,
-        "base_per_mtok_output": 15.0,
-        "notes": "50% of weekly limits on Max plans; requires usage credits for overages"
-      },
-      "availability": {
-        "free": false,
-        "pro": false,
-        "max": true,
-        "max_20x": true,
-        "team": true,
-        "enterprise": true
-      },
-      "fast_mode": false,
-      "aliases": ["fable"],
-      "phase_recommendation": "debug_only"
+      "usd_per_mtok": {"input": 10, "output": 50},
+      "thinking": "always on",
+      "effort": "set per message",
+      "fast_mode": null
     },
     {
       "id": "claude-opus-5-5",
       "name": "Opus 5.5",
-      "capability_tier": "very_capable",
       "context_window": 1000000,
       "max_output_tokens": 128000,
-      "thinking_support": "adaptive",
-      "effort_levels": ["low", "medium", "high", "xhigh", "max"],
+      "usd_per_mtok": {"input": 4, "output": 20},
+      "thinking": "cannot be disabled",
+      "effort": ["low", "medium", "high", "xhigh", "max"],
       "default_effort": "medium",
-      "use_cases": [
-        "long_agentic_workflows",
-        "structured_reasoning",
-        "multi_step_tasks",
-        "streaming_output",
-        "implementation"
-      ],
-      "strengths": [
-        "fast output speed",
-        "large context handling",
-        "good reasoning at medium effort",
-        "streaming-friendly",
-        "long unattended runs"
-      ],
-      "weaknesses": [
-        "premium pricing",
-        "overkill for simple tasks"
-      ],
-      "pricing": {
-        "base_per_mtok_input": 3.0,
-        "base_per_mtok_output": 15.0,
-        "notes": "Available on Max/Team/Enterprise; native to fast mode"
-      },
-      "availability": {
-        "free": false,
-        "pro": false,
-        "max": true,
-        "max_20x": true,
-        "team": true,
-        "enterprise": true
-      },
-      "fast_mode": true,
-      "fast_mode_multiplier": 2.5,
-      "aliases": ["opus"],
-      "phase_recommendation": "build_test_fix"
+      "fast_mode": {"usd_per_mtok": {"input": 8, "output": 40}, "where": "Claude API only, research preview"}
     },
     {
       "id": "claude-opus-5",
       "name": "Opus 5",
-      "capability_tier": "very_capable",
       "context_window": 1000000,
       "max_output_tokens": 128000,
-      "thinking_support": "adaptive",
-      "effort_levels": ["low", "medium", "high", "xhigh", "max"],
-      "default_effort": "high",
-      "use_cases": [
-        "complex_workflows",
-        "long_agentic_tasks",
-        "multi_file_changes",
-        "architecture"
-      ],
-      "strengths": [
-        "excellent reasoning",
-        "large context",
-        "good at xhigh effort"
-      ],
-      "weaknesses": [
-        "slower than 5.5",
-        "premium pricing",
-        "medium effort less tuned"
-      ],
-      "pricing": {
-        "base_per_mtok_input": 3.0,
-        "base_per_mtok_output": 15.0,
-        "notes": "Max/Team/Enterprise only"
-      },
-      "availability": {
-        "free": false,
-        "pro": false,
-        "max": true,
-        "max_20x": true,
-        "team": true,
-        "enterprise": true
-      },
-      "fast_mode": true,
-      "fast_mode_multiplier": 2.5,
-      "aliases": [],
-      "phase_recommendation": "build_debug"
+      "usd_per_mtok": {"input": 5, "output": 25},
+      "thinking": "adaptive, on by default",
+      "effort": ["low", "medium", "high", "xhigh", "max"],
+      "fast_mode": {"usd_per_mtok": {"input": 10, "output": 50}, "where": "Claude API only, research preview"}
     },
     {
       "id": "claude-sonnet-5",
       "name": "Sonnet 5",
-      "capability_tier": "capable",
       "context_window": 1000000,
       "max_output_tokens": 128000,
-      "thinking_support": "adaptive",
-      "effort_levels": ["low", "medium", "high", "xhigh", "max"],
-      "default_effort": "high",
-      "use_cases": [
-        "coding",
-        "analysis",
-        "writing",
-        "extraction",
-        "few_shot_learning",
-        "general_purpose"
-      ],
-      "strengths": [
-        "good effort scaling",
-        "large context",
-        "versatile",
-        "sweet spot for cost/capability",
-        "strong at high effort"
-      ],
-      "weaknesses": [
-        "overkill for trivial tasks",
-        "slower than Haiku"
-      ],
-      "pricing": {
-        "base_per_mtok_input": 3.0,
-        "base_per_mtok_output": 15.0,
-        "notes": "Available on all plans"
-      },
-      "availability": {
-        "free": true,
-        "pro": true,
-        "max": true,
-        "max_20x": true,
-        "team": true,
-        "enterprise": true
-      },
-      "fast_mode": false,
-      "aliases": ["sonnet"],
-      "phase_recommendation": "build_test_fix"
+      "usd_per_mtok": {"input": 2, "output": 10},
+      "thinking": "adaptive, on by default",
+      "effort": ["low", "medium", "high", "xhigh", "max"],
+      "fast_mode": null
     },
     {
       "id": "claude-haiku-4-5-20251001",
+      "alias": "claude-haiku-4-5",
       "name": "Haiku 4.5",
-      "capability_tier": "capable_fast",
       "context_window": 200000,
-      "max_output_tokens": 128000,
-      "thinking_support": "adaptive",
-      "effort_levels": ["low", "medium", "high", "xhigh", "max"],
-      "default_effort": "high",
-      "use_cases": [
-        "classification",
-        "summarization",
-        "drafting",
-        "training_mode",
-        "rapid_iteration",
-        "feedback_loops",
-        "extraction"
-      ],
-      "strengths": [
-        "fastest",
-        "cheapest",
-        "excellent for feedback loops",
-        "good at high effort",
-        "strong xhigh performance"
-      ],
-      "weaknesses": [
-        "200K context (vs 1M for Sonnet/Opus)",
-        "constrained on very large inputs",
-        "needs high effort for complex tasks"
-      ],
-      "pricing": {
-        "base_per_mtok_input": 0.8,
-        "base_per_mtok_output": 4.0,
-        "notes": "Cheapest option; available on all plans"
-      },
-      "availability": {
-        "free": true,
-        "pro": true,
-        "max": true,
-        "max_20x": true,
-        "team": true,
-        "enterprise": true
-      },
-      "fast_mode": false,
-      "aliases": ["haiku"],
-      "phase_recommendation": "test_training"
+      "max_output_tokens": 64000,
+      "usd_per_mtok": {"input": 1, "output": 5},
+      "thinking": "budget_tokens (predates adaptive thinking)",
+      "effort": null,
+      "fast_mode": null
     }
   ],
-  "effort_metadata": {
-    "low": {
-      "description": "Fast, surface-level answers",
-      "use_for": ["drafts", "brainstorming", "feedback_loops", "training_runs"],
-      "thinking_enabled": false,
-      "cost_multiplier": 1.0
-    },
-    "medium": {
-      "description": "Standard reasoning; default for Opus 5.5",
-      "use_for": ["most_work", "coding", "analysis", "writing"],
-      "thinking_enabled": true,
-      "cost_multiplier": 1.5
-    },
-    "high": {
-      "description": "Deliberate reasoning; default for Sonnet/Haiku",
-      "use_for": ["problems_needing_thought", "detailed_answers", "edge_cases"],
-      "thinking_enabled": true,
-      "cost_multiplier": 2.5
-    },
-    "xhigh": {
-      "description": "Extended thinking, deep reasoning",
-      "use_for": ["hard_problems", "novel_approaches", "debugging"],
-      "thinking_enabled": true,
-      "cost_multiplier": 5.0
-    },
-    "max": {
-      "description": "Full thinking budget, very thorough",
-      "use_for": ["research_grade_reasoning", "critical_decisions"],
-      "thinking_enabled": true,
-      "cost_multiplier": 8.0
-    }
-  },
-  "plan_availability": {
-    "free": {
-      "models": ["claude-haiku-4-5-20251001", "claude-sonnet-5"],
-      "features": ["limited_usage", "no_code", "no_api", "no_advanced"],
-      "requests_per_month": 1000000,
-      "note": "Free tier; heavily rate-limited"
-    },
-    "pro": {
-      "models": ["claude-haiku-4-5-20251001", "claude-sonnet-5", "claude-opus-5-5"],
-      "features": ["claude_code", "api_access", "model_picker"],
-      "requests_per_month": 1000000,
-      "usage_multiplier": 1.0,
-      "cost_per_month": "17-20"
-    },
-    "max": {
-      "models": ["claude-fable-5-1", "claude-opus-5-5", "claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5-20251001"],
-      "features": ["fast_mode", "higher_rate_limits", "fable_50_percent_weekly"],
-      "requests_per_month": 5000000,
-      "usage_multiplier": 5.0,
-      "cost_per_month": 100,
-      "note": "Fable 5.1 limited to 50% of weekly usage limits; credits required for overages"
-    },
-    "max_20x": {
-      "models": ["claude-fable-5-1", "claude-opus-5-5", "claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5-20251001"],
-      "features": ["fast_mode", "highest_rate_limits", "fable_50_percent_weekly"],
-      "requests_per_month": 20000000,
-      "usage_multiplier": 20.0,
-      "cost_per_month": 200,
-      "note": "Same as Max but 20x usage multiplier"
-    },
-    "team": {
-      "models": "all",
-      "features": ["workspace_sharing", "org_settings", "custom_rate_limits"],
-      "cost_per_seat_per_month": "20-100"
-    },
-    "enterprise": {
-      "models": "all",
-      "features": ["unlimited_usage", "custom_everything", "sso", "audit_logs"],
-      "cost": "custom"
-    }
-  },
-  "use_case_recommendations": {
-    "drafting_ideation": {
-      "primary": "claude-haiku-4-5-20251001",
-      "primary_effort": "low",
-      "secondary": "claude-sonnet-5",
-      "secondary_effort": "low",
-      "rationale": "Fastest feedback loop; train the system on what you want"
-    },
-    "coding_implementation": {
-      "primary": "claude-opus-5-5",
-      "primary_effort": "medium",
-      "secondary": "claude-sonnet-5",
-      "secondary_effort": "high",
-      "rationale": "Opus for complex, multi-file changes; Sonnet for straightforward"
-    },
-    "debugging": {
-      "primary": "claude-fable-5-1",
-      "primary_effort": "xhigh",
-      "secondary": "claude-opus-5-5",
-      "secondary_effort": "medium",
-      "rationale": "Fable for hard problems; Opus if Fable doesn't land; only use when broken"
-    },
-    "writing_analysis": {
-      "primary": "claude-opus-5-5",
-      "primary_effort": "medium",
-      "secondary": "claude-sonnet-5",
-      "secondary_effort": "medium",
-      "rationale": "Long-form, nuanced reasoning; train lower models on your style"
-    },
-    "classification_extraction": {
-      "primary": "claude-haiku-4-5-20251001",
-      "primary_effort": "high",
-      "secondary": "claude-sonnet-5",
-      "secondary_effort": "medium",
-      "rationale": "Haiku is enough; Sonnet is overkill; training Haiku here scales downstream"
-    },
-    "long_agentic_run": {
-      "primary": "claude-opus-5-5",
-      "primary_effort": "medium",
-      "features": ["streaming", "fast_mode_optional"],
-      "rationale": "Handles context window gracefully; good for unattended work"
-    }
-  },
-  "phase_workflow": {
-    "phase_1_build": {
-      "name": "Build (untested code, speed prioritized)",
-      "primary": "claude-opus-5-5",
-      "primary_effort": "medium",
-      "stream": true,
-      "fallback": "claude-sonnet-5",
-      "fallback_effort": "high",
-      "avoid": ["claude-haiku-4-5-20251001"],
-      "rationale": "Need capable, fast output; testing comes later"
-    },
-    "phase_2_test": {
-      "name": "Test (run suite, catch obvious breaks)",
-      "primary": "claude-haiku-4-5-20251001",
-      "primary_effort": "high",
-      "secondary": "claude-sonnet-5",
-      "secondary_effort": "medium",
-      "avoid": ["claude-fable-5-1", "claude-opus-5-5"],
-      "rationale": "Iterate test failures quickly; keep costs low"
-    },
-    "phase_3_debug": {
-      "name": "Debug (root-cause real failures)",
-      "primary": "claude-fable-5-1",
-      "primary_effort": "xhigh",
-      "secondary": "claude-opus-5-5",
-      "secondary_effort": "medium",
-      "fallback": "claude-sonnet-5",
-      "fallback_effort": "high",
-      "rationale": "Real problems need hard thinking; Fable earns cost here"
-    },
-    "phase_4_fix": {
-      "name": "Fix & ship (implement, validate, merge)",
-      "primary": "claude-opus-5-5",
-      "primary_effort": "medium",
-      "secondary": "claude-sonnet-5",
-      "secondary_effort": "high",
-      "test_with": "claude-haiku-4-5-20251001",
-      "test_effort": "high",
-      "rationale": "Implement fast; verify with cheap model; train it on actual fix"
+  "house_defaults": {
+    "note": "Judgement, not measurement. coach_recommend() in the hub replaces these once a model has 6 runs on a task in 30 days.",
+    "by_phase": {
+      "build": {"model": "claude-opus-5-5", "effort": "medium", "fallback": {"model": "claude-sonnet-5", "effort": "high"}},
+      "test": {"model": "claude-sonnet-5", "effort": "medium", "alternative": {"model": "claude-haiku-4-5-20251001"}},
+      "debug": {"model": "claude-fable-5-1", "effort": "high", "fallback": {"model": "claude-opus-5-5", "effort": "medium"}},
+      "fix": {"model": "claude-opus-5-5", "effort": "medium", "fallback": {"model": "claude-sonnet-5", "effort": "high"}}
     }
   },
   "coaching_tracking": {
-    "tracked_fields": [
-      "model_used",
-      "effort_level",
-      "task_type",
-      "success_status",
-      "token_cost",
-      "input_tokens",
-      "output_tokens",
-      "duration_seconds",
-      "thinking_tokens_used",
-      "retry_count",
-      "notes"
-    ],
-    "task_types": [
-      "coding",
-      "writing",
-      "analysis",
-      "extraction",
-      "classification",
-      "brainstorming",
-      "debugging",
-      "review",
-      "planning",
-      "research",
-      "other"
-    ],
-    "success_statuses": [
-      "succeeded",
-      "needed_iteration",
-      "failed",
-      "partial"
-    ],
-    "learnings": {
-      "description": "Coaching notes for next time, captured per task_type + model_combination",
-      "examples": [
-        "Haiku at high effort solved 70% of Sonnet medium-effort work on coding",
-        "Opus 5.5 at medium usually lands implementation in one shot",
-        "Fable xhigh found edge case Sonnet high missed"
-      ]
-    }
-  }
-,
-  "skill_phrases": {
-    "suggest_model": {
-      "triggers": [
-        "suggest a model for this",
-        "what model should I use",
-        "recommend a model",
-        "which model is best for",
-        "suggest a model and effort",
-        "what should I use for this task"
-      ],
-      "response_format": "Recommend one primary model + effort, name runner-up. Include rationale from use-case matrix.",
-      "data_source": "coach_recommend(task_type, builder_id) from database"
-    },
-    "what_effort": {
-      "triggers": [
-        "what effort should I use",
-        "what effort level",
-        "how hard should this think",
-        "should I use high effort or low",
-        "effort recommendation"
-      ],
-      "response_format": "Recommend effort level (low/medium/high/xhigh/max) based on task type and phase.",
-      "data_source": "coach_advice table, builder_profile.phase"
-    },
-    "compare_models": {
-      "triggers": [
-        "compare these models",
-        "compare and contrast",
-        "which is better for",
-        "side by side comparison",
-        "how do they differ"
-      ],
-      "response_format": "Side-by-side table: context window, output tokens, thinking, effort scaling, cost, speed, best for.",
-      "data_source": "coach_models table"
-    },
-    "show_patterns": {
-      "triggers": [
-        "show my patterns",
-        "profile: show my patterns",
-        "what have I used before",
-        "my model history",
-        "what works for me"
-      ],
-      "response_format": "Builder profile: favorite model, phase, common task types, success rate, cost trends.",
-      "data_source": "coach_builder_profile, coach_runs aggregated per task_type"
-    },
-    "try_model": {
-      "triggers": [
-        "I want to try",
-        "switch to",
-        "use this model instead",
-        "let me use",
-        "try using"
-      ],
-      "response_format": "Switch model, log the choice and task type, confirm.",
-      "data_source": "coach_log_run() API"
-    }
+    "log_with": "coach_log_run(surface, model_id, effort, task_type, outcome, input_tokens, output_tokens, cost_usd, duration_seconds, notes, session_id, builder_id, phase)",
+    "task_types": ["coding", "writing", "analysis", "extraction", "classification", "brainstorming", "debugging", "review", "planning", "research", "other"],
+    "outcomes": ["succeeded", "needed_iteration", "failed", "partial"],
+    "phases": ["build", "test", "debug", "fix"],
+    "advice": "nightly at 07:50 UTC over the last 30 days; more than 5 runs of one model on one task type; at least 70% success to be recommended"
   }
 }
