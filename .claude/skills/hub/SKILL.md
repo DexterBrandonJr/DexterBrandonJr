@@ -95,10 +95,12 @@ recap, no ceremony.
 5. **Log the run, when you know the model and the effort.** One row per
    piece of work Dex handed you:
    `select coach_log_run('<surface>', '<model id>', '<effort>', '<task_type>', '<outcome>', null, null, null, null, $q$<one line: what was asked, what happened>$q$, '<session id>', 'dex', '<phase>')`.
-   The model id is exact (`claude-sonnet-5`, `claude-opus-5-5`, …; in Code,
-   `get_session` names it). The effort is one of low, medium, high, xhigh,
-   max, and only the one Dex stated or the session shows. Never guess it;
-   an unknown effort means no row. Outcome: `succeeded`, `needed_iteration`,
+   The model id is exact (`claude-sonnet-5`, `claude-opus-5-5`, …). The
+   effort is one of low, medium, high, xhigh, max, and only the one Dex
+   stated or the session shows. In Code, `get_session` (claude-code-remote)
+   shows both: `session_context.model` and `session_context.effort_level`;
+   a nickname Dex uses for a setting ("ultracode") resolves there to one of
+   the five. Never guess it; an unknown effort means no row. Outcome: `succeeded`, `needed_iteration`,
    `failed` or `partial`, judged honestly (anything else is refused).
    Phase: `build`, `test`, `debug` or `fix`. The nightly job turns these
    rows into advice once a model has 6 runs on a task in 30 days.

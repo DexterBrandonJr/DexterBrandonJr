@@ -62,6 +62,15 @@ things with Claude Code.
   public-safe; rebuild with `python3 share/hub-kit/src/build.py` after
   editing `src/protocol.md`, `hub-kit.sql` or `hub_local.py`.
 
+- `docs/MODELS.md`, `models.json`, `supabase/migrations/` — the **model
+  coaching system**: which Claude model and effort to start with in each
+  build phase (house defaults, marked as such), the checked model facts,
+  and the coaching slice of the hub's schema — every run logged, advice
+  computed nightly from the runs, a pick on request. Chats log runs and
+  ask for picks through the `hub` skill ("what model should I use").
+  The hub's own migrations live in its private repo; only the coaching
+  ones are here.
+
 ## Read the hub first
 
 Dex keeps one memory for every Claude he talks to: a private Supabase

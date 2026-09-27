@@ -35,7 +35,10 @@ up in the run log, not in a multiplier.
 
 **Switching in Claude Code:** `/model <id>` (for example
 `/model claude-sonnet-5`). How effort is chosen depends on the surface; on the
-API it is the `effort` parameter.
+API it is the `effort` parameter. In Code, `get_session` reports the model
+and the effort the session is actually running (`session_context.model`,
+`session_context.effort_level`); the "ultracode" setting resolved to `xhigh`
+when checked on 2026-09-27.
 
 ## House defaults for a phased build
 
