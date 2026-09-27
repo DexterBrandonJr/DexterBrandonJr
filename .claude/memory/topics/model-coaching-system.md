@@ -26,4 +26,6 @@
 - Phase 2 ✅: Migration 0020_coach applied live; all tables + functions created; RLS policies enforced
 - Phase 3 ✅: Fixed RLS policies in migration; raised core_word_cap to 3600 for coaching schema; hub gate all green
 - Phase 4 ✅: PR #44 converted to ready-for-review; all testing passed (selftest 94/94, audit clean, brief 3534/3600, integrity OK)
-- Future work: Hub Kit coaching section; skill phrases for model recommendations; builder profile capture from this chat
+- Phase 5 (Post-merge) ✅: PR #44 merged to main; Hub Kit section 16 added (model coaching); models.json skill phrases added (5 trigger patterns); builder profile logged to hub for this chat (Haiku 4.5, build/system design phase); all coaching system components now integrated
+
+**Status:** Complete. All phases done. Full coaching system shipped.

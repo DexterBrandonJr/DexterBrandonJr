@@ -426,4 +426,63 @@
       ]
     }
   }
+,
+  "skill_phrases": {
+    "suggest_model": {
+      "triggers": [
+        "suggest a model for this",
+        "what model should I use",
+        "recommend a model",
+        "which model is best for",
+        "suggest a model and effort",
+        "what should I use for this task"
+      ],
+      "response_format": "Recommend one primary model + effort, name runner-up. Include rationale from use-case matrix.",
+      "data_source": "coach_recommend(task_type, builder_id) from database"
+    },
+    "what_effort": {
+      "triggers": [
+        "what effort should I use",
+        "what effort level",
+        "how hard should this think",
+        "should I use high effort or low",
+        "effort recommendation"
+      ],
+      "response_format": "Recommend effort level (low/medium/high/xhigh/max) based on task type and phase.",
+      "data_source": "coach_advice table, builder_profile.phase"
+    },
+    "compare_models": {
+      "triggers": [
+        "compare these models",
+        "compare and contrast",
+        "which is better for",
+        "side by side comparison",
+        "how do they differ"
+      ],
+      "response_format": "Side-by-side table: context window, output tokens, thinking, effort scaling, cost, speed, best for.",
+      "data_source": "coach_models table"
+    },
+    "show_patterns": {
+      "triggers": [
+        "show my patterns",
+        "profile: show my patterns",
+        "what have I used before",
+        "my model history",
+        "what works for me"
+      ],
+      "response_format": "Builder profile: favorite model, phase, common task types, success rate, cost trends.",
+      "data_source": "coach_builder_profile, coach_runs aggregated per task_type"
+    },
+    "try_model": {
+      "triggers": [
+        "I want to try",
+        "switch to",
+        "use this model instead",
+        "let me use",
+        "try using"
+      ],
+      "response_format": "Switch model, log the choice and task type, confirm.",
+      "data_source": "coach_log_run() API"
+    }
+  }
 }
