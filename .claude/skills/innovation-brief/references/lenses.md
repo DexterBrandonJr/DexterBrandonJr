@@ -70,9 +70,12 @@ Run it after the other four, as an adversary of the draft. Every "yes" needs the
 | What leaves the private surfaces, and is that tested? | A test that greps every outbound message (push, digest, public repo) for the words that must never be there. Values *and* names: a subject or account name can leak what its values would. | The same build: the first digest carried no private values but named private subjects, a bank and a broker. |
 | Is each lock proven by the next object, or by the statement that set it? | Create the next thing (a function, a table) and check its grants; run the audit that would catch the regression. | The same build: a schema-scoped default revoke left new functions public; the nightly audit caught it in a minute. |
 | What is honestly unsolved? | Named on the page with its mitigation and the mitigation's limit. | memore: the same subject phrased two ways agreed 58% of the time. |
+| Does every write path pass the same admission guard as capture? | Probe each function that stores free text with a fake key inside `begin … rollback`; a path that accepts it is a hole, whatever the guard says elsewhere. | The coaching build of 2026-09-27: `coach_log_run` stored its notes around `hub_capture`'s secret guard; found only by the probe. |
+| Who grades the outcome, and can the grader see its own work? | The outcome comes from a signal outside the actor (tests, a gate, a reviewer, the owner's tap); a self-report is stored as unverified and never counted as evidence on its own. | Panickssery, Bowman & Feng (NeurIPS 2024): LLM evaluators recognise and favour their own generations. |
 
 ## The field scan — where to look, in order
 
+0. The vendor's docs bundled with the tool at hand. Claude Code ships the `claude-api` skill (`shared/models.md`, `prompt-caching.md`, `cost-optimization.md`), versioned with the CLI, carrying measured numbers and this month's betas. Local, no network, and it settled the whole vendor column of one brief before a single search.
 1. The vendor's help center and platform docs (what the product does this month; features change monthly).
 2. The comment thread under the primary source, read as an adversary of your draft. The counterarguments, the "measured and declined" notes and the implementers' scars live there, not in the post.
 3. Anthropic news and platform changelog (memory tool, context management, connectors).

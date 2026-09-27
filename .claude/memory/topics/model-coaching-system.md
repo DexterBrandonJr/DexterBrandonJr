@@ -149,3 +149,32 @@ First pass to use the system the way a chat will, instead of testing its parts: 
 - `coach_recommend` keeps an unused `p_builder_id` parameter (0024 removed the dead lookup); dropping it needs `drop function`.
 - `coach_lessons`, `builder_lesson`, `known_constraints`, `prefers_*`, `cost_per_week_usd` still have no writer.
 - `coach-nightly` (cron job 3) fires first at 07:50 UTC on 2026-09-28; read `cron.job_run_details` for it after.
+
+## 2026-09-27 — Innovation brief: Route by Record (coaching v2)
+
+**Decisions:**
+- Coaching v2 is a bandit over the record, not a trained router: a Beta(successes + 1, failures + 1) posterior per (task, phase, model, effort) arm, in SQL, over the last 30 days. The cheapest arm that clears the bar is the pick.
+- Every pick is a forecast on the ledger the hub already has (`hub_bet` / `hub_settle` / `calibration`), settled by the run's outcome. Calibration gates the coach's autonomy: stage 1 proposes, stage 2 is followed unless Dex names a model, stage 3 is earned by settled bets and lost by a bad week.
+- Outcomes come from outside the actor: the gate, a test suite, the QC lead's verdict, Dex's tap. A self-report is stored with its source and never counts as evidence alone (Panickssery, Bowman, Feng, NeurIPS 2024).
+- Cheap-first, one tier up on a failed check, logged as one task with the counterfactual (strong-only) beside it. Effort steps down before the model does (the vendor's own order).
+- Lessons are tier-3 rules scoped by task type, proposed by a Sunday SQL step and accepted by Dex: ACE's playbook (entries with helped/harmed counters) on the rules table the hub already has (`uses`, tiers, shed when over cap).
+- Learning costs zero model tokens. The only spend is the run, counted in usage-window tokens from `get_session`, not dollars.
+
+**Facts / preferences:**
+- Hole found by probe: `coach_log_run` stores `notes` around `hub_capture`'s secret guard. A fake API key went in (run 143, rolled back); `hub_capture` refused the identical string. Fix is move 1.
+- `hub_bet` accepts a coach forecast (bet 169, rolled back); the scorer exists and needs only wiring.
+- Field, with links on the page: RouteLLM (Ong et al., 2024; ICLR 2025: a preference-trained router, over 2× cheaper, transfers across model pairs); FrugalGPT (Chen, Zaharia, Zou, 2023: cascades, up to 98% off on some datasets); bandit routers (LinUCB selection arXiv 2506.17670, MetaLLM, PILOT); ACE (arXiv 2510.04618: evolving playbook, +12.3 points over in-context examples); Not Diamond powered OpenRouter's auto router, since replaced by task-type rankings.
+- Vendor numbers, from the `claude-api` skill bundled with Claude Code 2.1.283 (a local, versioned primary source): knowledge work nearly flat at `low`; Opus 5 gives up ~2 points at `medium` for half the cost; run-at-low-and-re-run-failures gave ~93% at ~$0.70 per task against 91.7% at $1.39; price the tail, two problems carried 43% of one run's spend.
+- Two lessons went into the skill's `references/lenses.md`: check the vendor docs bundled with the tool first; probe every free-text write path with a fake key inside a rollback; and a row on who grades the outcome.
+
+**Artifacts:**
+- The brief: https://claude.ai/artifact/UJGppVCHXFpzAoE2pMWZyf (private; the page carries the sources, both figures, the math curve, the eight parts, the unsolved list).
+- Chat report captured in the hub and the artifact indexed there (ids in the log).
+- Run 144 logged for the coach: Fable 5.1, xhigh, research, succeeded.
+
+**Open threads:**
+- Move 1, migration 0028: `p_outcome_source` (gate, tests, qc, dex, self) on `coach_log_run`; notes through `hub_guard_secrets`; the fake-key probe as a self-test check; `coach_recommend` places a `hub_bet` per pick, the next log settles it; advice counts sourced outcomes only.
+- Move 2: `parent_run_id` and a cascade phrase in the hub skill; the nightly computes each cascade's usage against strong-only.
+- Move 3: a registered Sunday step, SQL only: posteriors, one lesson proposal per escalated-then-succeeded run, one "try one notch lower" per saturated arm, one backlog row per uncovered task type, a consult count and follow rate, one digest line.
+- From Dex: "accept 351"; a yes to outcome sources outranking self-report; a name for the digest line.
+- Later: the quarterly probe set (twenty frozen tasks with checkable outcomes, every arm, lowest usage that clears the bar); a fail-open inbox for captures when the hub is unreachable (a hub pattern, not a coach one).
