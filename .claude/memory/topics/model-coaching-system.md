@@ -117,3 +117,7 @@ Section 16 ("Model coaching"), added to `share/hub-kit/HUB-KIT.md` in the post-m
 **Open threads:**
 - `coach_lessons`, `coach_runs.builder_lesson` and profile fields `known_constraints`, `prefers_speed`, `prefers_accuracy`, `cost_per_week_usd`, `last_phase_run`, `last_model_switch` still have no writer — a decision about what counts as a lesson, not a bug.
 - Advice appears once one model has 6 runs on one task type in 30 days; with 3 runs logged, `coach_recommend` correctly returns nothing yet.
+
+## 2026-09-27 — Sixth QA/QC pass (Fable 5.1, low): used end to end on the live hub, nothing to fix
+
+First pass to use the system the way a chat will, instead of testing its parts: `coach_recommend('review')` correctly returns nothing at 3 runs; `coach-nightly` is armed (job 3, active, no run yet — first fire 07:50 UTC 2026-09-28) and its exact SQL runs clean; the run for this pass was logged through the hub skill's own call (run 117, Fable 5.1 low, review, succeeded), the profile recomputed to 4 runs, and `hub_gate()` stayed green on all four steps after a live write. Correction: the profile row was rebuilt from three runs of *this session* — same session id, one chat — not three sessions.
