@@ -121,3 +121,31 @@ Section 16 ("Model coaching"), added to `share/hub-kit/HUB-KIT.md` in the post-m
 ## 2026-09-27 — Sixth QA/QC pass (Fable 5.1, low): used end to end on the live hub, nothing to fix
 
 First pass to use the system the way a chat will, instead of testing its parts: `coach_recommend('review')` correctly returns nothing at 3 runs; `coach-nightly` is armed (job 3, active, no run yet — first fire 07:50 UTC 2026-09-28) and its exact SQL runs clean; the run for this pass was logged through the hub skill's own call (run 117, Fable 5.1 low, review, succeeded), the profile recomputed to 4 runs, and `hub_gate()` stayed green on all four steps after a live write. Correction: the profile row was rebuilt from three runs of *this session* — same session id, one chat — not three sessions.
+
+## 2026-09-27 — Seventh QA/QC pass (Fable 5.1, xhigh): around the system, not inside it
+
+**Decisions:**
+- Six passes tested the coaching functions; this one looked at what sits around them: both Supabase advisors (never run before), the repo's other test suites, `CLAUDE.md`, and the hub's own brief.
+- A change to the hub repo lands as a pull request (r:501); it was applied live first because the brief was broken for every chat, and the PR body says so.
+- The effort comes from `get_session` (`session_context.effort_level`) when Dex's word for it is not one of the five. "ultracode" read as `xhigh`, so this pass is logged. The earlier Opus 5.5 "ultracode" pass was not checked at the time and stays unlogged.
+- No per-PR check-in armed (topic `pr-checkin-cadence`): the weekly Thursday trigger lists open PRs at fire time. Subscribed to the PR's events only, which is a webhook, not a timer.
+
+**Facts / preferences:**
+- The twelve coaching policies from 0020 were the only policies in the database. Every other hub table is RLS-on with no policy (deny-all below the owner) and the API roles hold no table grants. Dropped in `0026_coach_rls_align`; RLS stays on; the gate's audit stays clean.
+- `hub_rules(3)`, which the brief tells every chat to run when tier-3 rules are shed, failed on a `smallint` parameter (an integer literal does not resolve to it). Fixed live as `0027_hub_rules_int`: 6 tier-3, 11 tier-2, 21 rules resolve. Draft PR [one-memory-hub#11](https://github.com/DexterBrandonJr/one-memory-hub/pull/11), with README rows for 0027 and for 0020–0026 (live, logged, files in this repo).
+- The brief hovers at its cap. Three gate readings this pass, chat surface: 3534 before, 3603 red in the middle ("compiled from 3603 first"), 3523 green at the close ("compiled from 3630 first"). Section words at the red reading: rules 750, threads 616, money and forecasts 606 (forty Sepang lines due Oct 3–4), index 395, facts 374. Nothing the coaching system writes is rendered into the brief. t:145 and bl:87 own this. Earlier notes in this topic that argued over "over its cap" were each half right: the gate measures the chat surface; a `code` boot renders about 4,170 words and says so itself.
+- Advisors: 43 RLS-enabled-no-policy tables (the hub's convention) and 41 unindexed foreign keys, six on coaching tables whose targets are five-row lookups; two coaching indexes unused after four rows of traffic. No action on any.
+- `CLAUDE.md` had no entry for the coaching system; a fresh session could not find it. Added, shape only (r:11).
+- Only Code sessions in this repo were told to log runs; other surfaces never see the hub skill. Proposed as a tier-3 rule for every Claude: proposal **p:351** ("rules always wait for a human"), quoting raw 663. Dex accepts with "accept 351".
+- Also run: upscayl-wrap 220 tests OK; scenarios self-test 22 checks OK; the Hub Kit rebuilds byte-identical; no private fact in any file this session touched.
+
+**Artifacts:**
+- `supabase/migrations/0026_coach_rls_align.sql`, `CLAUDE.md`, hub skill, `docs/MODELS.md` — commit 03c6b11.
+- one-memory-hub branch `claude/hub-rules-int`, commit 346970a; PR #11 (draft).
+- Hub: migrations 0026 and 0027 logged; `hub_used(84, …)` recorded; chat report raw 663; run 134 (Fable 5.1, xhigh, review, succeeded, phase test); proposal p:351. Closing gate: selftest 100, audit clean, brief 3523/3600, integrity `migration:0027_hub_rules_int`.
+
+**Open threads:**
+- Fold the 0020–0027 files into `one-memory-hub/supabase/migrations/` — the QC lead's call, said in PR #11.
+- `coach_recommend` keeps an unused `p_builder_id` parameter (0024 removed the dead lookup); dropping it needs `drop function`.
+- `coach_lessons`, `builder_lesson`, `known_constraints`, `prefers_*`, `cost_per_week_usd` still have no writer.
+- `coach-nightly` (cron job 3) fires first at 07:50 UTC on 2026-09-28; read `cron.job_run_details` for it after.
