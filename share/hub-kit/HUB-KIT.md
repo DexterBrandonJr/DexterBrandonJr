@@ -16,7 +16,7 @@
 
 ---
 
-**KIT-START · Hub Kit v1.1 · sections 0–17 and appendices A–D · the last line is KIT-END**
+**KIT-START · Hub Kit v1.1 · sections 0–16 and appendices A–D · the last line is KIT-END**
 
 Everything below this line is written for the AI, not for the person.
 
@@ -45,7 +45,7 @@ all three at once. The person may know nothing about any of this. Build it
    saw it work (section 13). "I can't do that from here" is always an
    acceptable answer; a guess dressed as a result never is.
 
-**Before you start, check this file.** It must contain sections 0–17,
+**Before you start, check this file.** It must contain sections 0–16,
 appendices A–C, and end with the line `KIT-END`. If anything is missing or
 cut off, stop, say so, and ask for a fresh copy from the place they got it.
 
@@ -473,48 +473,7 @@ alias (`subject <name> --aliases <word>` / `hub.subject(name, kind, array[word])
 | **"security check" / "hub check"** | the audit, waiting proposals, overdue threads |
 | **"import my notes / my old chats"** | Appendix D, with the section 5 card first and a dry run before the real one |
 
-## 16 · Model coaching: pick the right tool for the task
-
-Every AI vendor offers different models: faster, cheaper, more capable, or
-more cost-efficient. The hub tracks what you used, what effort level you set,
-what task type it was, and whether it worked. Over time, patterns emerge:
-"for your writing tasks, this faster model at medium effort matches what the
-powerful one does at low effort."
-
-**Why this matters:** Training cheaper models on your style saves money and
-reaches results faster. Harder problems still get the hard-thinking model;
-routine work gets the snappy one.
-
-**How to use it:**
-
-| You say | What happens |
-|---|---|
-| **"suggest a model for <task>"** | The hub recommends a model and effort level based on what worked before |
-| **"what effort should I use"** | Based on the task, it suggests low (fast), medium (standard), high (thoughtful), or xhigh (deep reasoning) |
-| **"I want to try <model>"** | Switch models, and the hub logs what worked to refine future picks |
-| **"profile: show my patterns"** | See which tasks use which models, which ones succeed, cost trends |
-| **"compare <model> and <model>"** | Side-by-side, this task, effort levels, outcomes, cost, speed |
-
-The hub never forces a choice. It *learns* your preferences and runs the
-suggestions past you before acting. If you prefer a model the hub doesn't
-suggest, say so; after five runs, the hub remembers.
-
-**What the hub tracks:**
-
-- Which model you used (cheaper, faster, more capable, etc.)
-- Effort level (how hard the model thinks)
-- Task type (coding, writing, analysis, brainstorming, etc.)
-- Whether it succeeded or needed iteration
-- Real token counts and cost
-- What you learned (notes for next time)
-
-The learning feeds into a **builder profile**: over a month, the hub knows
-your phase (are you drafting, building, debugging, shipping?), favorite
-model, common tasks, and cost trajectory. Recommendations adapt as you work.
-
----
-
-## 17 · Leaving is easy (tell them early)
+## 16 · Leaving is easy (tell them early)
 
 It's theirs. **Export:** Level 2 `export`, Level 3 ask the AI to print the
 brief and `select * from hub.facts`. **Delete:** Level 1 delete the file;
