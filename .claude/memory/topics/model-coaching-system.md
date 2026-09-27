@@ -49,3 +49,25 @@
 **Not fixed (flagged, out of scope):** hub brief is currently 3686/3600 words — over its own cap. This is the hub's own nightly-compiler mechanism (pre-existing, not part of this build); expected to self-correct on its next scheduled run rather than something to patch here.
 
 **Status:** Coaching system now actually functional end-to-end, not just shipped-looking. Migration 0021 committed and pushed to main.
+
+## 2026-09-27 — Second QA/QC pass (Sonnet 5, medium) found the builder-profile writes were still wrong
+
+0021 fixed the crash. It didn't check whether the *values* being written were the right ones — they weren't.
+
+**Found:**
+- `coach_runs` had no `builder_id` column at all. Only `session_id`/`chat_id` existed, so no query could ever attribute a run back to a person across sessions — the "learns your patterns over time" promise had no data path to run on.
+- `coach_log_run()`'s builder-profile write was "last value wins": `favorite_model` was overwritten, unconditionally, to whichever model was *just* logged — never actually the most-used one, despite the column name.
+- The same insert wrote `p_task_type` (e.g. "coding") into the `phase` column, which is documented as "build, test, debug, fix" — task type and build phase were conflated, and `phase` was never touched again after the first call for a given builder.
+- `coach_recommend()`'s `alternative_model`/`alternative_effort` — the "runner-up" the schema's own comments and models.json's secondary-model fields promise — were hardcoded to `null`, always, regardless of data.
+
+**Fixed in migration 0022_coach_fix2.sql** (applied live):
+- Added `builder_id` to `coach_runs` (+ index), so runs are attributable.
+- `coach_log_run()` now takes an explicit `p_phase` param (no longer conflated with task_type) and computes `favorite_model` / `reliable_effort` / `common_task_types` as real aggregates over that builder's actual logged runs, not "whatever just happened."
+- `coach_recommend()` now returns the real second-highest-confidence row as the runner-up.
+- Self-test extended to a 4th check (C4) that asserts `favorite_model` is computed from run frequency (6 sonnet runs beat 1 haiku run), not last-write. `hub_selftest()` now reports **98 checks** (97 + 1), confirmed by direct query.
+
+**Explicitly not fixed (flagged as a design gap, not a bug):** `coach_lessons` and `coach_runs.builder_lesson` are still never written by any function — "lessons learned" remains schema only. `known_constraints`, `prefers_speed`, `prefers_accuracy`, `cost_per_week_usd`, `last_phase_run`, `last_model_switch` are the same: real columns, no writer. Populating these needs a product decision (what counts as a lesson, how constraints get detected) — not something to invent silently under a QA pass.
+
+**Pattern across both passes:** the first bug was "this crashes." The second round was "this runs without error but silently stores the wrong thing" — a harder class to catch, since nothing looked broken until the actual values were checked against what the schema's own column names promised.
+
+**Status:** coach_log_run / coach_recommend / coach_analyze_and_advise all verified against real aggregation now, not just non-crashing. `coach_lessons` and several builder_profile columns remain intentionally unpopulated placeholders — next real feature work here, if wanted.
