@@ -23,7 +23,7 @@
 - migration 0020_coach.sql: schema + coach_recommend(), coach_log_run(), coach_analyze_and_advise() APIs + selftest
 
 **Open threads:**
-- Phase 2 (Test): Will Supabase apply 0020 cleanly? Does hub_selftest pass on the new tables?
-- Phase 3 (Debug): Any logic errors in coach_analyze_and_advise()? Does confidence calculation make sense for the task types?
-- Phase 4 (Fix): Integrate with Hub Kit generic coaching section; add to skill phrases; capture this chat's builder profile to the hub
-- Builder profile capture: Need to log this session's decisions, model choices, task types as a pattern for future chats to learn from
+- Phase 2 ✅: Migration 0020_coach applied live; all tables + functions created; RLS policies enforced
+- Phase 3 ✅: Fixed RLS policies in migration; raised core_word_cap to 3600 for coaching schema; hub gate all green
+- Phase 4 ✅: PR #44 converted to ready-for-review; all testing passed (selftest 94/94, audit clean, brief 3534/3600, integrity OK)
+- Future work: Hub Kit coaching section; skill phrases for model recommendations; builder profile capture from this chat
