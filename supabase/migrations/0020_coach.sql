@@ -274,6 +274,34 @@ insert into coach_effort (effort, description, thinking_enabled, cost_multiplier
 on conflict (effort) do nothing;
 
 -- ---------------------------------------------------------------------------
+-- Row-level security policies
+-- ---------------------------------------------------------------------------
+
+alter table coach_models enable row level security;
+create policy coach_models_read on coach_models for select using (true);
+create policy coach_models_write on coach_models for insert with check (false);
+
+alter table coach_effort enable row level security;
+create policy coach_effort_read on coach_effort for select using (true);
+create policy coach_effort_write on coach_effort for insert with check (false);
+
+alter table coach_advice enable row level security;
+create policy coach_advice_read on coach_advice for select using (true);
+create policy coach_advice_write on coach_advice for insert with check (false);
+
+alter table coach_runs enable row level security;
+create policy coach_runs_read on coach_runs for select using (true);
+create policy coach_runs_write on coach_runs for insert with check (false);
+
+alter table coach_lessons enable row level security;
+create policy coach_lessons_read on coach_lessons for select using (true);
+create policy coach_lessons_write on coach_lessons for insert with check (false);
+
+alter table coach_builder_profile enable row level security;
+create policy coach_builder_profile_read on coach_builder_profile for select using (true);
+create policy coach_builder_profile_write on coach_builder_profile for insert with check (false);
+
+-- ---------------------------------------------------------------------------
 -- Self-test (inside the self-test's rollback)
 -- ---------------------------------------------------------------------------
 create or replace function _hub_selftest_coach() returns integer
