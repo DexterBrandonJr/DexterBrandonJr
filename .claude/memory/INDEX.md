@@ -1,4 +1,4 @@
-- [Model Coaching System](topics/model-coaching-system.md) — updated 2026-09-27 — brief published for coaching v2: earned routing as a bandit over the record, cheap-first with a checker, the coach bets on itself via hub_bet, outcomes from outside the chat, lessons as scoped rules, a zero-token weekly review; found run notes bypass the secret guard
+- [Model Coaching System](topics/model-coaching-system.md) — updated 2026-09-28 — every artifact page now reads itself aloud with the browser's own speech (brief, skeleton, drop-in snippet); this weekend's Code sessions indexed in the hub by title and date, transcripts out of reach from Code
 - [Chat Memory Roadmap](topics/chat-memory-roadmap.md) — updated 2026-09-26 — new_entry.py now re-sorts the whole index by date, newest first; the recency-order bug is fixed in the script, not by hand
 - [Qc Lead](topics/qc-lead.md) — updated 2026-09-26 — the QC lead chat reads every change, gives each one verdict, and closes a pass only when nothing is unread; one writer per repo everywhere
 - [Github Integration](topics/github-integration.md) — updated 2026-09-26 — The draft-to-ready flip worked; send it alone
