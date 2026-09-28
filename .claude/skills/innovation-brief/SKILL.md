@@ -62,6 +62,8 @@ Author an HTML artifact from `assets/brief-skeleton.html` (load the `artifact-de
 
 A revision keeps the same file path, the same URL and the same section order; it adds a "brief 2" mark in the eyebrow and footer, and lists its new sources under their own heading so the reader can see what changed.
 
+The skeleton carries the Listen control (the browser's own speech, no network): keep it on every brief, and write every figure's caption so it reads as the figure's claim, because that caption is what a listener hears in place of the drawing.
+
 Rules that keep it readable: short lines; one claim per figure with a caption that states it; tiers as chips, not prose; deep material behind `<details>`; no section longer than a phone screen without a figure or a table breaking it. Publish with a two-to-four-word name, never a title with a colon.
 
 ## 7. Deliver

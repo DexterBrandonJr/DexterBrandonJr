@@ -1,0 +1,127 @@
+<!--
+  Listen control for any artifact page.
+
+  Reads the page aloud with the browser's own speech (the Web Speech API):
+  no network, no key, no library, and nothing plays until the viewer taps.
+  Pause, stop, a section picker (every h1 and h2) and a speed. It reads
+  h1-h4, paragraphs, list items, table rows with their column names, figure
+  captions and details summaries, in page order, and skips svg, footer,
+  .sources and anything with aria-hidden="true". The block being read is
+  outlined and scrolled into view.
+
+  Paste this whole block just before the closing tag of the page's outer
+  wrapper, after the content it should read. Colors come from the page's
+  tokens when present (--accent, --surface, --line, --ink, --muted,
+  --surface-2, --you, --display, --body, --mono) and fall back otherwise.
+  Where a browser has no speech, the bar says so instead of failing quietly.
+-->
+<style>
+  .listen { position: sticky; bottom: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: var(--surface, #FFFFFF); border: 1px solid var(--line, #D5DCE3); border-radius: 10px; padding: 8px 10px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); margin: 18px 0 0; box-shadow: 0 -2px 12px rgba(0,0,0,.06); }
+  .listen button { font: 600 0.9rem var(--display, system-ui, sans-serif); color: var(--surface, #FFFFFF); background: var(--accent, #0F766E); border: 0; border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+  .listen button:focus-visible, .listen select:focus-visible { outline: 2px solid var(--you, #B45309); outline-offset: 2px; }
+  .listen .ls-l { font: 0.78rem var(--mono, ui-monospace, monospace); color: var(--muted, #5C6B7A); display: inline-flex; align-items: center; gap: 4px; }
+  .listen select { font: 0.85rem var(--body, system-ui, sans-serif); color: var(--ink, #16202B); background: var(--surface-2, #E9EDF1); border: 1px solid var(--line, #D5DCE3); border-radius: 6px; padding: 4px 6px; max-width: 44vw; }
+  .ls-now { font: 0.78rem var(--mono, ui-monospace, monospace); color: var(--accent, #0F766E); flex: 1 1 100%; min-height: 1em; }
+  .reading { outline: 2px solid var(--accent, #0F766E); outline-offset: 4px; border-radius: 6px; }
+</style>
+<div class="listen" id="listen" role="region" aria-label="Listen to this page">
+  <button type="button" id="ls-play">Listen</button>
+  <button type="button" id="ls-pause" hidden>Pause</button>
+  <button type="button" id="ls-stop" hidden>Stop</button>
+  <label class="ls-l">from <select id="ls-from" aria-label="Start from section"></select></label>
+  <label class="ls-l">speed <select id="ls-rate" aria-label="Reading speed"><option value="0.85">slower</option><option value="1" selected>normal</option><option value="1.15">faster</option><option value="1.3">fast</option></select></label>
+  <span id="ls-now" class="ls-now" aria-live="polite"></span>
+</div>
+<script>
+(function () {
+  var bar = document.getElementById('listen');
+  if (!bar) return;
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    bar.textContent = 'Listening is not available in this browser.'; return;
+  }
+  var synth = window.speechSynthesis;
+  var SKIP = 'script,style,svg,#listen,footer,.sources,[aria-hidden="true"]';
+  var SEL = 'h1,h2,h3,h4,p,li,figcaption,summary,dt,dd,tr,blockquote';
+  function clean(s) { return (s || '').replace(/\s+/g, ' ').trim(); }
+  function inSkip(el) { return !!el.closest(SKIP); }
+  function isLeaf(el) {
+    if (el.tagName === 'TR') return true;
+    var inner = el.querySelectorAll(SEL);
+    for (var i = 0; i < inner.length; i++) { if (inner[i].tagName !== 'TR' && !inSkip(inner[i])) return false; }
+    return true;
+  }
+  function rowText(tr) {
+    var table = tr.closest('table'), heads = [];
+    if (table) table.querySelectorAll('thead th').forEach(function (th) { heads.push(clean(th.textContent)); });
+    var cells = tr.querySelectorAll('td'); if (!cells.length) return '';
+    var parts = [];
+    cells.forEach(function (td, i) { var t = clean(td.textContent); if (!t) return; parts.push(heads[i] ? heads[i] + ': ' + t : t); });
+    return parts.join('. ');
+  }
+  function blockText(el) {
+    if (el.tagName === 'TR') return rowText(el);
+    var t = clean(el.textContent);
+    return el.tagName === 'FIGCAPTION' ? 'Figure. ' + t : t;
+  }
+  var blocks = [], sections = [], cur = -1;
+  document.querySelectorAll(SEL).forEach(function (el) {
+    if (inSkip(el) || !isLeaf(el)) return;
+    if (el.tagName === 'TR' && el.closest('thead')) return;
+    var text = blockText(el); if (!text) return;
+    if (el.tagName === 'H1' || el.tagName === 'H2') { sections.push({ label: text, at: blocks.length }); cur = sections.length - 1; }
+    blocks.push({ el: el, text: text, section: cur });
+  });
+  var src = document.querySelector('.sources');
+  if (src) blocks.push({ el: src, text: 'The sources are listed on the page.', section: cur });
+  window.__listenQueue = blocks.map(function (b) { return b.text; });
+  bar.setAttribute('data-blocks', String(blocks.length));
+  var from = document.getElementById('ls-from'), rate = document.getElementById('ls-rate'), now = document.getElementById('ls-now');
+  var play = document.getElementById('ls-play'), pause = document.getElementById('ls-pause'), stop = document.getElementById('ls-stop');
+  sections.forEach(function (s) { var o = document.createElement('option'); o.value = String(s.at); o.textContent = s.label.length > 48 ? s.label.slice(0, 46) + '…' : s.label; from.appendChild(o); });
+  var idx = 0, gen = 0, playing = false, paused = false, reading = null;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function chunks(text) {
+    var out = [], c = '', parts = text.match(/[^.!?;:]+[.!?;:]*\s*/g) || [text];
+    parts.forEach(function (s) { s = s.trim(); if (!s) return; if (c && (c + ' ' + s).length > 200) { out.push(c); c = s; } else c = c ? c + ' ' + s : s; });
+    if (c) out.push(c); return out;
+  }
+  function voice() {
+    var vs = synth.getVoices(); if (!vs || !vs.length) return null;
+    var en = vs.filter(function (v) { return /^en/i.test(v.lang); });
+    return en.filter(function (v) { return v.default; })[0] || en[0] || vs[0];
+  }
+  function mark(b) {
+    if (reading) reading.classList.remove('reading');
+    reading = b.el; b.el.classList.add('reading');
+    try { b.el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }); } catch (e) {}
+    var s = sections[b.section]; now.textContent = s ? 'Reading: ' + s.label : 'Reading';
+  }
+  function setState(p, z) { playing = p; paused = z; play.hidden = p && !z; pause.hidden = !p || z; stop.hidden = !p; play.textContent = z ? 'Resume' : 'Listen'; }
+  function finish() { gen++; synth.cancel(); if (reading) reading.classList.remove('reading'); reading = null; now.textContent = ''; setState(false, false); }
+  function speakBlock() {
+    var g = gen;
+    if (!playing || g !== gen) return;
+    if (idx >= blocks.length) { finish(); return; }
+    var b = blocks[idx]; mark(b);
+    var parts = chunks(b.text), k = 0;
+    (function next() {
+      if (!playing || g !== gen) return;
+      if (k >= parts.length) { idx++; speakBlock(); return; }
+      var u = new SpeechSynthesisUtterance(parts[k++]);
+      u.rate = parseFloat(rate.value) || 1;
+      var v = voice(); if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
+      u.onend = next; u.onerror = function () { next(); };
+      synth.speak(u);
+    })();
+  }
+  play.addEventListener('click', function () {
+    if (paused) { synth.resume(); setState(true, false); return; }
+    gen++; synth.cancel(); idx = parseInt(from.value || '0', 10) || 0; setState(true, false); speakBlock();
+  });
+  pause.addEventListener('click', function () { synth.pause(); setState(true, true); });
+  stop.addEventListener('click', finish);
+  rate.addEventListener('change', function () { if (playing && !paused) { var at = idx; gen++; synth.cancel(); idx = at; speakBlock(); } });
+  from.addEventListener('change', function () { if (playing) { gen++; synth.cancel(); idx = parseInt(from.value || '0', 10) || 0; setState(true, false); speakBlock(); } });
+  window.addEventListener('pagehide', function () { synth.cancel(); });
+})();
+</script>
