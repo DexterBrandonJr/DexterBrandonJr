@@ -71,12 +71,15 @@ things with Claude Code.
   The hub's own migrations live in its private repo; only the coaching
   ones are here.
 
-- `share/artifact-listen/listen.html` — the **Listen control every
-  artifact page carries**: it reads the page aloud with the browser's own
-  speech (no network, no key), with pause, stop, a section picker and a
-  speed; figures by their captions, tables row by row; nothing plays until
-  a tap. Paste the block before the closing tag of the page's wrapper. The
-  innovation-brief template already has it built in.
+- `share/artifact-listen/` — the **Listen control every artifact page
+  carries** (`listen.html`): it reads the page aloud with pause, stop, a
+  section picker and a speed; figures by their captions, tables row by
+  row; nothing plays until a tap. The browser's own speech stops when a
+  phone leaves the page, so `narrate.py` records the same text once with
+  an offline voice into an MP3 the bar plays instead, which keeps going
+  with the screen off or in another app. Paste the block before the
+  closing tag of the page's wrapper; publish the MP3 beside the page. The
+  innovation-brief template already has the bar built in.
 
 ## Read the hub first
 

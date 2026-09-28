@@ -2,7 +2,7 @@
   Listen control for any artifact page.
 
   Reads the page aloud with the browser's own speech (the Web Speech API):
-  no network, no key, no library, and nothing plays until the viewer taps.
+  no key, no library, and nothing plays until the viewer taps.
   Pause, stop, a section picker (every h1 and h2) and a speed. It reads
   h1-h4, paragraphs, list items, table rows with their column names, figure
   captions and details summaries, in page order, and skips svg, footer,
@@ -14,6 +14,16 @@
   tokens when present (--accent, --surface, --line, --ink, --muted,
   --surface-2, --you, --display, --body, --mono) and fall back otherwise.
   Where a browser has no speech, the bar says so instead of failing quietly.
+
+  Phones stop the browser's speech the moment the page leaves the screen.
+  For listening in the background, record the page once with narrate.py
+  (next to this file): it reads the same blocks in the same order with an
+  offline voice, writes an MP3 and fills the empty <audio id="ls-audio">
+  below with its file name and a start time per block. The bar then plays
+  the recording through the phone's media player instead: it keeps going
+  with the screen off or in another app, shows on the lock screen, and
+  the section picker, speed and highlight still work. Publish the MP3
+  beside the page. With the slot left empty the bar uses speech as before.
 -->
 <style>
   .listen { position: sticky; bottom: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: var(--surface, #FFFFFF); border: 1px solid var(--line, #D5DCE3); border-radius: 10px; padding: 8px 10px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); margin: 18px 0 0; box-shadow: 0 -2px 12px rgba(0,0,0,.06); }
@@ -28,6 +38,7 @@
   <button type="button" id="ls-play">Listen</button>
   <button type="button" id="ls-pause" hidden>Pause</button>
   <button type="button" id="ls-stop" hidden>Stop</button>
+  <audio id="ls-audio" preload="none"></audio>
   <label class="ls-l">from <select id="ls-from" aria-label="Start from section"></select></label>
   <label class="ls-l">speed <select id="ls-rate" aria-label="Reading speed"><option value="0.85">slower</option><option value="1" selected>normal</option><option value="1.15">faster</option><option value="1.3">fast</option></select></label>
   <span id="ls-now" class="ls-now" aria-live="polite"></span>
@@ -36,14 +47,28 @@
 (function () {
   var bar = document.getElementById('listen');
   if (!bar) return;
-  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-    bar.textContent = 'Listening is not available in this browser.'; return;
-  }
-  var synth = window.speechSynthesis;
+  var audio = document.getElementById('ls-audio');
+  var rec = audio && audio.getAttribute('src') ? audio : null;
+  var synth = ('speechSynthesis' in window && 'SpeechSynthesisUtterance' in window) ? window.speechSynthesis : null;
+  if (!rec && !synth) { bar.textContent = 'Listening is not available in this browser.'; return; }
   var SKIP = 'script,style,svg,#listen,footer,.sources,[aria-hidden="true"]';
   var SEL = 'h1,h2,h3,h4,p,li,figcaption,summary,dt,dd,tr,blockquote';
   function clean(s) { return (s || '').replace(/\s+/g, ' ').trim(); }
   function inSkip(el) { return !!el.closest(SKIP); }
+  // textContent glues block children together ("2023-05FrugalGPT"); break wherever the page breaks.
+  function textOf(el) {
+    var out = [];
+    (function walk(n) {
+      if (n.nodeType === 3) { out.push(n.nodeValue); return; }
+      if (n.nodeType !== 1 || n.matches('script,style,svg,[aria-hidden="true"]')) return;
+      if (n.tagName === 'BR') { out.push(' '); return; }
+      var brk = !/^(inline|contents|none)/.test(getComputedStyle(n).display);
+      if (brk) out.push(' ');
+      for (var c = n.firstChild; c; c = c.nextSibling) walk(c);
+      if (brk) out.push(' ');
+    })(el);
+    return clean(out.join(''));
+  }
   function isLeaf(el) {
     if (el.tagName === 'TR') return true;
     var inner = el.querySelectorAll(SEL);
@@ -52,15 +77,15 @@
   }
   function rowText(tr) {
     var table = tr.closest('table'), heads = [];
-    if (table) table.querySelectorAll('thead th').forEach(function (th) { heads.push(clean(th.textContent)); });
+    if (table) table.querySelectorAll('thead th').forEach(function (th) { heads.push(textOf(th)); });
     var cells = tr.querySelectorAll('td'); if (!cells.length) return '';
     var parts = [];
-    cells.forEach(function (td, i) { var t = clean(td.textContent); if (!t) return; parts.push(heads[i] ? heads[i] + ': ' + t : t); });
+    cells.forEach(function (td, i) { var t = textOf(td); if (!t) return; parts.push(heads[i] ? heads[i] + ': ' + t : t); });
     return parts.join('. ');
   }
   function blockText(el) {
     if (el.tagName === 'TR') return rowText(el);
-    var t = clean(el.textContent);
+    var t = textOf(el);
     return el.tagName === 'FIGCAPTION' ? 'Figure. ' + t : t;
   }
   var blocks = [], sections = [], cur = -1;
@@ -73,13 +98,87 @@
   });
   var src = document.querySelector('.sources');
   if (src) blocks.push({ el: src, text: 'The sources are listed on the page.', section: cur });
-  window.__listenQueue = blocks.map(function (b) { return b.text; });
+  window.__listen = { blocks: blocks.map(function (b) { return b.text; }), sections: sections.map(function (s) { return { label: s.label, at: s.at }; }) };
   bar.setAttribute('data-blocks', String(blocks.length));
   var from = document.getElementById('ls-from'), rate = document.getElementById('ls-rate'), now = document.getElementById('ls-now');
   var play = document.getElementById('ls-play'), pause = document.getElementById('ls-pause'), stop = document.getElementById('ls-stop');
-  sections.forEach(function (s) { var o = document.createElement('option'); o.value = String(s.at); o.textContent = s.label.length > 48 ? s.label.slice(0, 46) + '…' : s.label; from.appendChild(o); });
-  var idx = 0, gen = 0, playing = false, paused = false, reading = null;
+  sections.forEach(function (s, k) { var o = document.createElement('option'); o.value = String(k ? s.at : 0); o.textContent = s.label.length > 48 ? s.label.slice(0, 46) + '\u2026' : s.label; from.appendChild(o); });
+  var playing = false, paused = false, reading = null, at = -1;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function mark(i) {
+    var b = blocks[i]; if (!b || i === at) return;
+    at = i;
+    if (reading) reading.classList.remove('reading');
+    reading = b.el; b.el.classList.add('reading');
+    if (!document.hidden) { try { b.el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }); } catch (e) {} }
+    var s = sections[b.section]; now.textContent = s ? 'Reading: ' + s.label : 'Reading';
+  }
+  function unmark() { if (reading) reading.classList.remove('reading'); reading = null; at = -1; now.textContent = ''; }
+  function setState(p, z) { playing = p; paused = z; play.hidden = p && !z; pause.hidden = !p || z; stop.hidden = !p; play.textContent = z ? 'Resume' : 'Listen'; }
+  function startAt() { return parseInt(from.value || '0', 10) || 0; }
+
+  if (rec) {
+    // A recording plays through the phone's media player, so it keeps going with the screen off or in another app.
+    var marks = []; try { marks = JSON.parse(rec.getAttribute('data-marks') || '[]'); } catch (e) {}
+    var synced = marks.length === blocks.length, stopping = false, fetched = false, seekGen = 0;
+    var mins = Math.round((parseFloat(rec.getAttribute('data-duration')) || 0) / 60);
+    var hint = 'Recording' + (mins ? ' \u00b7 ' + mins + ' min' : '') + ' \u00b7 keeps playing in the background (Safari, Chrome)';
+    now.textContent = hint;
+    function timeAt(i) { return synced ? (marks[i] || 0) : 0; }
+    function blockAt(t) { var lo = 0, hi = marks.length - 1, a = -1; while (lo <= hi) { var m = (lo + hi) >> 1; if (marks[m] <= t + 0.05) { a = m; lo = m + 1; } else hi = m - 1; } return a; }
+    function canSeek(t) { var s = rec.seekable; for (var i = 0; i < s.length; i++) if (s.start(i) <= t + 0.5 && t <= s.end(i) + 0.5) return true; return false; }
+    function seek(t) {
+      if (rec.readyState < 1) { rec.addEventListener('loadedmetadata', function once() { rec.removeEventListener('loadedmetadata', once); seek(t); }); return; }
+      if (t > 1 && !fetched && !canSeek(t)) { local(t, !rec.paused); return; }
+      rec.currentTime = t;
+      // Chromium reports a host without byte ranges as seekable, then quietly restarts from zero; check where it landed.
+      if (t > 1 && !fetched) { var g = ++seekGen; setTimeout(function () { if (g === seekGen && !fetched && Math.abs(rec.currentTime - t) > 8) local(t, !rec.paused); }, 2500); }
+    }
+    function go() { rec.playbackRate = parseFloat(rate.value) || 1; var p = rec.play(); if (p && p.catch) p.catch(failed); }
+    function failed(e) {
+      if (e && e.name === 'AbortError') return;
+      if (e && e.name === 'NotAllowedError') { setState(false, true); now.textContent = 'Tap Resume to start.'; return; }
+      if (fetched) { setState(false, false); now.textContent = 'The recording did not load.'; return; }
+      local(rec.currentTime || timeAt(startAt()), true);
+    }
+    // Some hosts refuse the byte-range requests Safari needs to play and every browser needs to seek; a local copy does both.
+    function local(t, resume) {
+      fetched = true; now.textContent = 'Loading the recording\u2026';
+      fetch(rec.getAttribute('src'), { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.blob(); }).then(function (b) {
+        rec.src = URL.createObjectURL(b); seek(t); if (resume) go();
+      }).catch(function () { setState(false, false); now.textContent = 'The recording did not load.'; });
+    }
+    function jump(dir) {
+      if (!synced || !sections.length) return;
+      var t = rec.currentTime, times = sections.map(function (s) { return timeAt(s.at); }), i = 0;
+      for (var k = 0; k < times.length; k++) if (times[k] <= t + 0.5) i = k;
+      if (dir < 0 && t - times[i] > 3) dir = 0;
+      seek(times[Math.max(0, Math.min(times.length - 1, i + dir))]);
+    }
+    rec.addEventListener('play', function () { setState(true, false); });
+    rec.addEventListener('pause', function () { if (stopping) { stopping = false; return; } if (!rec.ended) setState(true, true); });
+    rec.addEventListener('ended', function () { unmark(); setState(false, false); now.textContent = hint; });
+    rec.addEventListener('timeupdate', function () { if (synced && playing) mark(blockAt(rec.currentTime)); });
+    play.addEventListener('click', function () { if (!paused) seek(timeAt(startAt())); go(); });
+    pause.addEventListener('click', function () { rec.pause(); });
+    stop.addEventListener('click', function () { stopping = !rec.paused; rec.pause(); seek(0); unmark(); setState(false, false); now.textContent = hint; });
+    rate.addEventListener('change', function () { rec.playbackRate = parseFloat(rate.value) || 1; });
+    from.addEventListener('change', function () { if (playing) seek(timeAt(startAt())); });
+    if ('mediaSession' in navigator) {
+      try {
+        navigator.mediaSession.metadata = new MediaMetadata({ title: document.title || 'This page', artist: 'Listen' });
+        navigator.mediaSession.setActionHandler('play', go);
+        navigator.mediaSession.setActionHandler('pause', function () { rec.pause(); });
+        navigator.mediaSession.setActionHandler('seekbackward', function () { seek(Math.max(0, rec.currentTime - 15)); });
+        navigator.mediaSession.setActionHandler('seekforward', function () { seek(Math.min(rec.duration || 1e9, rec.currentTime + 15)); });
+        navigator.mediaSession.setActionHandler('previoustrack', function () { jump(-1); });
+        navigator.mediaSession.setActionHandler('nexttrack', function () { jump(1); });
+      } catch (e) {}
+    }
+    return;
+  }
+
+  var idx = 0, gen = 0;
   function chunks(text) {
     var out = [], c = '', parts = text.match(/[^.!?;:]+[.!?;:]*\s*/g) || [text];
     parts.forEach(function (s) { s = s.trim(); if (!s) return; if (c && (c + ' ' + s).length > 200) { out.push(c); c = s; } else c = c ? c + ' ' + s : s; });
@@ -90,20 +189,13 @@
     var en = vs.filter(function (v) { return /^en/i.test(v.lang); });
     return en.filter(function (v) { return v.default; })[0] || en[0] || vs[0];
   }
-  function mark(b) {
-    if (reading) reading.classList.remove('reading');
-    reading = b.el; b.el.classList.add('reading');
-    try { b.el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }); } catch (e) {}
-    var s = sections[b.section]; now.textContent = s ? 'Reading: ' + s.label : 'Reading';
-  }
-  function setState(p, z) { playing = p; paused = z; play.hidden = p && !z; pause.hidden = !p || z; stop.hidden = !p; play.textContent = z ? 'Resume' : 'Listen'; }
-  function finish() { gen++; synth.cancel(); if (reading) reading.classList.remove('reading'); reading = null; now.textContent = ''; setState(false, false); }
+  function finish() { gen++; synth.cancel(); unmark(); setState(false, false); }
   function speakBlock() {
     var g = gen;
     if (!playing || g !== gen) return;
     if (idx >= blocks.length) { finish(); return; }
-    var b = blocks[idx]; mark(b);
-    var parts = chunks(b.text), k = 0;
+    mark(idx);
+    var parts = chunks(blocks[idx].text), k = 0;
     (function next() {
       if (!playing || g !== gen) return;
       if (k >= parts.length) { idx++; speakBlock(); return; }
@@ -116,12 +208,12 @@
   }
   play.addEventListener('click', function () {
     if (paused) { synth.resume(); setState(true, false); return; }
-    gen++; synth.cancel(); idx = parseInt(from.value || '0', 10) || 0; setState(true, false); speakBlock();
+    gen++; synth.cancel(); at = -1; idx = startAt(); setState(true, false); speakBlock();
   });
   pause.addEventListener('click', function () { synth.pause(); setState(true, true); });
   stop.addEventListener('click', finish);
-  rate.addEventListener('change', function () { if (playing && !paused) { var at = idx; gen++; synth.cancel(); idx = at; speakBlock(); } });
-  from.addEventListener('change', function () { if (playing) { gen++; synth.cancel(); idx = parseInt(from.value || '0', 10) || 0; setState(true, false); speakBlock(); } });
+  rate.addEventListener('change', function () { if (playing && !paused) { var i = idx; gen++; synth.cancel(); idx = i; at = -1; speakBlock(); } });
+  from.addEventListener('change', function () { if (playing) { gen++; synth.cancel(); at = -1; idx = startAt(); setState(true, false); speakBlock(); } });
   window.addEventListener('pagehide', function () { synth.cancel(); });
 })();
 </script>
