@@ -24,6 +24,12 @@
   with the screen off or in another app, shows on the lock screen, and
   the section picker, speed and highlight still work. Publish the MP3
   beside the page. With the slot left empty the bar uses speech as before.
+
+  A recording marked data-autoplay (narrate.py's default) starts the
+  moment the page opens, wherever the browser allows sound without a tap.
+  Where it refuses (iPhones always do), the first tap anywhere on the page
+  starts it. Each viewer's place is remembered, so a start picks up where
+  they stopped; Stop forgets it.
 -->
 <style>
   .listen { position: sticky; bottom: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: var(--surface, #FFFFFF); border: 1px solid var(--line, #D5DCE3); border-radius: 10px; padding: 8px 10px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); margin: 18px 0 0; box-shadow: 0 -2px 12px rgba(0,0,0,.06); }
@@ -124,6 +130,18 @@
     var mins = Math.round((parseFloat(rec.getAttribute('data-duration')) || 0) / 60);
     var hint = 'Recording' + (mins ? ' \u00b7 ' + mins + ' min' : '') + ' \u00b7 keeps playing in the background (Safari, Chrome)';
     now.textContent = hint;
+    var auto = rec.hasAttribute('data-autoplay'), armed = false, lastSave = 0, KEY = 'listen-at:' + rec.getAttribute('src');
+    function clock(t) { t = Math.round(t); return Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); }
+    // Where this viewer got to, so a start (automatic or tapped) picks up there instead of at the top.
+    function save(t) { try { if (t > 10) localStorage.setItem(KEY, String(Math.round(t))); else localStorage.removeItem(KEY); } catch (e) {} }
+    function saved() { try { var t = parseFloat(localStorage.getItem(KEY)) || 0, d = parseFloat(rec.getAttribute('data-duration')) || 1e9; return t > 10 && t < d - 30 ? t : 0; } catch (e) { return 0; } }
+    var resumeAt = saved();
+    if (resumeAt) now.textContent = hint + ' \u00b7 picks up at ' + clock(resumeAt);
+    // Phones refuse sound a page starts on its own; then the first tap anywhere on the page starts it.
+    var TAPS = ['click', 'touchend', 'keydown'];
+    function onTap(ev) { if (bar.contains(ev.target)) return; disarm(); go(); }
+    function arm() { if (armed) return; armed = true; TAPS.forEach(function (n) { document.addEventListener(n, onTap, true); }); }
+    function disarm() { if (!armed) return; armed = false; TAPS.forEach(function (n) { document.removeEventListener(n, onTap, true); }); }
     function timeAt(i) { return synced ? (marks[i] || 0) : 0; }
     function blockAt(t) { var lo = 0, hi = marks.length - 1, a = -1; while (lo <= hi) { var m = (lo + hi) >> 1; if (marks[m] <= t + 0.05) { a = m; lo = m + 1; } else hi = m - 1; } return a; }
     function canSeek(t) { var s = rec.seekable; for (var i = 0; i < s.length; i++) if (s.start(i) <= t + 0.5 && t <= s.end(i) + 0.5) return true; return false; }
@@ -137,7 +155,10 @@
     function go() { rec.playbackRate = parseFloat(rate.value) || 1; var p = rec.play(); if (p && p.catch) p.catch(failed); }
     function failed(e) {
       if (e && e.name === 'AbortError') return;
-      if (e && e.name === 'NotAllowedError') { setState(false, true); now.textContent = 'Tap Resume to start.'; return; }
+      if (e && e.name === 'NotAllowedError') {
+        setState(false, true); if (rec.currentTime < 1 && !resumeAt) play.textContent = 'Listen';
+        now.textContent = 'Tap anywhere to start listening' + (resumeAt ? ' \u00b7 picks up at ' + clock(resumeAt) : ''); arm(); return;
+      }
       if (fetched) { setState(false, false); now.textContent = 'The recording did not load.'; return; }
       local(rec.currentTime || timeAt(startAt()), true);
     }
@@ -155,15 +176,19 @@
       if (dir < 0 && t - times[i] > 3) dir = 0;
       seek(times[Math.max(0, Math.min(times.length - 1, i + dir))]);
     }
-    rec.addEventListener('play', function () { setState(true, false); });
-    rec.addEventListener('pause', function () { if (stopping) { stopping = false; return; } if (!rec.ended) setState(true, true); });
-    rec.addEventListener('ended', function () { unmark(); setState(false, false); now.textContent = hint; });
-    rec.addEventListener('timeupdate', function () { if (synced && playing) mark(blockAt(rec.currentTime)); });
-    play.addEventListener('click', function () { if (!paused) seek(timeAt(startAt())); go(); });
+    rec.addEventListener('play', function () { setState(true, false); resumeAt = 0; disarm(); });
+    rec.addEventListener('pause', function () { if (stopping) { stopping = false; return; } if (!rec.ended) { setState(true, true); save(rec.currentTime); } });
+    rec.addEventListener('ended', function () { unmark(); setState(false, false); save(0); now.textContent = hint; });
+    rec.addEventListener('timeupdate', function () {
+      if (!playing) return;
+      if (synced) mark(blockAt(rec.currentTime));
+      if (Math.abs(rec.currentTime - lastSave) >= 5) { lastSave = rec.currentTime; save(lastSave); }
+    });
+    play.addEventListener('click', function () { if (!paused) seek(resumeAt || timeAt(startAt())); go(); });
     pause.addEventListener('click', function () { rec.pause(); });
-    stop.addEventListener('click', function () { stopping = !rec.paused; rec.pause(); seek(0); unmark(); setState(false, false); now.textContent = hint; });
+    stop.addEventListener('click', function () { stopping = !rec.paused; rec.pause(); seek(0); unmark(); setState(false, false); resumeAt = 0; lastSave = 0; save(0); now.textContent = hint; });
     rate.addEventListener('change', function () { rec.playbackRate = parseFloat(rate.value) || 1; });
-    from.addEventListener('change', function () { if (playing) seek(timeAt(startAt())); });
+    from.addEventListener('change', function () { resumeAt = 0; if (playing || paused) seek(timeAt(startAt())); });
     if ('mediaSession' in navigator) {
       try {
         navigator.mediaSession.metadata = new MediaMetadata({ title: document.title || 'This page', artist: 'Listen' });
@@ -175,6 +200,7 @@
         navigator.mediaSession.setActionHandler('nexttrack', function () { jump(1); });
       } catch (e) {}
     }
+    if (auto) { seek(resumeAt); go(); }
     return;
   }
 

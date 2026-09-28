@@ -147,10 +147,11 @@ def record(texts, starts, voice_name, voice_dir, kbps, title):
     return mp3, marks, spans, len(pcm) / 2 / rate
 
 
-def attach(page, src, marks, duration):
+def attach(page, src, marks, duration, autoplay):
     s = page.read_text(encoding='utf-8')
     tag = (f'<audio id="ls-audio" preload="none" src="{html.escape(src)}" '
-           f'data-duration="{round(duration)}" data-marks="{json.dumps(marks, separators=(",", ":"))}"></audio>')
+           f'data-duration="{round(duration)}"{" data-autoplay" if autoplay else ""} '
+           f'data-marks="{json.dumps(marks, separators=(",", ":"))}"></audio>')
     s, k = re.subn(r'<audio id="ls-audio"[^>]*>(?:\s*</audio>)?', lambda m: tag, s, count=1)
     if not k:
         s, k = re.subn(r'<button type="button" id="ls-play"', lambda m: tag + '\n' + m.group(0), s, count=1)
@@ -171,6 +172,7 @@ def main():
     ap.add_argument('--kbps', type=int, default=48)
     ap.add_argument('--text', action='store_true', help='print what would be spoken and stop')
     ap.add_argument('--no-attach', action='store_true', help='write the MP3 but leave the page alone')
+    ap.add_argument('--no-autoplay', action='store_true', help='wait for a tap instead of starting when the page opens')
     a = ap.parse_args()
 
     data = reading(a.page)
@@ -185,7 +187,7 @@ def main():
     mp3, marks, spans, duration = record(texts, starts, a.voice, a.voice_dir, a.kbps, title)
     out.write_bytes(mp3)
     if not a.no_attach:
-        attach(a.page, out.name, marks, duration)
+        attach(a.page, out.name, marks, duration, not a.no_autoplay)
     words = [len(t.split()) for t in texts]
     odd = [i for i, (w, s) in enumerate(zip(words, spans)) if s <= 0 or not 1.0 <= w / s <= 4.5]
     print(f'{out}: {len(mp3) / 1e6:.1f} MB, {duration / 60:.1f} min, {len(texts)} blocks, {len(starts)} sections')

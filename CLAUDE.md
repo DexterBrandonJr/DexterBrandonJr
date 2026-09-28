@@ -77,7 +77,9 @@ things with Claude Code.
   row; nothing plays until a tap. The browser's own speech stops when a
   phone leaves the page, so `narrate.py` records the same text once with
   an offline voice into an MP3 the bar plays instead, which keeps going
-  with the screen off or in another app. Paste the block before the
+  with the screen off or in another app, starts itself when the page
+  opens (first tap anywhere where the phone refuses) and resumes where
+  the listener stopped. Paste the block before the
   closing tag of the page's wrapper; publish the MP3 beside the page. The
   innovation-brief template already has the bar built in.
 

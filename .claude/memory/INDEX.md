@@ -1,4 +1,4 @@
-- [Artifact Listen](topics/artifact-listen.md) — updated 2026-09-28 — the browser's voice stops when a phone leaves the page; narrate.py records the page offline into an MP3 the Listen bar plays instead, with lock-screen controls
+- [Artifact Listen](topics/artifact-listen.md) — updated 2026-09-28 — recorded pages start playing when opened (first tap anywhere on iPhone, which refuses sound a page starts itself) and resume where Dex stopped; 31/31 browser checks
 - [Model Coaching System](topics/model-coaching-system.md) — updated 2026-09-28 — every artifact page now reads itself aloud with the browser's own speech (brief, skeleton, drop-in snippet); this weekend's Code sessions indexed in the hub by title and date, transcripts out of reach from Code
 - [Chat Memory Roadmap](topics/chat-memory-roadmap.md) — updated 2026-09-26 — new_entry.py now re-sorts the whole index by date, newest first; the recency-order bug is fixed in the script, not by hand
 - [Qc Lead](topics/qc-lead.md) — updated 2026-09-26 — the QC lead chat reads every change, gives each one verdict, and closes a pass only when nothing is unread; one writer per repo everywhere

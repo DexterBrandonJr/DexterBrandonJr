@@ -24,3 +24,21 @@
 **Open threads:**
 - Dex: tap Listen, switch apps, confirm it keeps playing. If the Claude app pauses it, open the page in Safari from the share menu, and record which one worked here.
 - Earlier artifacts carry the voice-only bar or none; record them when asked (`narrate.py <page>.html`, publish the MP3 beside it).
+
+## 2026-09-28 — Recorded pages start by themselves and resume where you stopped
+
+**Decisions:**
+- Dex: "once done, start audio playback automatically so I can be in another app when it plays." A recorded page marked `data-autoplay` (now `narrate.py`'s default; `--no-autoplay` turns it off) starts playing the moment it opens.
+- Where the browser refuses sound a page starts on its own, the first tap anywhere on the page starts it (a capture listener for click, touchend and keydown, ignoring taps on the bar itself, disarmed once playback starts).
+- Each viewer's place is kept in `localStorage` (`listen-at:<file>`, every 5 s and on pause), so an automatic start picks up where Dex stopped instead of at the top of 27 minutes. Stop, the end of the recording, or picking a section forgets it.
+
+**Facts / preferences:**
+- iPhones never let a page start sound without a tap, and a web page cannot start audio on a phone that doesn't have it open. So "no tap at all" is not buildable from a page; one tap anywhere is the floor on iPhone. The push-notification tool carries text only, so it cannot start audio either.
+- Browser checks (Playwright on Chromium): 31/31. New ones: plays on open with no tap; the saved position matches where it paused; reopening picks up there; Stop forgets it; with autoplay refused the bar says "Tap anywhere to start listening", a tap on the text starts it, a saved place reads "picks up at 5:00" and the tap resumes at 5:00; the Listen button still works.
+- Not verified: whether the Claude app's own viewer allows sound without a tap (if it does, the brief plays with zero taps there).
+
+**Artifacts:**
+- Brief, version 4, starts on open: https://claude.ai/artifact/UJGppVCHXFpzAoE2pMWZyf
+
+**Open threads:**
+- Zero taps on iPhone would need a phone-side trigger, e.g. a Shortcuts automation that fires on a message from Claude and plays the file. It needs a one-time setup on the phone and a file reachable without a login; not built.
