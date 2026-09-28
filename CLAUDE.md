@@ -71,6 +71,13 @@ things with Claude Code.
   The hub's own migrations live in its private repo; only the coaching
   ones are here.
 
+- `share/artifact-listen/listen.html` — the **Listen control every
+  artifact page carries**: it reads the page aloud with the browser's own
+  speech (no network, no key), with pause, stop, a section picker and a
+  speed; figures by their captions, tables row by row; nothing plays until
+  a tap. Paste the block before the closing tag of the page's wrapper. The
+  innovation-brief template already has it built in.
+
 ## Read the hub first
 
 Dex keeps one memory for every Claude he talks to: a private Supabase
