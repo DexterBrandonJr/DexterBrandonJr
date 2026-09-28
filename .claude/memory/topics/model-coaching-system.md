@@ -178,3 +178,26 @@ First pass to use the system the way a chat will, instead of testing its parts: 
 - Move 3: a registered Sunday step, SQL only: posteriors, one lesson proposal per escalated-then-succeeded run, one "try one notch lower" per saturated arm, one backlog row per uncovered task type, a consult count and follow rate, one digest line.
 - From Dex: "accept 351"; a yes to outcome sources outranking self-report; a name for the digest line.
 - Later: the quarterly probe set (twenty frozen tasks with checkable outcomes, every arm, lowest usage that clears the bar); a fail-open inbox for captures when the hub is unreachable (a hub pattern, not a coach one).
+
+## 2026-09-28 — Listen control on every artifact; weekend Code sessions swept into the hub
+
+**Decisions:**
+- Every artifact page carries a Listen control: the browser's own speech (the Web Speech API), no network, no key, no library. Play, pause, stop, a section picker over the h1/h2 headings, a speed; figures are read by their captions, tables row by row with the column names; nothing plays until a tap; a browser without speech gets a plain notice instead of a dead button. It lives in the innovation-brief skeleton and as a drop-in block at `share/artifact-listen/listen.html`; `CLAUDE.md` points at it. The standing rule is proposed in the hub as p:361.
+- Because the caption is what a listener hears in place of a drawing, every figure caption is written as the figure's claim (added to the skill).
+- The weekend sweep of Code sessions is thin by design: `list_sessions` gives title, status, model, effort and the session's own last-turn summary; transcripts are not readable from Code. Each row was refreshed with that and no more, and the report in the hub says so. Chats on the phone, web and Cowork are out of reach from here; Dex sweeps those by saying "sweep my chats" in a claude.ai chat.
+
+**Facts / preferences:**
+- One-look check of the brief in headless Chromium (`--headless=new --dump-dom`): the control found 136 readable blocks and 12 sections. The Playwright node package is not installed in the cloud container; the browser binary under `/opt/pw-browsers` is enough for a DOM dump.
+- 18 Code sessions were touched between 09-26 and 09-28; 17 were already indexed from the 09-26 sweep. Most of the weekend's activity was the QC-lead check-in round: each open chat answered the chat-report prompt with a QC review of its own repo, and most are now blocked waiting on the lead or on Dex.
+- `hub_index` upserts on the pointer and overwrites the title, so a refresh has to pass the curated title back or it is lost; summary, subject and date only fill in when present.
+- A `list_sessions` result saved to a file is wrapped in a tag line, not bare JSON: parse from the first `{` with a raw decode.
+
+**Artifacts:**
+- The brief, republished as Version 2 with the Listen bar: https://claude.ai/artifact/UJGppVCHXFpzAoE2pMWZyf
+- Commit efd36a8 (skeleton, drop-in, `CLAUDE.md`, skill note) and this entry, on branch `claude/skill-builder-chat-lui7sz`, landed by pull request.
+- Hub: sweep report raw 684; 18 index rows refreshed or added under it; `hub_used(84, …)` recorded.
+
+**Open threads:**
+- From Dex: "accept 351" (log your run) and "accept 361" (Listen control on every artifact); "sweep my chats" from a claude.ai chat for the phone and web side.
+- The control picks the browser's default English voice; a per-page language choice is a later add.
+- The Hub Kit and starter artifacts do not carry the control yet; add it when either is next touched.
