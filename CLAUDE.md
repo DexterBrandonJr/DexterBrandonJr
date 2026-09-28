@@ -85,6 +85,12 @@ things with Claude Code.
   closing tag of the page's wrapper; publish the MP3 beside the page. The
   innovation-brief template already has the bar built in.
 
+- `DexterBrandonJr/wealth-engine` (private, not here) — the **OSCAR Wealth
+  Engine**: Dex's household financial analyst system, built the workhorse
+  way. Its docs, schema and simulator live there; money detail lives in its
+  vault, never in any repo; this repo keeps a pointer in
+  `.claude/memory/topics/wealth-engine.md` and nothing sensitive.
+
 ## Read the hub first
 
 Dex keeps one memory for every Claude he talks to: a private Supabase
