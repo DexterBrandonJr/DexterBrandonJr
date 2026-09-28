@@ -30,6 +30,12 @@
   Where it refuses (iPhones always do), the first tap anywhere on the page
   starts it. Each viewer's place is remembered, so a start picks up where
   they stopped; Stop forgets it.
+
+  A system of several pages or tiers uses narrate_system.py instead: list
+  the views in listen.json, and it records each one (only views whose words
+  changed), then writes index.html, a player that keeps one recording
+  going while the views change inside it. A view can carry
+  <script type="text/x-listen"> with words written for the ear.
 -->
 <style>
   .listen { position: sticky; bottom: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: var(--surface, #FFFFFF); border: 1px solid var(--line, #D5DCE3); border-radius: 10px; padding: 8px 10px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); margin: 18px 0 0; box-shadow: 0 -2px 12px rgba(0,0,0,.06); }

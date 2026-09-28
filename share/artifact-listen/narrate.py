@@ -17,6 +17,7 @@ PROBE = ('<script>(function(){var d=window.__listen||(window.__listenQueue?{bloc
          'var p=document.createElement("pre");p.id="__listen_dump";p.textContent=JSON.stringify(d);'
          'document.body.appendChild(p);})();</script>')
 
+DEFAULT_VOICE = 'en_US-lessac-medium'
 MONTHS = 'January February March April May June July August September October November December'.split()
 
 
@@ -91,8 +92,13 @@ def find_chrome():
     sys.exit('narrate: no Chrome or Chromium found; set CHROME to its path')
 
 
-def reading(page):
+LISTEN_SNIPPET = Path(__file__).with_name('listen.html')
+
+
+def reading(page, inject=False):
     src = page.read_text(encoding='utf-8')
+    if inject and 'id="listen"' not in src:
+        src += '\n' + LISTEN_SNIPPET.read_text(encoding='utf-8')
     at = src.rfind('</body>')
     probed = src[:at] + PROBE + src[at:] if at >= 0 else src + PROBE
     with tempfile.TemporaryDirectory() as d:
@@ -167,7 +173,7 @@ def main():
                                         'Publish the MP3 beside the page under the same name.')
     ap.add_argument('page', type=Path)
     ap.add_argument('--out', type=Path, help='MP3 path (default: next to the page, same name)')
-    ap.add_argument('--voice', default='en_US-lessac-high')
+    ap.add_argument('--voice', default=DEFAULT_VOICE)
     ap.add_argument('--voice-dir', type=Path, default=Path.home() / '.cache' / 'piper-voices')
     ap.add_argument('--kbps', type=int, default=48)
     ap.add_argument('--text', action='store_true', help='print what would be spoken and stop')
