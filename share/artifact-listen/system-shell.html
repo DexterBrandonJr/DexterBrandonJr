@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>/*TITLE*/</title>
+<style>
+  :root { --bg: #F3F5F7; --surface: #FFFFFF; --surface-2: #E9EDF1; --ink: #16202B; --muted: #5C6B7A; --line: #D5DCE3; --accent: #0F766E; --you: #B45309; color-scheme: light; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0F1620; --surface: #17202B; --surface-2: #1F2A37; --ink: #E6ECF2; --muted: #98A6B5; --line: #2A3644; --accent: #2DD4BF; --you: #F59E0B; color-scheme: dark; } }
+  :root[data-theme="dark"] { --bg: #0F1620; --surface: #17202B; --surface-2: #1F2A37; --ink: #E6ECF2; --muted: #98A6B5; --line: #2A3644; --accent: #2DD4BF; --you: #F59E0B; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--bg); color: var(--ink); font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; display: flex; flex-direction: column; }
+  .player { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 12px; padding-top: calc(8px + env(safe-area-inset-top, 0px)); background: var(--surface); border-bottom: 1px solid var(--line); }
+  .player button { font: 600 0.9rem system-ui, sans-serif; color: var(--surface); background: var(--accent); border: 0; border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+  .player button.ghost { background: var(--surface-2); color: var(--ink); }
+  .player button:focus-visible, .player select:focus-visible { outline: 2px solid var(--you); outline-offset: 2px; }
+  .player select { font: 0.85rem system-ui, sans-serif; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 4px 6px; max-width: 60vw; }
+  .player label { font: 0.78rem ui-monospace, monospace; color: var(--muted); display: inline-flex; align-items: center; gap: 4px; }
+  .now { flex: 1 1 100%; font: 0.78rem ui-monospace, monospace; color: var(--accent); min-height: 1em; }
+  iframe { flex: 1; width: 100%; border: 0; background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="player" id="player" role="region" aria-label="Listen to this system">
+  <button type="button" id="p-play">Listen</button>
+  <button type="button" id="p-pause" hidden>Pause</button>
+  <button type="button" id="p-prev" class="ghost" aria-label="Previous view">&#8249;</button>
+  <button type="button" id="p-next" class="ghost" aria-label="Next view">&#8250;</button>
+  <label>view <select id="p-view" aria-label="View"></select></label>
+  <label>tiers <select id="p-tier" aria-label="How deep to listen"></select></label>
+  <label>speed <select id="p-rate" aria-label="Speed"><option value="0.85">slower</option><option value="1" selected>normal</option><option value="1.15">faster</option><option value="1.3">fast</option></select></label>
+  <label><input type="checkbox" id="p-follow" checked> follow</label>
+  <span class="now" id="p-now" aria-live="polite"></span>
+  <audio id="p-audio" preload="none"></audio>
+</div>
+<iframe id="p-frame" title="View"></iframe>
+<script>
+(function () {
+  var LIST = /*PLAYLIST*/null;
+  var AUTOPLAY = /*AUTOPLAY*/true;
+  var items = (LIST && LIST.items) || [];
+  var $ = function (id) { return document.getElementById(id); };
+  var audio = $('p-audio'), frame = $('p-frame'), now = $('p-now'), viewSel = $('p-view'), tierSel = $('p-tier'), rate = $('p-rate'), follow = $('p-follow');
+  var play = $('p-play'), pause = $('p-pause');
+  var cur = -1, shown = -1, playing = false, lastSave = 0, fetched = {}, armed = false, seekGen = 0;
+  var KEY = 'listen-system:' + (LIST && LIST.title || document.title);
+  if (!items.length) { now.textContent = 'No recordings in this system yet.'; return; }
+
+  var tiers = []; items.forEach(function (it) { if (tiers.indexOf(it.tier) < 0) tiers.push(it.tier); }); tiers.sort(function (a, b) { return a - b; });
+  tiers.forEach(function (t, k) { var o = document.createElement('option'); o.value = String(t); o.textContent = k === tiers.length - 1 ? 'all' : 'to tier ' + t; tierSel.appendChild(o); });
+  tierSel.value = String(tiers[tiers.length - 1]);
+  items.forEach(function (it, i) { var o = document.createElement('option'); o.value = String(i); o.textContent = new Array(it.tier).join('— ') + it.title; viewSel.appendChild(o); });
+
+  function depth() { return parseInt(tierSel.value, 10) || 1; }
+  function inDepth(i) { return items[i] && items[i].tier <= depth(); }
+  function step(from, dir) { for (var i = from + dir; i >= 0 && i < items.length; i += dir) if (inDepth(i)) return i; return -1; }
+  function clock(t) { t = Math.round(t); return Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); }
+  function save(i, t) { try { if (i < 0) localStorage.removeItem(KEY); else localStorage.setItem(KEY, JSON.stringify({ id: items[i].id, t: Math.round(t) })); } catch (e) {} }
+  function saved() {
+    try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (!s) return null;
+      for (var i = 0; i < items.length; i++) if (items[i].id === s.id) return { i: i, t: s.t > 1 && s.t < items[i].duration - 1 ? s.t : 0 };
+    } catch (e) {} return null;
+  }
+  function show(i) { if (i === shown || !items[i]) return; shown = i; frame.src = items[i].file; viewSel.value = String(i); }
+  function label(i) { var it = items[i]; now.textContent = 'Playing ' + (i + 1) + ' of ' + items.length + ': ' + it.title + ' · tier ' + it.tier; }
+  function setState(p) { playing = p; play.hidden = p; pause.hidden = !p; }
+  function meta(i) {
+    if (!('mediaSession' in navigator)) return;
+    try { navigator.mediaSession.metadata = new MediaMetadata({ title: items[i].title, artist: 'Listen', album: (LIST && LIST.title) || document.title }); } catch (e) {}
+  }
+
+  // Load view i's recording and start at time t; the audio element outlives every view change.
+  function load(i, t, go) {
+    if (i < 0 || !items[i]) return;
+    cur = i; label(i); meta(i);
+    if (follow.checked) show(i);
+    var src = fetched[i] || items[i].src;
+    if (audio.getAttribute('src') !== src) audio.src = src;
+    seek(t);
+    if (go) start();
+  }
+  function canSeek(t) { var r = audio.seekable; for (var k = 0; k < r.length; k++) if (r.start(k) <= t + 0.5 && t <= r.end(k) + 0.5) return true; return false; }
+  // A host without byte ranges can't jump inside a file (Chromium claims it can, then restarts at zero); a local copy can.
+  function seek(t) {
+    if (!(t > 0.5)) return;
+    if (audio.readyState < 1) { audio.addEventListener('loadedmetadata', function once() { audio.removeEventListener('loadedmetadata', once); seek(t); }); return; }
+    if (!fetched[cur] && !canSeek(t)) { local(cur, t, !audio.paused); return; }
+    audio.currentTime = t;
+    if (!fetched[cur]) { var i = cur, g = ++seekGen; setTimeout(function () { if (g === seekGen && cur === i && !fetched[i] && Math.abs(audio.currentTime - t) > 4) local(i, t, !audio.paused); }, 1500); }
+  }
+  function local(i, t, go) {
+    fetch(items[i].src, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.blob(); })
+      .then(function (b) { fetched[i] = URL.createObjectURL(b); if (cur === i) load(i, t, go); })
+      .catch(function () { setState(false); now.textContent = 'The recording did not load.'; });
+  }
+  function start() { audio.playbackRate = parseFloat(rate.value) || 1; var p = audio.play(); if (p && p.catch) p.catch(failed); }
+  function failed(e) {
+    if (e && e.name === 'AbortError') return;
+    if (e && e.name === 'NotAllowedError') { setState(false); now.textContent = 'Tap anywhere to start listening · ' + items[cur].title; arm(); return; }
+    if (fetched[cur]) { setState(false); now.textContent = 'The recording did not load.'; return; }
+    local(cur, audio.currentTime || 0, true);
+  }
+
+  // Phones refuse sound a page starts itself; the first tap in the player or inside the view starts it.
+  var TAPS = ['click', 'touchend', 'keydown'];
+  function onTap(ev) { if (ev.target && ev.target.closest && ev.target.closest('#player')) return; disarm(); start(); }
+  function docs() { var d = [document]; try { if (frame.contentDocument) d.push(frame.contentDocument); } catch (e) {} return d; }
+  function arm() { armed = true; docs().forEach(function (d) { TAPS.forEach(function (n) { d.addEventListener(n, onTap, true); }); }); }
+  function disarm() { if (!armed) return; armed = false; docs().forEach(function (d) { TAPS.forEach(function (n) { d.removeEventListener(n, onTap, true); }); }); }
+  frame.addEventListener('load', function () { if (armed) { armed = false; arm(); } });
+
+  audio.addEventListener('play', function () { setState(true); disarm(); label(cur); });
+  audio.addEventListener('pause', function () { if (!audio.ended) { setState(false); save(cur, audio.currentTime); } });
+  audio.addEventListener('ended', function () { var n = step(cur, 1); if (n < 0) { setState(false); save(-1); now.textContent = 'Finished · ' + items.length + ' views'; return; } load(n, 0, true); });
+  audio.addEventListener('timeupdate', function () { if (playing && Math.abs(audio.currentTime - lastSave) >= 5) { lastSave = audio.currentTime; save(cur, lastSave); } });
+
+  play.addEventListener('click', function () { if (cur < 0) load(parseInt(viewSel.value, 10) || 0, 0, true); else start(); });
+  pause.addEventListener('click', function () { audio.pause(); });
+  $('p-next').addEventListener('click', function () { var n = step(cur < 0 ? -1 : cur, 1); if (n >= 0) load(n, 0, playing); });
+  $('p-prev').addEventListener('click', function () { var n = audio.currentTime > 3 ? cur : step(cur, -1); if (n >= 0) load(n, 0, playing); });
+  viewSel.addEventListener('change', function () { var i = parseInt(viewSel.value, 10); show(i); if (playing || cur >= 0) load(i, 0, playing); });
+  rate.addEventListener('change', function () { audio.playbackRate = parseFloat(rate.value) || 1; });
+  follow.addEventListener('change', function () { if (follow.checked && cur >= 0) show(cur); });
+  if ('mediaSession' in navigator) {
+    try {
+      navigator.mediaSession.setActionHandler('play', start);
+      navigator.mediaSession.setActionHandler('pause', function () { audio.pause(); });
+      navigator.mediaSession.setActionHandler('nexttrack', function () { var n = step(cur, 1); if (n >= 0) load(n, 0, true); });
+      navigator.mediaSession.setActionHandler('previoustrack', function () { var n = audio.currentTime > 3 ? cur : step(cur, -1); if (n >= 0) load(n, 0, true); });
+      navigator.mediaSession.setActionHandler('seekbackward', function () { seek(Math.max(0.6, audio.currentTime - 15)); });
+      navigator.mediaSession.setActionHandler('seekforward', function () { seek(Math.min(audio.duration || 1e9, audio.currentTime + 15)); });
+    } catch (e) {}
+  }
+  window.__listenSystem = { items: items, current: function () { return cur; }, shown: function () { return shown; }, seek: function (t) { seek(t); } };
+
+  var s = saved(), first = s ? s.i : 0;
+  show(first);
+  now.textContent = items.length + ' views · ' + clock(items.reduce(function (a, it) { return a + it.duration; }, 0)) + (s && s.t ? ' · picks up at ' + items[s.i].title + ' ' + clock(s.t) : '');
+  if (AUTOPLAY) load(first, s ? s.t : 0, true); else if (s) load(first, s.t, false);
+})();
+</script>
+</body>
+</html>
