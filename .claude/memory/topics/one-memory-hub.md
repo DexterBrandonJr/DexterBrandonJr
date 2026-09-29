@@ -1,5 +1,42 @@
 # One Memory Hub
 
+## 2026-09-29 (night) — recall v2, rules v2, readiness about 70%
+
+**Decisions:**
+- Recall finds what the hub holds: an alias no longer hides other subjects,
+  full-text search with stemming, a fallback on any of the words, and open
+  threads plus captured words in the results (private repo, migrations 0031
+  to 0034). Found by grading the first chat boot on v4, which said "not on
+  the record" about shift work while two facts held it.
+- The standing rules were cut from twelve to seven (607 to 459 words) and
+  carry four new behaviours: a second recall phrase, dated numbers, closing
+  a delivered handoff by rule, and quiz one question at a time from spaced
+  study cards (docs/RULES.md in the private repo maps and undoes it).
+- Captures that look like money, health, personal history or another
+  person's data are private and never appear in recall; widening recall had
+  widened what any surface could pull, and this closed it the same hour.
+
+**Facts / preferences:**
+- Measured live: 29 of 34 words chats had searched and missed now return a
+  useful hit (0 at the time); the probe set reaches 29 of 29; self-test 127
+  checks; the uncompiled capture backlog went from 51 to 0.
+- Readiness is about 70% (weights picked, stated in docs/READINESS.md). The
+  rest is mostly use, not code: precision and calibration need dozens of
+  boots and settled forecasts before they mean anything.
+
+**Artifacts:**
+- Private repo: migrations 0031 to 0034, docs/READINESS.md, docs/RULES.md,
+  doctrine 4.1 in the hub.
+- This repo: the hub skill's recall paragraph, quiz row and handoff row.
+
+**Open threads:**
+- Dex: close the pass-phrase thread, answer the two threads the reports
+  raised (dates for three brand items, and a privacy question kept in the
+  hub), settle forecasts as they come due, five minutes of "quiz me" a day.
+- Next builds on the backlog: a review step for replaced values, write-path
+  errors a chat can read, memory checks in CI, and meaning search once the
+  cost is approved.
+
 ## 2026-09-29 (evening) — the brief compile (bl:49) built
 
 - The hub's brief was 3,988 words over a 3,600 cap and carried 3 facts;
