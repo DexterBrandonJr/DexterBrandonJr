@@ -1,5 +1,18 @@
 # One Memory Hub
 
+## 2026-09-29 (evening) — the brief compile (bl:49) built
+
+- The hub's brief was 3,988 words over a 3,600 cap and carried 3 facts;
+  the fixed sections (forecasts, threads, index, housekeeping) ate the
+  budget. Migration 0030 in the private repo budgets each section, keeps
+  phrase rules out of the brief, ranks facts by their use rate when sent,
+  and budgets against the largest surface. Live: 3,234 words, 17 facts, a
+  boot sends 33 ids instead of 63 to 88, self-test 114 checks.
+- Tested first on a local hub loaded to the live shape; five defect classes
+  caught before or at the gate (a helper caught by a name registry, an
+  alias shadowing a variable, in-transaction timestamps, a trim loop that
+  could remove nothing, a test that assumed the chat brief sits at the cap).
+
 ## 2026-09-29 — Memory v4: the kernel is small, the doctrine is in the hub
 
 **Decisions:**
