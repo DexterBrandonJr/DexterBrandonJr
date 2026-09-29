@@ -1,6 +1,6 @@
 ---
 name: hub
-description: Dex's one memory across every Claude. Reads his private hub (the Supabase project named "one-memory-hub", through the Supabase connector) first and writes back last, so no chat starts at zero and nothing learned is lost. Trigger whenever a conversation touches Dex, his projects, his preferences, his machines or his history; whenever he says "read my hub", "hub", "boot", "what's on the record about …", "log this", "log this chat", "accept 3 5", "reject 4", "close t:6", "open a thread", "sweep my chats", "continue" (mid-sweep), "log money", "bet", "settle b:3", "2fa on for", "rotated", "make X private", "have Code do", "security check", "how is the hub doing", "what model should I use", or "what effort"; when an ongoing chat with history has never read the hub; and at the end of any chat that produced a decision, a fact or an open loop worth keeping. Not for chats that never mention him or his work.
+description: Dex's one memory across every Claude. Reads his private hub (the Supabase project named "one-memory-hub", through the Supabase connector) first and writes back last, so no chat starts at zero and nothing learned is lost. Trigger whenever a conversation touches Dex, his projects, his preferences, his machines or his history; whenever he says "read my hub", "hub", "boot", "what's on the record about …", "log this", "log this chat", "accept 3 5", "reject 4", "close t:6", "open a thread", "sweep my chats", "continue" (mid-sweep), "log money", "bet", "settle b:3", "2fa on for", "rotated", "make X private", "have Code do", "security check", "how is the hub doing", "what model should I use", "what effort", "what's my doctrine", "quiz me", "tune my memory"; when an ongoing chat with history has never read the hub; and at the end of any chat that produced a decision, a fact or an open loop worth keeping. Not for chats that never mention him or his work.
 ---
 
 # The hub
@@ -71,6 +71,10 @@ recap, no ceremony.
 | "what model should I use for X" / "what effort" / "suggest a model" | `select * from coach_recommend('<task_type>')`; task types are the list in `models.json` (`coaching_tracking.task_types`). No row means fewer than 6 runs of one model on that task in 30 days: say so, then give the starting point from `docs/MODELS.md` and call it a default, not a finding |
 | "show my model patterns" | `select * from coach_builder_profile where builder_id = 'dex'` and `select * from coach_advice order by task_type, confidence desc` |
 | "what if …" / "which is better …" / "simulate …" / "scenarios" | `select * from sc_scenarios_list`, then `select hub_scenario_report('<slug>')`; a new one: the skill `scenarios` writes the spec, `hub_scenario(spec)` stores it, `hub_scenario_run('<slug>')` runs it inside the database. Put a chance on the ledger with `hub_scenario_bet`, log reality with `hub_scenario_observe` |
+| "what's my doctrine" / a task that needs the full operating doctrine | `select hub_doctrine()` — the text behind the DEX OS kernel every surface carries; the hub's rules outrank it |
+| "quiz me" | `select * from hub_probe_pick('recall')`; ask it; `hub_probe_answer(id, <fact id if right, else 0>, boot_id)`; have him explain it back in one line |
+| "tune my memory" | read `hub_mirror()`, `calibration`, `scores` and the regrets; propose at most three edits as `hub_backlog_add(title, why, 'efficiency', 'S', 'claude', '{}', null, 'claude:<surface>')`; after his tap a trusted author applies them with `hub_doctrine_set(version, body, author, note)` |
+| the connector is off | say so in one line, never guess, and end with a HUB CARRY block (`log this: …` / `open a thread: …` / `bet: …`) he can paste into a chat where it is on |
 
 ## 4. Writing back
 
