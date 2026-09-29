@@ -1,5 +1,36 @@
 # One Memory Hub
 
+## 2026-09-29 — Memory v4: the kernel is small, the doctrine is in the hub
+
+**Decisions:**
+- The text every surface carries is a kernel under 1,500 characters (six
+  slots: Instructions for Claude, each Project, Cowork, `~/.claude/CLAUDE.md`
+  on the Mac, each repo's CLAUDE.md, Claude's own memory as a seeded cache).
+  The full operating doctrine lives in the hub as `hub_doctrine()` (private
+  repo, migration 0029), reachable from every surface through the boot;
+  Claude Code never reads the claude.ai Instructions box, so the hub is the
+  only channel that reaches all four surfaces.
+- Why: Anthropic's context-engineering guidance (smallest set of high-signal
+  tokens always on; everything else just in time), Chroma's context-rot
+  result (recall degrades monotonically with input length), and the box's
+  unpublished limit. v3 (13,750 characters, built earlier the same day) was
+  superseded before it was pasted.
+
+**Facts / lessons:**
+- Two scenario experiments in the hub (`memory-12mo`, `memory-5yr`), the
+  Python engine and the database agreeing to the digit: at twelve months
+  v4-compile 56.5%, v4 48.2%, v2 34.3%, v3 23.9% (v3 loses to v2 because a
+  truncating box drops its floors first and it costs 3,400 tokens a turn);
+  at five years 62.8 / 52.7 / 14.1 / 13.4. What moves the answer most is not
+  the prompt: the connector being on (+0.84 of the spread) and platform
+  changes. Effect sizes are illustrative; bets b:192–196 will score them.
+- Measured on the live hub that day: consult rate 0.912 (n = 34 boots),
+  precision 0.097 (221 of 2,278 facts sent were used), recall probes 2 of
+  17, Brier 0.158 on 5 settled bets, zero check-ins. The precision number is
+  the real lever: nine facts in ten sent to a chat are noise.
+- PL/pgSQL class again: an OUT parameter named `version` collided with the
+  column in `on conflict (version)`. Renamed to `ver`; the local harness
+  caught it before the live apply.
 ## 2026-09-25 — Hub design revised under QA/QC after the LLM-Wiki thread
 
 **Decisions:**
