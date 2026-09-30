@@ -86,7 +86,11 @@ recap, no ceremony.
 
 1. **Capture before you extract.** His words land first:
    `hub_capture(text, surface, 'dex', sent_at)`. Yours, when they are the
-   source, with author `claude:<surface>`.
+   source, with author `claude:<surface>`. The surface is where this chat
+   runs: `chat`, `code`, `cowork` or `project:<name>`. Before the first
+   write in a chat, `select * from hub_write_help()`: the predicates (one
+   value or many), the kinds, the authors, the surfaces, every refusal with
+   its fix, the write functions' arguments and the main tables' columns.
 2. **Name the subject.** `hub_subject_id('<name>')` resolves names and
    aliases. New thing: `hub_subject('Name', 'kind', array['alias'], 'summary')`
    where kind is person, project, machine, place, topic, tool or thing.
@@ -97,7 +101,13 @@ recap, no ceremony.
    The quote must appear in the raw row character for character; then the
    fact goes live. Without it the fact waits as a proposal, which is the
    correct outcome for anything you are not sure of. A bare number needs a
-   `unit`. Predicates come from the list the function returns when refused.
+   `unit`. The kind is only `fact` or `rule`; what the value is (lesson,
+   decided, context, ...) is the predicate. The author is always
+   `claude:<surface>`: a bare `claude` is refused, and near misses
+   (`claude-code`, `Claude Code`) are read and the reason says so. Several
+   facts: `select * from hub_writes('[{"subject":…,"predicate":…,"value":…,"raw_id":N,"quote":…}]'::jsonb, 'claude:<surface>')`
+   returns one row per write; separate statements in one SQL call show only
+   the last result, so a refusal in the middle is never seen.
    Wrap text in `$q$ … $q$` so an apostrophe cannot break the statement.
 4. **Before you finish.** `hub_used(boot_id, array[ids you relied on])`.
    If you re-derived something the hub already held, `hub_regret(boot_id,
