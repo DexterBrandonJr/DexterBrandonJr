@@ -1,5 +1,29 @@
 # One Memory Hub
 
+## 2026-09-30 — bl:365 built: the write path says what it takes
+
+**Decisions:**
+- A chat can read everything a hub write takes before it writes (one help
+  call listing the predicates, kinds, authors, surfaces, refusals with
+  their fixes, function arguments and table columns, read from the
+  database's own catalog). Built from seven chat reports that hit the same
+  walls (private repo, migration 0036).
+- A write with no surface in its author is refused with the right forms,
+  instead of silently waiting for approval; near-miss spellings are read
+  and the reply says so. Several writes go in one statement and every
+  outcome comes back, because a SQL call with several statements only
+  shows the last result.
+
+**Facts / preferences:**
+- Self-test 140 checks, gate green; the new checks fail against the old
+  write path.
+
+**Artifacts:**
+- This repo: the hub skill's write steps.
+
+**Open threads:**
+- None from this build.
+
 ## 2026-09-30 — bl:363 built: replaced values go to review
 
 **Decisions:**
