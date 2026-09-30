@@ -1,5 +1,24 @@
 # One Memory Hub
 
+## 2026-09-30 — bl:363 built: replaced values go to review
+
+**Decisions:**
+- When a write replaces where, what or whose something is with a value
+  that shares under 0.3 of its words, the hub flags it for review instead
+  of refusing it; one call keeps it or puts the old value back (private
+  repo, migration 0035). Status fields are never flagged: they change
+  every word and are right to.
+
+**Facts / preferences:**
+- The rule was read off the eleven replacements on file; it catches the
+  two known wrong ones and none of the legitimate updates.
+
+**Artifacts:**
+- This repo: the hub skill's review row.
+
+**Open threads:**
+- None from this build.
+
 ## 2026-09-29 (night) — recall v2, rules v2, readiness about 70%
 
 **Decisions:**
