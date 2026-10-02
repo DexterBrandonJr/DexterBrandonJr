@@ -201,3 +201,25 @@ First pass to use the system the way a chat will, instead of testing its parts: 
 - From Dex: "accept 351" (log your run) and "accept 361" (Listen control on every artifact); "sweep my chats" from a claude.ai chat for the phone and web side.
 - The control picks the browser's default English voice; a per-page language choice is a later add.
 - The Hub Kit and starter artifacts do not carry the control yet; add it when either is next touched.
+
+## 2026-10-02 — Anthropic's Sept to Oct updates read into the hub; Sonnet 5.5 in the catalog
+
+**Decisions:**
+- Dex had the newsletter links open in Chrome on his Mac, which a cloud session cannot see. The same four Claude Code newsletters (09-11, 09-18, 09-23, 10-02) were read from Gmail instead, and each substantive link fetched directly. Receipts, sign-in links and device alerts in the same window were left unread.
+- House defaults changed: Sonnet 5.5 replaces Sonnet 5 for the test phase and as the fallback; debug starts Fable 5.1 at medium and raises to high only when medium stalls. Source: Anthropic's own team runs Fable 5.1 at medium, and its cost guidance says start at medium.
+- The hub got one subject per model, plan item and Claude Code feature area (12), so "what does Opus 5.5 cost" or "what are mods" routes to an answer instead of to the every-Claude rules topic.
+
+**Facts / preferences:**
+- The changelog summary a fetch tool produced for 2.1.275 to 2.1.281 contradicted the newsletters (it invented a `/sync-skills` command and misdescribed AGENTS.md). The raw changelog (`code.claude.com/docs/en/changelog.md`) was read instead. Lesson: never take a summarized changelog for version facts.
+- The most build-relevant finding: a boundary stated in chat is not a stored permission rule; compaction can drop it. A never-line that must hold belongs in a `permissions.deny` rule.
+- `hub_writes` refuses every row for an unknown subject and names the fix (`hub_subject`); 52 of 52 refused, then 52 of 52 live after the subjects were created.
+
+**Artifacts:**
+- Hub: digest raw 1104; 52 facts; subjects `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-fable-5-1`, `claude-models`, `claude-max-plan`, `claude-limit-reset`, `claude-cloud-credit`, `claude-code-releases`, `claude-code-mods`, `claude-code-projects`, `claude-code-permissions`, `claude-code-practice`; threads 858 and 859 (two plan deadlines, owner Dex); backlog bl:443 to bl:448; field source `claude-blog`.
+- `supabase/migrations/0027_coach_sonnet_5_5.sql` (Sonnet 5.5 row, use cases, strengths and weaknesses for the three current models), run twice on local Postgres 16, then applied live. `models.json` 2.1 and `docs/MODELS.md` updated to match.
+
+**Open threads:**
+- bl:443, deny rules for the never-lines in trading-engine and wealth-engine settings, needs Dex's word: it edits permission settings.
+- bl:444, `/checkup prompt-audit` per repo after the two 5.5 launches.
+- bl:448, the built-in "You should know" mod, is one command on Dex's machine.
+- Haiku 5.5 was announced as coming; add it to the catalog when it ships.
