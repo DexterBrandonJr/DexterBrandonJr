@@ -10,6 +10,18 @@
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|MultiEdit|NotebookEdit|Read|mcp__.*[Ww]ebull.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/never_lines.py\"",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "permissions": {
@@ -93,6 +105,12 @@
       "/home/user/trading-engine",
       "/home/user/macos-contextual-search",
       "/home/user/brand841"
+    ],
+    "deny": [
+      "mcp__*Webull__place_*",
+      "mcp__*Webull__revoke_instruction",
+      "Read(~/.config/trading-engine/accounts.json)",
+      "Edit(~/.config/trading-engine/accounts.json)"
     ]
   }
 }

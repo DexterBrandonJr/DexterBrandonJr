@@ -124,6 +124,12 @@ project's code doesn't.
 
 ## Known constraints worth remembering every session
 
+- **The never-lines are held in code.** `.claude/hooks/never_lines.py` (a
+  PreToolUse hook) and the deny rules in `.claude/settings.json` refuse every
+  broker order tool, any live-trading switch and the live account map, in
+  every permission mode. The same hook guards trading-engine and
+  wealth-engine (hub bl:443). A rule stated only in chat can be lost to
+  compaction; one that must hold belongs here.
 - **This session runs in an isolated cloud container, not on Dexter's local
   machine.** Anything needing local filesystem access, OS/admin
   permissions, or a GUI app running on his Mac has to be handed to *him*
