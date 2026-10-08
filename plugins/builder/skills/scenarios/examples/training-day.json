@@ -1,0 +1,38 @@
+{
+  "slug": "training-day",
+  "name": "Training day: when and with whom",
+  "question": "Chance the planned workout actually happens",
+  "subject": "fitness",
+  "note": "Worked example. Effect sizes are on the log-odds scale and illustrative; energy reads the person's own check-ins when there are five or more, otherwise the fallback values. Log each planned day with hub_scenario_observe (1 done, 0 skipped) so the fit replaces guesses with his record.",
+  "outcome": {"kind": "probability", "base_p": 0.7, "better": "higher"},
+  "tol": 0.01,
+  "factors": [
+    {"key": "evening", "domain": "time.hour", "unit": "yes/no", "dist": 0},
+    {"key": "partner", "domain": "social.support", "unit": "yes/no", "dist": 0},
+    {"key": "sleep_debt", "domain": "body.sleep", "unit": "h", "dist": {"kind": "triangular", "min": 0, "mode": 1, "max": 4}},
+    {"key": "energy", "domain": "mind.energy", "unit": "1-5", "status": "measured", "basis": "the person's check-ins; fallback: a typical week",
+     "dist": {"kind": "empirical", "from": "checkins.energy", "values": [3, 3, 4, 2, 4, 3, 5]}},
+    {"key": "hours_on_duty", "domain": "time.hours_on_duty", "unit": "h", "dist": {"kind": "choice", "values": [0, 24], "weights": [0.67, 0.33]}},
+    {"key": "heat_index", "domain": "environment.heat_index", "unit": "F", "dist": {"kind": "normal", "mean": 82, "sd": 10}},
+    {"key": "habit_days", "domain": "mind.habit", "unit": "days", "dist": {"kind": "uniform", "min": 0, "max": 40}},
+    {"key": "morning_practice", "domain": "spirit.faith_practice", "unit": "yes/no", "dist": {"kind": "bernoulli", "p": 0.5}},
+    {"key": "decisions_made", "domain": "mind.decision_fatigue", "unit": "count", "dist": {"kind": "uniform", "min": 0, "max": 30}}
+  ],
+  "terms": [
+    {"factor": "evening", "form": "linear", "effect": -0.4, "basis": "illustrative: later sessions get pushed off more often"},
+    {"factor": "partner", "form": "linear", "effect": 0.5, "basis": "illustrative: a partner who expects you raises follow-through"},
+    {"factor": "sleep_debt", "form": "linear", "effect": -0.35, "basis": "illustrative"},
+    {"factor": "energy", "form": "linear", "effect": 0.45, "center": 3, "basis": "illustrative"},
+    {"factor": "hours_on_duty", "form": "step", "threshold": 12, "effect": -1.0, "basis": "illustrative: the day after a 24-hour shift"},
+    {"factor": "heat_index", "form": "step", "threshold": 95, "effect": -0.5, "basis": "illustrative: outdoor heat"},
+    {"factor": "evening", "form": "interaction", "factor2": "heat_index", "effect": 0.01, "center2": 82, "basis": "illustrative: evenings are cooler on hot days"},
+    {"factor": "habit_days", "form": "linear", "effect": 0.02, "center": 20, "basis": "illustrative: automaticity builds over weeks (Lally 2010)"},
+    {"factor": "morning_practice", "form": "linear", "effect": 0.2, "basis": "illustrative; observational literature only"},
+    {"factor": "decisions_made", "form": "linear", "effect": -0.01, "center": 15, "basis": "speculative: decision fatigue did not replicate"}
+  ],
+  "arms": [
+    {"arm": "solo-evening", "set": {"evening": 1, "partner": 0}},
+    {"arm": "solo-morning", "set": {"evening": 0, "partner": 0}},
+    {"arm": "partner-morning", "set": {"evening": 0, "partner": 1}}
+  ]
+}
