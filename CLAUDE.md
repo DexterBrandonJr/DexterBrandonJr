@@ -71,6 +71,18 @@ things with Claude Code.
   The hub's own migrations live in its private repo; only the coaching
   ones are here.
 
+- `plugins/builder/` + `.claude-plugin/marketplace.json` — the **Builder
+  plugin**, how Cowork builds the way this repo does. Cowork reads plugins
+  from the claude.ai account, never a repo's `.claude/`, so this packages
+  six skills for it: `hub`, `workhorse`, `phased-build`, `innovation-brief`,
+  `scenarios` and the new `tandem` (which surface does what, and handoffs
+  as hub threads). It also carries the never-lines hook, `/builder:boot`,
+  `handoff`, `pickup` and `qc`, and a `qc-reviewer` agent. An account
+  install also syncs into Claude Code. The skills are copies: edit the
+  originals in `.claude/`, then `python3 plugins/build.py` (it raises the
+  version and rewrites `plugins/builder.zip`). `python3
+  plugins/tests/test_builder.py` fails on drift. Setup: `docs/COWORK.md`.
+
 - `share/artifact-listen/` — the **Listen control every artifact page
   carries** (`listen.html`): it reads the page aloud with pause, stop, a
   section picker and a speed; figures by their captions, tables row by

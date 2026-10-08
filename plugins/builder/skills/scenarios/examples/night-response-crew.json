@@ -1,0 +1,38 @@
+{
+  "slug": "night-response-crew",
+  "name": "Night response: a crew of 3 or 4",
+  "question": "Chance the first crew is working on scene within 8 minutes of the call",
+  "subject": "fire-service",
+  "note": "Worked example. Every effect size is illustrative and says so in its basis; replace each one with the department's own numbers, then log real responses with hub_scenario_observe so the fit shows how far off the model is.",
+  "outcome": {"kind": "value", "unit": "min", "intercept": 5.0, "noise_sd": 0.9, "target": 8, "target_dir": "le", "better": "higher"},
+  "tol": 0.01,
+  "factors": [
+    {"key": "crew_size", "domain": "team.size", "unit": "people", "dist": 3},
+    {"key": "sleep_debt", "domain": "body.sleep", "unit": "h", "dist": {"kind": "triangular", "min": 0, "mode": 1.5, "max": 6}},
+    {"key": "circadian_low", "domain": "time.circadian_low", "unit": "yes/no", "dist": {"kind": "bernoulli", "p": 0.25}},
+    {"key": "heat_index", "domain": "environment.heat_index", "unit": "F", "dist": {"kind": "normal", "mean": 84, "sd": 9}},
+    {"key": "distance", "domain": "task.distance", "unit": "km", "dist": {"kind": "lognormal", "median": 2.4, "sigma": 0.45, "hi": 12}},
+    {"key": "traffic", "domain": "environment.traffic", "unit": "min", "dist": {"kind": "normal", "mean": 0.4, "sd": 0.5, "lo": 0}},
+    {"key": "familiar", "domain": "skill.familiarity", "unit": "yes/no", "dist": {"kind": "bernoulli", "p": 0.7}},
+    {"key": "drill_days", "domain": "skill.training_recency", "unit": "days", "dist": {"kind": "uniform", "min": 0, "max": 60}},
+    {"key": "gps_storm", "domain": "cosmos.space_weather", "unit": "yes/no", "dist": {"kind": "bernoulli", "p": 0.01}},
+    {"key": "biosensor", "domain": "emerging.biosensor_coaching", "unit": "yes/no", "dist": {"kind": "bernoulli", "p": 0.2}}
+  ],
+  "terms": [
+    {"factor": "crew_size", "form": "linear", "effect": -0.45, "center": 3, "basis": "illustrative: a fourth person takes a setup task off the first three"},
+    {"factor": "sleep_debt", "form": "linear", "effect": 0.12, "basis": "illustrative: slower turnout per hour of sleep debt"},
+    {"factor": "circadian_low", "form": "step", "threshold": 1, "effect": 0.4, "basis": "illustrative: calls between 02:00 and 06:00"},
+    {"factor": "sleep_debt", "form": "interaction", "factor2": "circadian_low", "effect": 0.08, "basis": "illustrative: sleep debt hurts more in the trough"},
+    {"factor": "heat_index", "form": "step", "threshold": 95, "effect": 0.35, "basis": "illustrative: heat above 95 F slows donning and work"},
+    {"factor": "distance", "form": "linear", "effect": 1.1, "center": 2.4, "basis": "illustrative: minutes per km at night speeds"},
+    {"factor": "traffic", "form": "linear", "effect": 1.0, "basis": "minutes of delay add one for one"},
+    {"factor": "familiar", "form": "linear", "effect": -0.3, "basis": "illustrative: known address or building"},
+    {"factor": "drill_days", "form": "linear", "effect": 0.006, "center": 30, "basis": "illustrative: skill decay between drills"},
+    {"factor": "gps_storm", "form": "step", "threshold": 1, "effect": 0.3, "basis": "illustrative: degraded GPS routing on a strong storm day"},
+    {"factor": "biosensor", "form": "linear", "effect": -0.15, "basis": "emerging, illustrative: a wearable that flags heat and fatigue"}
+  ],
+  "arms": [
+    {"arm": "crew-3", "set": {"crew_size": 3}},
+    {"arm": "crew-4", "set": {"crew_size": 4}}
+  ]
+}

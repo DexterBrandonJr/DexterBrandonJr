@@ -1,0 +1,326 @@
+<title>NAME THE PAGE</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Tokens: light on bare :root, dark redefined twice (system + explicit). Swap hues per subject; keep the roles. */
+  :root {
+    --bg: #F3F5F7; --surface: #FFFFFF; --surface-2: #E9EDF1;
+    --ink: #16202B; --muted: #5C6B7A; --line: #D5DCE3;
+    --accent: #0F766E; --accent-soft: #D9F0EC;
+    --you: #B45309; --you-soft: #FBE8D3;
+    --proven: #1F7A4D; --proven-soft: #DDF3E6;
+    --tested: #2B5FAD; --tested-soft: #DFE8F8;
+    --expected: #6B7280; --expected-soft: #E8EAEE;
+    --display: "Sora", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+    --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0F1620; --surface: #17202B; --surface-2: #1F2A37;
+      --ink: #E6ECF2; --muted: #98A6B5; --line: #2A3644;
+      --accent: #2DD4BF; --accent-soft: #123A36;
+      --you: #F59E0B; --you-soft: #3D2A0B;
+      --proven: #4ADE80; --proven-soft: #163A27;
+      --tested: #93B4F0; --tested-soft: #1B2D4D;
+      --expected: #A3ADB8; --expected-soft: #2A3340;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0F1620; --surface: #17202B; --surface-2: #1F2A37;
+    --ink: #E6ECF2; --muted: #98A6B5; --line: #2A3644;
+    --accent: #2DD4BF; --accent-soft: #123A36;
+    --you: #F59E0B; --you-soft: #3D2A0B;
+    --proven: #4ADE80; --proven-soft: #163A27;
+    --tested: #93B4F0; --tested-soft: #1B2D4D;
+    --expected: #A3ADB8; --expected-soft: #2A3340;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; }
+  .wrap { max-width: 780px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 80px; }
+  .eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px; }
+  h1 { font-family: var(--display); font-weight: 700; font-size: 2rem; line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 1.3rem; margin: 0 0 12px; text-wrap: balance; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 1rem; margin: 18px 0 6px; }
+  p { margin: 0 0 12px; max-width: 66ch; }
+  .lede { font-size: 1.08rem; color: var(--muted); margin-bottom: 22px; }
+  section { margin: 0 0 44px; }
+  code { font-family: var(--mono); font-size: 0.86em; background: var(--surface-2); padding: 0.08em 0.35em; border-radius: 4px; }
+  a { color: var(--accent); }
+  figure { margin: 18px 0; } figure svg { display: block; width: 100%; height: auto; max-width: 100%; }
+  figcaption { font-size: 0.9rem; color: var(--muted); margin-top: 8px; }
+  .tier { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
+  .tier.proven { background: var(--proven-soft); color: var(--proven); }
+  .tier.tested { background: var(--tested-soft); color: var(--tested); }
+  .tier.expected { background: var(--expected-soft); color: var(--expected); }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0 0 18px; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 15px; }
+  .tile .k { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0 0 5px; }
+  .tile h4 { font-family: var(--display); font-size: 0.98rem; margin: 0 0 4px; }
+  .tile p { font-size: 0.9rem; color: var(--muted); margin: 0; }
+  .tile.you .k { color: var(--you); }
+  .callout { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 0 0 16px; }
+  .callout.you { border-left-color: var(--you); background: var(--you-soft); }
+  .callout .k { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 4px; color: var(--accent); }
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; margin: 0 0 16px; }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.92rem; }
+  th { text-align: left; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); padding: 9px 11px; border-bottom: 1px solid var(--line); }
+  td { padding: 9px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: none; } td:first-child { font-weight: 600; }
+  details { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 0 16px; margin: 0 0 12px; }
+  summary { cursor: pointer; padding: 12px 0; font-family: var(--display); font-weight: 600; }
+  .timeline { list-style: none; padding: 0; margin: 0 0 16px; border-left: 2px solid var(--line); }
+  .timeline li { position: relative; padding: 0 0 14px 18px; }
+  .timeline li::before { content: ""; position: absolute; left: -7px; top: 7px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); }
+  .timeline .when { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); display: block; }
+  .moves { display: flex; flex-direction: column; gap: 8px; margin: 0 0 16px; }
+  .move { display: grid; grid-template-columns: 34px 1fr; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .move .n { font-family: var(--display); font-weight: 700; color: var(--accent); font-size: 1.1rem; }
+  .move h4 { margin: 0 0 3px; font-family: var(--display); font-size: 0.98rem; } .move p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+  .vocab { display: grid; gap: 6px; margin: 0 0 12px; }
+  .vocab div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 0.92rem; }
+  .vocab b { font-family: var(--mono); font-weight: 600; font-size: 0.85rem; color: var(--accent); }
+  .sources { font-size: 0.88rem; color: var(--muted); }
+  footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 0.74rem; color: var(--muted); }
+  .listen { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; margin: 0 0 18px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+  .listen button { font: 600 0.9rem var(--display); color: var(--surface); background: var(--accent); border: 0; border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+  .listen button:focus-visible, .listen select:focus-visible { outline: 2px solid var(--you); outline-offset: 2px; }
+  .listen .ls-l { font: 0.78rem var(--mono); color: var(--muted); display: inline-flex; align-items: center; gap: 4px; }
+  .listen select { font: 0.85rem var(--body); color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 4px 6px; max-width: 44vw; }
+  .ls-now { font: 0.78rem var(--mono); color: var(--accent); flex: 1 1 100%; min-height: 1em; }
+  .reading { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } h1 { font-size: 1.6rem; } body { font-size: 16px; } }
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">Innovation brief · MONTH YEAR</p>
+  <h1>THE QUESTION AS A HEADLINE</h1>
+  <p class="lede">The six tiles are the whole answer. Everything below is there when a piece needs proving.</p>
+
+  <!-- Listen control: keep it on every brief. Reads the page aloud with the browser's own speech; figures by their captions, tables row by row. -->
+  <div class="listen" id="listen" role="region" aria-label="Listen to this page">
+    <button type="button" id="ls-play">Listen</button>
+    <button type="button" id="ls-pause" hidden>Pause</button>
+    <button type="button" id="ls-stop" hidden>Stop</button>
+    <audio id="ls-audio" preload="none"></audio>
+    <label class="ls-l">from <select id="ls-from" aria-label="Start from section"></select></label>
+    <label class="ls-l">speed <select id="ls-rate" aria-label="Reading speed"><option value="0.85">slower</option><option value="1" selected>normal</option><option value="1.15">faster</option><option value="1.3">fast</option></select></label>
+    <span id="ls-now" class="ls-now" aria-live="polite"></span>
+  </div>
+
+  <section id="start"><div class="grid">
+    <div class="tile"><p class="k">The answer</p><h4></h4><p></p></div>
+    <div class="tile"><p class="k">The shape</p><h4></h4><p></p></div>
+    <div class="tile"><p class="k">What's new</p><h4></h4><p></p></div>
+    <div class="tile"><p class="k">What it costs now</p><h4></h4><p></p></div>
+    <div class="tile you"><p class="k">Your machines</p><h4></h4><p></p></div>
+    <div class="tile you"><p class="k">What I need</p><h4></h4><p></p></div>
+  </div></section>
+
+  <section id="capability"><h2>1 · The honest capability map</h2><div class="tablewrap"><table><thead><tr><th>Claim</th><th>Mechanism</th><th>Tier</th></tr></thead><tbody></tbody></table></div></section>
+  <section id="mechanism"><h2>2 · The mechanism</h2><figure><!-- inline SVG, arrows labeled --><figcaption></figcaption></figure></section>
+  <section id="map"><h2>3 · The mind map</h2><figure><!-- inline SVG --><figcaption></figcaption></figure></section>
+  <section id="math"><h2>4 · The math</h2><p></p></section>
+  <section id="psych"><h2>5 · Why it fits how your head works</h2><div class="tablewrap"><table><thead><tr><th>Effect</th><th>What it says</th><th>Where it lives</th></tr></thead><tbody></tbody></table></div></section>
+  <section id="field"><h2>6 · What the field is doing, and where this goes past it</h2></section>
+  <section id="history"><h2>7 · How we got here</h2><ul class="timeline"></ul></section>
+  <section id="vocab"><h2>8 · Eight words</h2><div class="vocab"></div></section>
+  <section id="moves"><h2>9 · First three moves</h2><div class="moves"></div></section>
+  <section id="sources"><h2>Sources</h2><ul class="sources"></ul></section>
+  <footer>tiers: proven = seen · tested = asserted in code · expected = reasoning</footer>
+</div>
+<script>
+(function () {
+  var bar = document.getElementById('listen');
+  if (!bar) return;
+  var audio = document.getElementById('ls-audio');
+  var rec = audio && audio.getAttribute('src') ? audio : null;
+  var synth = ('speechSynthesis' in window && 'SpeechSynthesisUtterance' in window) ? window.speechSynthesis : null;
+  if (!rec && !synth) { bar.textContent = 'Listening is not available in this browser.'; return; }
+  var SKIP = 'script,style,svg,#listen,footer,.sources,[aria-hidden="true"]';
+  var SEL = 'h1,h2,h3,h4,p,li,figcaption,summary,dt,dd,tr,blockquote';
+  function clean(s) { return (s || '').replace(/\s+/g, ' ').trim(); }
+  function inSkip(el) { return !!el.closest(SKIP); }
+  // textContent glues block children together ("2023-05FrugalGPT"); break wherever the page breaks.
+  function textOf(el) {
+    var out = [];
+    (function walk(n) {
+      if (n.nodeType === 3) { out.push(n.nodeValue); return; }
+      if (n.nodeType !== 1 || n.matches('script,style,svg,[aria-hidden="true"]')) return;
+      if (n.tagName === 'BR') { out.push(' '); return; }
+      var brk = !/^(inline|contents|none)/.test(getComputedStyle(n).display);
+      if (brk) out.push(' ');
+      for (var c = n.firstChild; c; c = c.nextSibling) walk(c);
+      if (brk) out.push(' ');
+    })(el);
+    return clean(out.join(''));
+  }
+  function isLeaf(el) {
+    if (el.tagName === 'TR') return true;
+    var inner = el.querySelectorAll(SEL);
+    for (var i = 0; i < inner.length; i++) { if (inner[i].tagName !== 'TR' && !inSkip(inner[i])) return false; }
+    return true;
+  }
+  function rowText(tr) {
+    var table = tr.closest('table'), heads = [];
+    if (table) table.querySelectorAll('thead th').forEach(function (th) { heads.push(textOf(th)); });
+    var cells = tr.querySelectorAll('td'); if (!cells.length) return '';
+    var parts = [];
+    cells.forEach(function (td, i) { var t = textOf(td); if (!t) return; parts.push(heads[i] ? heads[i] + ': ' + t : t); });
+    return parts.join('. ');
+  }
+  function blockText(el) {
+    if (el.tagName === 'TR') return rowText(el);
+    var t = textOf(el);
+    return el.tagName === 'FIGCAPTION' ? 'Figure. ' + t : t;
+  }
+  var blocks = [], sections = [], cur = -1;
+  document.querySelectorAll(SEL).forEach(function (el) {
+    if (inSkip(el) || !isLeaf(el)) return;
+    if (el.tagName === 'TR' && el.closest('thead')) return;
+    var text = blockText(el); if (!text) return;
+    if (el.tagName === 'H1' || el.tagName === 'H2') { sections.push({ label: text, at: blocks.length }); cur = sections.length - 1; }
+    blocks.push({ el: el, text: text, section: cur });
+  });
+  var src = document.querySelector('.sources');
+  if (src) blocks.push({ el: src, text: 'The sources are listed on the page.', section: cur });
+  window.__listen = { blocks: blocks.map(function (b) { return b.text; }), sections: sections.map(function (s) { return { label: s.label, at: s.at }; }) };
+  bar.setAttribute('data-blocks', String(blocks.length));
+  var from = document.getElementById('ls-from'), rate = document.getElementById('ls-rate'), now = document.getElementById('ls-now');
+  var play = document.getElementById('ls-play'), pause = document.getElementById('ls-pause'), stop = document.getElementById('ls-stop');
+  sections.forEach(function (s, k) { var o = document.createElement('option'); o.value = String(k ? s.at : 0); o.textContent = s.label.length > 48 ? s.label.slice(0, 46) + '\u2026' : s.label; from.appendChild(o); });
+  var playing = false, paused = false, reading = null, at = -1;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function mark(i) {
+    var b = blocks[i]; if (!b || i === at) return;
+    at = i;
+    if (reading) reading.classList.remove('reading');
+    reading = b.el; b.el.classList.add('reading');
+    if (!document.hidden) { try { b.el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }); } catch (e) {} }
+    var s = sections[b.section]; now.textContent = s ? 'Reading: ' + s.label : 'Reading';
+  }
+  function unmark() { if (reading) reading.classList.remove('reading'); reading = null; at = -1; now.textContent = ''; }
+  function setState(p, z) { playing = p; paused = z; play.hidden = p && !z; pause.hidden = !p || z; stop.hidden = !p; play.textContent = z ? 'Resume' : 'Listen'; }
+  function startAt() { return parseInt(from.value || '0', 10) || 0; }
+
+  if (rec) {
+    // A recording plays through the phone's media player, so it keeps going with the screen off or in another app.
+    var marks = []; try { marks = JSON.parse(rec.getAttribute('data-marks') || '[]'); } catch (e) {}
+    var synced = marks.length === blocks.length, stopping = false, fetched = false, seekGen = 0;
+    var mins = Math.round((parseFloat(rec.getAttribute('data-duration')) || 0) / 60);
+    var hint = 'Recording' + (mins ? ' \u00b7 ' + mins + ' min' : '') + ' \u00b7 keeps playing in the background (Safari, Chrome)';
+    now.textContent = hint;
+    var auto = rec.hasAttribute('data-autoplay'), armed = false, lastSave = 0, KEY = 'listen-at:' + rec.getAttribute('src');
+    function clock(t) { t = Math.round(t); return Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); }
+    // Where this viewer got to, so a start (automatic or tapped) picks up there instead of at the top.
+    function save(t) { try { if (t > 10) localStorage.setItem(KEY, String(Math.round(t))); else localStorage.removeItem(KEY); } catch (e) {} }
+    function saved() { try { var t = parseFloat(localStorage.getItem(KEY)) || 0, d = parseFloat(rec.getAttribute('data-duration')) || 1e9; return t > 10 && t < d - 30 ? t : 0; } catch (e) { return 0; } }
+    var resumeAt = saved();
+    if (resumeAt) now.textContent = hint + ' \u00b7 picks up at ' + clock(resumeAt);
+    // Phones refuse sound a page starts on its own; then the first tap anywhere on the page starts it.
+    var TAPS = ['click', 'touchend', 'keydown'];
+    function onTap(ev) { if (bar.contains(ev.target)) return; disarm(); go(); }
+    function arm() { if (armed) return; armed = true; TAPS.forEach(function (n) { document.addEventListener(n, onTap, true); }); }
+    function disarm() { if (!armed) return; armed = false; TAPS.forEach(function (n) { document.removeEventListener(n, onTap, true); }); }
+    function timeAt(i) { return synced ? (marks[i] || 0) : 0; }
+    function blockAt(t) { var lo = 0, hi = marks.length - 1, a = -1; while (lo <= hi) { var m = (lo + hi) >> 1; if (marks[m] <= t + 0.05) { a = m; lo = m + 1; } else hi = m - 1; } return a; }
+    function canSeek(t) { var s = rec.seekable; for (var i = 0; i < s.length; i++) if (s.start(i) <= t + 0.5 && t <= s.end(i) + 0.5) return true; return false; }
+    function seek(t) {
+      if (rec.readyState < 1) { rec.addEventListener('loadedmetadata', function once() { rec.removeEventListener('loadedmetadata', once); seek(t); }); return; }
+      if (t > 1 && !fetched && !canSeek(t)) { local(t, !rec.paused); return; }
+      rec.currentTime = t;
+      // Chromium reports a host without byte ranges as seekable, then quietly restarts from zero; check where it landed.
+      if (t > 1 && !fetched) { var g = ++seekGen; setTimeout(function () { if (g === seekGen && !fetched && Math.abs(rec.currentTime - t) > 8) local(t, !rec.paused); }, 2500); }
+    }
+    function go() { rec.playbackRate = parseFloat(rate.value) || 1; var p = rec.play(); if (p && p.catch) p.catch(failed); }
+    function failed(e) {
+      if (e && e.name === 'AbortError') return;
+      if (e && e.name === 'NotAllowedError') {
+        setState(false, true); if (rec.currentTime < 1 && !resumeAt) play.textContent = 'Listen';
+        now.textContent = 'Tap anywhere to start listening' + (resumeAt ? ' \u00b7 picks up at ' + clock(resumeAt) : ''); arm(); return;
+      }
+      if (fetched) { setState(false, false); now.textContent = 'The recording did not load.'; return; }
+      local(rec.currentTime || timeAt(startAt()), true);
+    }
+    // Some hosts refuse the byte-range requests Safari needs to play and every browser needs to seek; a local copy does both.
+    function local(t, resume) {
+      fetched = true; now.textContent = 'Loading the recording\u2026';
+      fetch(rec.getAttribute('src'), { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.blob(); }).then(function (b) {
+        rec.src = URL.createObjectURL(b); seek(t); if (resume) go();
+      }).catch(function () { setState(false, false); now.textContent = 'The recording did not load.'; });
+    }
+    function jump(dir) {
+      if (!synced || !sections.length) return;
+      var t = rec.currentTime, times = sections.map(function (s) { return timeAt(s.at); }), i = 0;
+      for (var k = 0; k < times.length; k++) if (times[k] <= t + 0.5) i = k;
+      if (dir < 0 && t - times[i] > 3) dir = 0;
+      seek(times[Math.max(0, Math.min(times.length - 1, i + dir))]);
+    }
+    rec.addEventListener('play', function () { setState(true, false); resumeAt = 0; disarm(); });
+    rec.addEventListener('pause', function () { if (stopping) { stopping = false; return; } if (!rec.ended) { setState(true, true); save(rec.currentTime); } });
+    rec.addEventListener('ended', function () { unmark(); setState(false, false); save(0); now.textContent = hint; });
+    rec.addEventListener('timeupdate', function () {
+      if (!playing) return;
+      if (synced) mark(blockAt(rec.currentTime));
+      if (Math.abs(rec.currentTime - lastSave) >= 5) { lastSave = rec.currentTime; save(lastSave); }
+    });
+    play.addEventListener('click', function () { if (!paused) seek(resumeAt || timeAt(startAt())); go(); });
+    pause.addEventListener('click', function () { rec.pause(); });
+    stop.addEventListener('click', function () { stopping = !rec.paused; rec.pause(); seek(0); unmark(); setState(false, false); resumeAt = 0; lastSave = 0; save(0); now.textContent = hint; });
+    rate.addEventListener('change', function () { rec.playbackRate = parseFloat(rate.value) || 1; });
+    from.addEventListener('change', function () { resumeAt = 0; if (playing || paused) seek(timeAt(startAt())); });
+    if ('mediaSession' in navigator) {
+      try {
+        navigator.mediaSession.metadata = new MediaMetadata({ title: document.title || 'This page', artist: 'Listen' });
+        navigator.mediaSession.setActionHandler('play', go);
+        navigator.mediaSession.setActionHandler('pause', function () { rec.pause(); });
+        navigator.mediaSession.setActionHandler('seekbackward', function () { seek(Math.max(0, rec.currentTime - 15)); });
+        navigator.mediaSession.setActionHandler('seekforward', function () { seek(Math.min(rec.duration || 1e9, rec.currentTime + 15)); });
+        navigator.mediaSession.setActionHandler('previoustrack', function () { jump(-1); });
+        navigator.mediaSession.setActionHandler('nexttrack', function () { jump(1); });
+      } catch (e) {}
+    }
+    if (auto) { seek(resumeAt); go(); }
+    return;
+  }
+
+  var idx = 0, gen = 0;
+  function chunks(text) {
+    var out = [], c = '', parts = text.match(/[^.!?;:]+[.!?;:]*\s*/g) || [text];
+    parts.forEach(function (s) { s = s.trim(); if (!s) return; if (c && (c + ' ' + s).length > 200) { out.push(c); c = s; } else c = c ? c + ' ' + s : s; });
+    if (c) out.push(c); return out;
+  }
+  function voice() {
+    var vs = synth.getVoices(); if (!vs || !vs.length) return null;
+    var en = vs.filter(function (v) { return /^en/i.test(v.lang); });
+    return en.filter(function (v) { return v.default; })[0] || en[0] || vs[0];
+  }
+  function finish() { gen++; synth.cancel(); unmark(); setState(false, false); }
+  function speakBlock() {
+    var g = gen;
+    if (!playing || g !== gen) return;
+    if (idx >= blocks.length) { finish(); return; }
+    mark(idx);
+    var parts = chunks(blocks[idx].text), k = 0;
+    (function next() {
+      if (!playing || g !== gen) return;
+      if (k >= parts.length) { idx++; speakBlock(); return; }
+      var u = new SpeechSynthesisUtterance(parts[k++]);
+      u.rate = parseFloat(rate.value) || 1;
+      var v = voice(); if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
+      u.onend = next; u.onerror = function () { next(); };
+      synth.speak(u);
+    })();
+  }
+  play.addEventListener('click', function () {
+    if (paused) { synth.resume(); setState(true, false); return; }
+    gen++; synth.cancel(); at = -1; idx = startAt(); setState(true, false); speakBlock();
+  });
+  pause.addEventListener('click', function () { synth.pause(); setState(true, true); });
+  stop.addEventListener('click', finish);
+  rate.addEventListener('change', function () { if (playing && !paused) { var i = idx; gen++; synth.cancel(); idx = i; at = -1; speakBlock(); } });
+  from.addEventListener('change', function () { if (playing) { gen++; synth.cancel(); at = -1; idx = startAt(); setState(true, false); speakBlock(); } });
+  window.addEventListener('pagehide', function () { synth.cancel(); });
+})();
+</script>

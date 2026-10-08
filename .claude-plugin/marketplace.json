@@ -1,0 +1,15 @@
+{
+  "name": "dexterbrandonjr",
+  "description": "Dex's own plugins for building with Claude in Cowork and Claude Code.",
+  "owner": {
+    "name": "Dexter Brandon Jr",
+    "url": "https://github.com/DexterBrandonJr"
+  },
+  "plugins": [
+    {
+      "name": "builder",
+      "source": "./plugins/builder",
+      "description": "One builder across Cowork and Claude Code: the hub, workhorse, phased builds, the tandem handoff, and the never-lines guard."
+    }
+  ]
+}
