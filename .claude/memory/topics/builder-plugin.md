@@ -43,3 +43,19 @@ Dex asked for a Cowork project that builds the way the Code chat does, works wit
 **Open threads:**
 - Dex's first run in Cowork (docs/COWORK.md, section 4) is the only proof the guard runs inside Cowork's sandbox. Until then that is Expected.
 - t:1106 (ER equipment map) and t:1104 (Quint 24 workbook) wait for Builder.
+
+## 2026-10-10 — Benchmark and report in; the first Cowork setup
+
+**Decisions:**
+- **Dex's rule (raw 1438, 1439):** every build ends with a benchmark row and a one-line progress note through the hub. The hub, the repos, the Code builder chat and the Builder project move in lockstep. The rule is in the hub as proposal 652, which waits on Dex's "accept 652": the hub keeps every rule for a human.
+- **The mechanism is one table, not two habits.** One-memory-hub migration 0037 adds `benchmarks`, `hub_benchmark(...)` (refuses a row with no measurement method or note; `improved` is computed) and `builder_progress`, which `/builder:boot` reads.
+- **The rule block went into the CLAUDE.md of all 11 repos** and the doctrine (§2 item 11), each by pull request. health-tracker had no CLAUDE.md, so it got a short one.
+- **The approval line now reads:** "Do the whole batch and don't re-ask for approval he already gave. Ask first before anything that sends, pays, posts or can't be undone."
+
+**Facts / preferences:**
+- **The Builder chat in Cowork could not write its own project Instructions, a standing rule or a cross-repo handoff.** A safety check requires Dex to supply text that future Claudes will follow. That is by design; the setup doc says so.
+- **On first setup the Instructions were pasted into the Description box.** The Builder chat caught it and Dex fixed it.
+
+**Open threads:**
+- The guard test inside Cowork (t:1107) is still unproven.
+- Proposal 652 waits on Dex.

@@ -1,7 +1,7 @@
 {
   "name": "builder",
   "displayName": "Builder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Build the way Dex builds, in Cowork and in Claude Code alike: one memory (the hub), the workhorse doctrine, phased builds with a QC gate, Cowork-and-Code handoffs, and the never-lines held by a hook on both surfaces.",
   "author": {
     "name": "Dexter Brandon Jr",
