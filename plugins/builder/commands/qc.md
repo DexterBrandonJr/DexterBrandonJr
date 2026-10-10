@@ -7,7 +7,8 @@ Run the quality-control (QC) gate on: $ARGUMENTS (if nothing is named, the deliv
 2. Hand it to the `qc-reviewer` agent with the request Dex made and the deliverable's location. Ask the agent for findings only.
 3. Fix every finding that is real. For any you reject, write one line on why.
 4. Open the artifact yourself (the page, the file, the output) and look at it.
-5. Report:
+5. Record the benchmark: `hub_benchmark(...)` with the metric, before, after, how it was measured and the one-line note (`tandem` section 7).
+6. Report:
    - what was checked and how;
    - what was fixed;
    - every claim labeled **Proven**, **Tested** or **Expected**;

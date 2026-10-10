@@ -155,3 +155,23 @@ project's code doesn't.
   `DexterBrandonJr/macos-contextual-search`, private). If it 403s again in
   the future, treat that as a regression and fall back to Dexter creating
   the empty repo himself.
+
+## Benchmark and report in (Dex's rule, 2026-10-10)
+
+Every build ends with one row in the hub, written in the same session:
+
+```sql
+select * from hub_benchmark('<build>', '<metric>', <before>, <after>,
+  '<how it was measured: a test, a query, a timed run>',
+  '<one-line progress note for the Builder project>',
+  '<unit>', 'higher' /* or 'lower': which way is better */,
+  '<repo>', '<surface>', 'claude:<surface>');
+```
+
+- The row is the benchmark. Whether it `improved` is computed from before
+  and after, never claimed, and a row with no measurement method is refused.
+- Its note is the progress report. The Builder project in Cowork reads
+  `builder_progress` at every boot, so every chat's progress reaches it.
+- Lockstep: the hub, the repos, the Claude Code builder chat and the Builder
+  project move together. A rule changed in one of them is changed in all of
+  them in the same session.

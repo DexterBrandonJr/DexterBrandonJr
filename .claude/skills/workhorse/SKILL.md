@@ -38,7 +38,8 @@ Eight parts. A project missing one is not done.
 Research the discipline → the vision document → the working agreement →
 the blueprint filled in its own structure → build in ordered increments,
 each a merged pull request with the suite green and its surface view in
-the same change → one deposit per session, named → memory as a committed
+the same change and a benchmark row in the hub (what got better,
+measured how) that the Builder project reads → one deposit per session, named → memory as a committed
 file → QA/QC like an adversary → the failure protocol (one line at the
 top, fixed in the same response, the class recorded, move on).
 

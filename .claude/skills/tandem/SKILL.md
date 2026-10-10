@@ -36,11 +36,13 @@ do your half and hand the other half over in the same turn. Never stop at
    the rules it returns.
 2. Read what is addressed to you:
    `select id, title, next_step, due_at from threads where status = 'open' and owner = 'claude:<surface>' order by due_at nulls last, id`
-3. Say it in one line ("2 handoffs waiting: t:101 ER equipment map, t:1104
-   Quint 24 workbook"), then do what Dex asked. If he asked nothing, start
-   on the oldest handoff.
+3. Read what every surface has built since:
+   `select recorded_at, repo, build, note, improved from builder_progress limit 10`
+4. Say it in two lines ("2 handoffs waiting: t:101 ER equipment map, t:1104
+   Quint 24 workbook" and "since last time: 3 builds, all measured better"),
+   then do what Dex asked. If he asked nothing, start on the oldest handoff.
 
-`/builder:boot` does all three.
+`/builder:boot` does all four.
 
 ## 3. Handing work to the other surface
 
@@ -125,7 +127,23 @@ spelled out the first time, one recommendation with the runner-up named,
 and the payload (links, paths, numbers, the one copy-paste prompt) at the
 bottom. He reads it on his phone.
 
-## 7. Write back last
+## 7. Benchmark and report in (Dex's rule, 2026-10-10)
+
+Every build ends with one row in the hub, written in the same session:
+
+```sql
+select * from hub_benchmark('<build>', '<metric>', <before>, <after>,
+  '<how it was measured>', '<one-line progress note>', '<unit>',
+  'higher' /* or 'lower' */, '<repo>', '<surface>', 'claude:<surface>');
+```
+
+Whether it `improved` is computed, never claimed. A row with no
+measurement method is refused. The note is the progress report every boot
+reads. Lockstep: the hub, the repos, the Code builder chat and the Builder
+project move together, so a rule changed in one is changed in all of them in
+the same session.
+
+## 8. Write back last
 
 Before the session ends, capture what was decided or learned:
 `hub_capture` the source, then `hub_writes` one fact per row with an exact
