@@ -59,3 +59,24 @@ Dex asked for a Cowork project that builds the way the Code chat does, works wit
 **Open threads:**
 - The guard test inside Cowork (t:1107) is still unproven.
 - Proposal 652 waits on Dex.
+
+## 2026-10-10 — Setup 5 of 6, the guard test, and one Builder
+
+**Decisions:**
+- **Dex accepted proposal 652.** The benchmark-and-report-in rule is live in the hub.
+- **The setup checks itself off.** One-memory-hub migrations 0038 to 0040 add the `builder_setup` view: six steps, each marked done from evidence in the hub, never from a chat's say-so. The published setup page reads it through the artifact's Supabase connector and shows "You are here". Dex asked for this because he loses track of which step he is on.
+- **One Builder, not two.** The plugin does not carry every innovation, engineering and growth prompt Dex wrote. Rather than a second plugin, Builder moves to a private repo once Cowork has collected his prompts (hub thread t:1197), and gains them, the full private doctrine and the red-team skill there. Dex switches marketplaces once.
+
+**Facts / preferences:**
+- **Proven: hooks did not run in two places.** In claude.ai web chat the model refused `export WEBULL_ENV=live` on its own, with no bl:443. In a desktop chat on the cloud workspace the command ran. Neither is a Cowork project task, so the guard inside Cowork is still Expected.
+- **Step 1 had been inferred wrongly** from Cowork writing to the hub; 0039 made it require a recorded install instead.
+- **A second 'status' fact superseded the first.** `status` is single-valued for a subject, so recording the schedule as a status replaced "installed". It was restored (supersede 77) and the schedule recorded under `uses`. Separate things on one subject go under `uses` or `fact`.
+- **The Builder Boot schedule** runs weekdays at 7:10 in the Builder project with "Skip all approvals". Until the guard is proven in Cowork, asking before risky actions is the safer setting; that choice is Dex's.
+
+**Artifacts:**
+- one-memory-hub migrations 0038, 0039, 0040 (`builder_setup`)
+- the setup page, with the "You are here" card and a hand-off-to-Builder button
+
+**Open threads:**
+- Step 4: the guard test inside a Builder project task in desktop Cowork (t:1107). A pass cites bl:443.
+- t:1197: Cowork collects Dex's prompts into Drive; when he says "prompts are ready", build the private Builder.

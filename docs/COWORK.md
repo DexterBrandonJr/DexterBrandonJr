@@ -85,7 +85,10 @@ Paste the two blocks into their own boxes: **Description** takes only the first 
 
 ## 4. Prove it works (first session in Builder)
 
-Paste these one at a time into a new task in the project.
+Paste these one at a time into a new task **inside the Builder project in
+the Claude desktop app**. The guard test only counts there: claude.ai web
+chat runs no plugin hooks, and on 2026-10-10 a desktop chat on the cloud
+workspace ran the command instead of refusing it.
 
 | Paste | What should happen | What it proves |
 |---|---|---|
