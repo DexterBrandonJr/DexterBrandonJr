@@ -109,3 +109,23 @@ repository.
 
 **Open threads:**
 - The Builder chat exports daily leg bars to `history/replay/bars.jsonl` on the Mac; then `replay_exits.py --bars`.
+
+## 2026-10-16 — Exit-rule replay on the Mac's bars
+
+**Decisions:**
+- **Every card replays, not only the shadow book's.** A card uses its own entry, date and window; shadow readings where the book took it, the Mac's daily bars where it did not.
+- **The window ends at the option's expiry when that comes first.** Many early cards had a one-month window on options that died in days.
+- **A broken spread price is a gap.** A day below zero or above the strikes' width comes from a stale close on a thin leg, so it is skipped, never used.
+
+**Facts / preferences:**
+- Proven, 85 cards on the same prices: no stop did best, the quarter stop came second, the current half stop came last. The order holds with any one ticker removed. The dollar figures live in the hub and the report, not here.
+- Expected: daily closes miss intraday touches, which hides stop-outs more than targets, so the real gap is likely wider.
+- The 85 cards sit on 56 distinct contracts, so they are not 85 independent trades.
+- The replay changes no bracket. Changing one needs Dex's word.
+
+**Artifacts:**
+- trading-engine pull request 179 (with Cowork's bars commits), `history/replay/2026-10-16-report.txt`
+- hub raw 1752, benchmark 29; thread t:1552 closed
+
+**Open threads:**
+- Dex decides whether the bracket changes; a stop rule is a gate change, so it lands as its own pull request with tests.
