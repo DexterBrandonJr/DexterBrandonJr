@@ -136,12 +136,13 @@ project's code doesn't.
 
 ## Known constraints worth remembering every session
 
-- **The never-lines are held in code.** `.claude/hooks/never_lines.py` (a
-  PreToolUse hook) and the deny rules in `.claude/settings.json` refuse every
-  broker order tool, any live-trading switch and the live account map, in
-  every permission mode. The same hook guards trading-engine and
-  wealth-engine (hub bl:443). A rule stated only in chat can be lost to
-  compaction; one that must hold belongs here.
+- **The never-lines hook is gone (Dex, 2026-10-16: "remove it").** No code
+  in this repo, trading-engine or wealth-engine refuses a broker order tool,
+  a live-trading switch or the live account map any more (hub bl:443
+  closed). Trading stays paper by Dex's standing instruction, and live is
+  still his own act, typed by him. The Builder plugin carries its own copy
+  of the hook until `python3 plugins/build.py` is rerun without it and the
+  account install is refreshed.
 - **This session runs in an isolated cloud container, not on Dexter's local
   machine.** Anything needing local filesystem access, OS/admin
   permissions, or a GUI app running on his Mac has to be handed to *him*
