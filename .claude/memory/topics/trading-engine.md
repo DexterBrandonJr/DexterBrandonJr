@@ -90,3 +90,22 @@ repository.
 **Open threads:**
 - t:1550: Cowork scores the 27 by hand, then hands back.
 - Pull request 176 waits on CI and a merge.
+
+## 2026-10-16 — Replay lab
+
+**Decisions:**
+- **A resolved shadow card keeps being read** (Dex, Oct 16: "build it", after the Builder chat proposed a replay lab). One reading a day until its horizon ends, in `shadow_book.marks_after`. Its outcome, exit and R never move.
+- **Exit rules are compared only on the same cards.** Three rules: the current 2x target with half stop, a quarter stop, and no stop. A card goes in only if every rule could finish on its prices.
+- **A replay measures, never changes.** A human decides whether a bracket changes.
+
+**Facts / preferences:**
+- Proven, first run on live data: 9 of 113 shadow cards replay today, and all 9 hit their target, so every rule exits them the same way. No rule difference can be measured yet.
+- The other 104 need prices past resolution: the Mac bars export now, or two to four weeks of the new daily readings.
+- Bars are daily closes, so they miss an intraday touch of a stop or target. The report says so.
+
+**Artifacts:**
+- trading-engine pull request 178: `src/trading_engine/replay.py`, `scripts/replay_exits.py`, `shadow.mark_after`, migration 0027 (applied live), `tests/test_other_brackets_replay_on_the_same_cards.py`
+- hub raw 1750, benchmark 27
+
+**Open threads:**
+- The Builder chat exports daily leg bars to `history/replay/bars.jsonl` on the Mac; then `replay_exits.py --bars`.
