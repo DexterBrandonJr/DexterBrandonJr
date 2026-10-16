@@ -1,3 +1,4 @@
+- [Trading Engine](topics/trading-engine.md) — updated 2026-10-16 — docs/DECISION_MACHINE.md: six of eight F1 Clash habits already exist as modules; the gap is a run that ends (0 closed trades since Sept 14); next build is the shadow duel (findings + experiments tables, loss buckets, Brier by regime)
 - [Builder Plugin](topics/builder-plugin.md) — updated 2026-10-10 — Builder setup 5 of 6 done (builder_setup view reads it); the guard is unproven in Cowork because web chat and the cloud-workspace chat run no hooks; one Builder, moving to a private repo once Dex's prompts are collected (t:1197)
 - [Model Coaching System](topics/model-coaching-system.md) — updated 2026-10-02 — Four Claude Code newsletters and their links read into the hub (raw 1104, 52 facts, 12 subjects); Sonnet 5.5 added to the catalog (0027); test phase on Sonnet 5.5, debug starts Fable 5.1 at medium
 - [One Memory Hub](topics/one-memory-hub.md) — updated 2026-09-30 — bl:365 built: a chat can read what a hub write takes before it writes, and every refusal names the fix
@@ -12,7 +13,6 @@
 - [Upscayl Wrap](topics/upscayl-wrap.md) — updated 2026-09-16 — Upscayl CLI wrapper built; engine exit code carries no information
 - [Pr Checkin Cadence](topics/pr-checkin-cadence.md) — updated 2026-09-16 — weekly on Thursdays, the low-activity day; violated again by an hourly per-PR check-in — reaching for send_later on a PR is the moment to re-read this
 - [Workhorse](topics/workhorse.md) — updated 2026-09-15 — the scaffold script run for the first time (proven, 10 files, one trading leak found); the domains playbook now derives a row for any topic instead of listing seven
-- [Trading Engine](topics/trading-engine.md) — updated 2026-09-10 — moved to the private repo; a history rewrite would NOT remove it (GitHub PR refs), checked and recorded
 - [Macos Contextual Search](topics/macos-contextual-search.md) — updated 2026-09-07 — PR #1 merged
 - [Acronym Spellout Preference](topics/acronym-spellout-preference.md) — updated 2026-09-06 — Spell out and explain all acronyms in responses
 - [Tool Blueprint Workflow](topics/tool-blueprint-workflow.md) — updated 2026-09-06 — Fill the tool_blueprint template once a plan is agreed

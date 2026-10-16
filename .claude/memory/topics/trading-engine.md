@@ -51,3 +51,22 @@ should not be attempted by a future session believing it will help.
 
 Open `.claude/memory/topics/trading-engine.md` in the `trading-engine`
 repository.
+
+## 2026-10-16 — The decision machine: the F1 Clash eight habits mapped onto the engine
+
+**Decisions:**
+- **Carry the F1 Clash duel method over as a process, not as numbers** (Dex, Oct 16). The eight habits: one memory read first and written last; mechanics before models; cheap structured observation; a ledger before every change; a gate before every experiment; every loss bucketed execution / plan / opponent; per-regime cards revised on evidence; honest calibration.
+- **The spec is `docs/DECISION_MACHINE.md` in the engine's repo.** Six of the eight habits already exist as modules. The gap is a run that ends: nothing has closed since mid-September, so the scorer, the drift detector and the self-review wait on an empty ledger every morning.
+- **Next build, on Dex's go: the shadow duel.** `findings` and `experiments` tables in the F1 Clash shape, a resolve-time writer that buckets each shadow loss, Brier by setup kind and by regime. The shadow book's rows become finished duels on day one. Nothing moves money.
+
+**Facts / preferences:**
+- F1 Clash's record is why this transfers: 79 duels in two weeks with every one logged, and the win rate against stronger rivals moved while the car did not.
+- What does not transfer: the game's win rates, and the cycle time. A spread takes days; the shadow book is the only honest way to shorten it.
+- Observation (Claude in Chrome, the Mac as a data miner) is not the engine's bottleneck. Closing is.
+
+**Artifacts:**
+- `docs/DECISION_MACHINE.md` (trading-engine, pull request 175)
+- hub raw 1743, benchmark row, thread t:1549
+
+**Open threads:**
+- t:1549: the shadow-duel pull request after Dex says go.
