@@ -70,3 +70,23 @@ repository.
 
 **Open threads:**
 - t:1549: the shadow-duel pull request after Dex says go.
+
+## 2026-10-16 — Every recommendation has a record
+
+**Decisions:**
+- **One record for every recommendation** (Dex, Oct 16: compile every ticker recommendation ever given and find which won). Three books already held most of it and never met: the cards, the shadow book and the counterfactual ledger. Migration 0026 joins them into `recommendation_record`, one row per card with one verdict in order of trust: by hand, then the shadow book, then the counterfactual ledger; else `live`, `marking` or `unscored`.
+- **`verdicts_by_hand` is written only by a human-driven session.** Cowork on the Mac reads the broker's own history, read only, with evidence required. The engine never writes it.
+- **The tally view is dropped before it is recreated**: `create or replace` cannot add a column in the middle of a view, and the live apply said so.
+
+**Facts / preferences:**
+- Proven on a throwaway Postgres 16 with all 26 migrations and a seeded card per verdict branch; the full suite passes.
+- The month's shape, read live: most recommendations lost; the one thesis with a positive record is small. The numbers live in the hub and the engine, not here.
+- The only rows a person must score by hand are the 27 cards that predate both books, 12 of them paper positions that never closed.
+
+**Artifacts:**
+- `supabase/migrations/0026_every_recommendation_has_a_record.sql`, `tests/test_every_recommendation_has_a_record.py` (trading-engine pull request 176)
+- hub raw 1744, thread t:1550 (the Cowork handoff)
+
+**Open threads:**
+- t:1550: Cowork scores the 27 by hand, then hands back.
+- Pull request 176 waits on CI and a merge.
