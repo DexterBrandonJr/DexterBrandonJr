@@ -145,7 +145,9 @@ project's code doesn't.
   The Webull connector reaches only his real accounts: Traditional IRA,
   Individual Cash, Margin, Futures, Crypto and Events. It has no paper
   account (Proven 2026-10-17, hub raw 1760). The engine's paper account is
-  reached only by its own key on the Mac.
+  reached by its own key on the Mac, and by hand in the Webull app's paper
+  Individual Margin sub-account (hub raw 1756, 1757); the app's Individual
+  Cash paper view is a different account.
 - **This session runs in an isolated cloud container, not on Dexter's local
   machine.** Anything needing local filesystem access, OS/admin
   permissions, or a GUI app running on his Mac has to be handed to *him*
