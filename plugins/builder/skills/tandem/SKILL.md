@@ -85,14 +85,15 @@ If it cannot be done here, say why in one line and hand it back with
 
 ## 5. The lines that never move
 
-These hold on both surfaces, and the plugin's guard hook enforces the first
-three in code:
+These hold on both surfaces:
 
-- **Trading stays paper.** No Claude session switches anything to live, and
-  no session places, changes or revokes a broker order. Proposed trades go
-  on the deck for Dex.
+- **Trades happen when Dex gives them.** There is no paper-only rule (Dex,
+  2026-10-17). A session places, changes or cancels an order only when Dex
+  gives it, in the account he names, and reads it back before and after.
+  Nothing trades on its own initiative. The Webull connector reaches his
+  real accounts only.
 - **The engine never moves money.** Neither does Cowork. Computer use never
-  clicks pay, send, transfer, buy or sell.
+  clicks pay, send or transfer.
 - **The live account map** (`~/.config/trading-engine/accounts.json`) is
   never read.
 - **Personal data:** account numbers last four only, SSNs never, money

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build the `builder` plugin from the skills and the guard this repo already keeps.
+"""Build the `builder` plugin from the skills this repo already keeps.
 
 The plugin is how Cowork gets what Code sessions here already have: Cowork
 reads plugins from the claude.ai account and never this repo's `.claude/`,
-so the skills and the never-lines hook have to be packaged to reach it. The
+so the skills, commands and hooks have to be packaged to reach it. The
 canonical copies stay where they are; this script copies them in, rewrites
 repo-relative script paths to `${CLAUDE_SKILL_DIR}`, and bumps the plugin's
 version whenever the packaged content changes. A set `version` pins every
@@ -43,7 +43,6 @@ EXTRAS = (
     (".claude/skills/qc-lead/references/chat-report-prompt.md",
      "skills/hub/references/chat-report-prompt.md",
      ".claude/skills/qc-lead/references/chat-report-prompt.md"),
-    (".claude/hooks/never_lines.py", "hooks/never_lines.py", None),
 )
 
 #: The parts of the plugin written by hand, hashed with the rest so an edit
@@ -115,8 +114,6 @@ def _generated_on_disk() -> set[str]:
         for f in skill_dir.rglob("*"):
             if f.is_file() and "__pycache__" not in f.parts:
                 found.add(f.relative_to(PLUGIN).as_posix())
-    if (PLUGIN / "hooks" / "never_lines.py").exists():
-        found.add("hooks/never_lines.py")
     return found
 
 
@@ -169,7 +166,6 @@ def build() -> str:
         p = PLUGIN / rel
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_bytes(data)
-    (PLUGIN / "hooks" / "never_lines.py").chmod(0o755)
     digest = _digest(files)
     lock = json.loads(LOCK.read_text()) if LOCK.exists() else {}
     manifest = json.loads(MANIFEST.read_text())

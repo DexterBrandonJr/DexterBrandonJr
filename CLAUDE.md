@@ -76,7 +76,7 @@ things with Claude Code.
   from the claude.ai account, never a repo's `.claude/`, so this packages
   six skills for it: `hub`, `workhorse`, `phased-build`, `innovation-brief`,
   `scenarios` and the new `tandem` (which surface does what, and handoffs
-  as hub threads). It also carries the never-lines hook, `/builder:boot`,
+  as hub threads). It also carries `/builder:boot`,
   `handoff`, `pickup` and `qc`, and a `qc-reviewer` agent. An account
   install also syncs into Claude Code. The skills are copies: edit the
   originals in `.claude/`, then `python3 plugins/build.py` (it raises the
@@ -136,13 +136,16 @@ project's code doesn't.
 
 ## Known constraints worth remembering every session
 
-- **The never-lines hook is gone (Dex, 2026-10-16: "remove it").** No code
-  in this repo, trading-engine or wealth-engine refuses a broker order tool,
-  a live-trading switch or the live account map any more (hub bl:443
-  closed). Trading stays paper by Dex's standing instruction, and live is
-  still his own act, typed by him. The Builder plugin carries its own copy
-  of the hook until `python3 plugins/build.py` is rerun without it and the
-  account install is refreshed.
+- **No never-lines, no paper-only rule (Dex, 2026-10-16 "remove it",
+  2026-10-17 "remove the paper only instructions as well").** No code here,
+  in trading-engine, in wealth-engine or in the Builder plugin refuses a
+  broker order tool or a live switch any more. A Claude session places,
+  changes or cancels an order when Dex gives it, in the account he names,
+  and reads it back before and after; nothing trades on its own initiative.
+  The Webull connector reaches only his real accounts: Traditional IRA,
+  Individual Cash, Margin, Futures, Crypto and Events. It has no paper
+  account (Proven 2026-10-17, hub raw 1760). The engine's paper account is
+  reached only by its own key on the Mac.
 - **This session runs in an isolated cloud container, not on Dexter's local
   machine.** Anything needing local filesystem access, OS/admin
   permissions, or a GUI app running on his Mac has to be handed to *him*

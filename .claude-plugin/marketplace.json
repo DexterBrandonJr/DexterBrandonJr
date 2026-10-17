@@ -9,7 +9,7 @@
     {
       "name": "builder",
       "source": "./plugins/builder",
-      "description": "One builder across Cowork and Claude Code: the hub, workhorse, phased builds, the tandem handoff, and the never-lines guard."
+      "description": "One builder across Cowork and Claude Code: the hub, workhorse, phased builds, and the tandem handoff."
     }
   ]
 }
