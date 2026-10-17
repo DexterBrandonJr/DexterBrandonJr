@@ -129,3 +129,26 @@ repository.
 
 **Open threads:**
 - Dex decides whether the bracket changes; a stop rule is a gate change, so it lands as its own pull request with tests.
+
+## 2026-10-17 — Guard removed, paper-only lifted, stop manager live
+
+**Decisions:**
+- **The never-lines guard is gone** (Dex, Oct 16, "remove it"): the hook, the deny rules and their tests, in this repo, trading-engine, wealth-engine and the Builder plugin.
+- **No paper-only rule** (Dex, Oct 17, "remove the paper only instructions as well"). A Claude places, changes or cancels an order when Dex gives it, in the account he names, and reads it back before and after. Nothing trades on its own initiative. The hub rule changed with it, accepted by Dex.
+- **The stop manager is how stops are set.** A row in the engine's `stop_instructions` table (a number, `card` or `none`), applied by the Mac every ten minutes while the market is open. One closing order per position, because that is all Webull allows.
+- All open paper spreads were set to no stop on Dex's "do whatever you think is best": most were already below their stop, and the Oct 16 replay ranked no stop first.
+
+**Facts / preferences:**
+- Proven: Webull holds ONE closing order per one-contract option position; a second is refused with REVERSE_OPTION. That refusal, retried every poll, filled the watcher log and kept positions marked as having no stop.
+- Proven: Webull position legs carry no OCC symbol, only the underlying, type, expiry and strike. Match by those four.
+- Proven: the Webull connector's order tools reach only Dex's real accounts; it has no paper account. The engine's paper account is reached by its own key on the Mac and in the app's paper Individual Margin sub-account.
+- Lesson: deleting a hook file a running session loaded locks that session's own tools; restore a local copy or start fresh.
+
+**Artifacts:**
+- trading-engine pull requests 181 (guard), 182 (stop manager), 183 (instructions), 184 (slot held, nested legs, last four), 186 (legs by contract)
+- DexterBrandonJr pull requests 63, 64, 65; Builder plugin 1.0.2
+- hub raw 1758 to 1770, benchmark 32, bets b:1096 and b:1097 (forward exit test, due Dec 17)
+
+**Open threads:**
+- The Mac scanner appends to the signals files without committing them.
+- Dex reinstalls or syncs the Builder plugin in claude.ai and re-pastes the Builder project instructions (docs/COWORK.md, section 3).
