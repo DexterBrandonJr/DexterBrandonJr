@@ -1,11 +1,10 @@
-"""The builder plugin is whole, current, safe to publish, and its guard holds in Cowork.
+"""The builder plugin is whole, current and safe to publish.
 
     python3 plugins/tests/test_builder.py
 
 Standard library only, so it runs on Dex's Mac, in a cloud session and in CI
-alike. Every guard case comes in a pair: the act, and the harmless thing that
-looks like it. A guard that blocks too much gets switched off, which is the
-same failure a week later.
+alike. The never-lines guard it once carried was removed at Dex's word on
+2026-10-16; its tests went with it.
 """
 from __future__ import annotations
 
@@ -21,11 +20,6 @@ import unittest
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 PLUGIN = ROOT / "plugins" / "builder"
 BUILD = ROOT / "plugins" / "build.py"
-HOOK = PLUGIN / "hooks" / "never_lines.py"
-
-#: The shell tools Cowork and Claude Code expose. Cowork's workspace shell is
-#: an MCP tool; Claude Code's is Bash (PowerShell on Windows).
-SHELLS = ("Bash", "PowerShell", "mcp__workspace__bash")
 
 
 def _run(path: pathlib.Path, event) -> dict | None:
@@ -33,46 +27,6 @@ def _run(path: pathlib.Path, event) -> dict | None:
                          capture_output=True, text=True, timeout=10)
     assert out.returncode == 0, out.stderr
     return json.loads(out.stdout) if out.stdout.strip() else None
-
-
-def _shell(cmd, tool="Bash"):
-    return {"tool_name": tool, "tool_input": {"command": cmd}}
-
-
-REFUSED_COMMANDS = [
-    "WEBULL_ENV=live PYTHONPATH=src python scripts/execute_approved.py --i-mean-live",
-    "export WEBULL_ENV=live && python scripts/execute_approved.py",
-    "export WEBULL_ENV='live'",
-    'env WEBULL_ENV="live" python -m trading_engine',
-    "cd /tmp; WEBULL_ENV=LIVE python x.py",
-    "timeout 60 python scripts/execute_approved.py --i-mean-live",
-    """python -c 'import os; os.environ["WEBULL_ENV"]="live"; import run'""",
-    "cat ~/.config/trading-engine/accounts.json",
-]
-ALLOWED_COMMANDS = [
-    "WEBULL_ENV=paper PYTHONPATH=src python scripts/execute_approved.py",
-    "grep -rn WEBULL_ENV=live docs/ scripts/",
-    "grep -rn -- --i-mean-live scripts/",
-    "rg 'trading-engine/accounts.json' docs",
-    "git log -S'--i-mean-live' --oneline",
-    "python3 plugins/tests/test_builder.py",
-]
-REFUSED_CALLS = [
-    {"tool_name": "Read", "tool_input": {"file_path": "/Users/dex/.config/trading-engine/accounts.json"}},
-    {"tool_name": "Write", "tool_input": {"file_path": "/repo/.env", "content": "A=1\nWEBULL_ENV=live\n"}},
-    {"tool_name": "Edit", "tool_input": {"file_path": "/Users/dex/.config/trading-engine/env.sh",
-                                         "old_string": "export WEBULL_ENV=paper", "new_string": "export WEBULL_ENV=live"}},
-    {"tool_name": "mcp__Webull__place_stock_instruction", "tool_input": {}},
-    {"tool_name": "mcp__claude_ai_Webull__place_option_single_instruction", "tool_input": {}},
-    {"tool_name": "mcp__Webull__revoke_instruction", "tool_input": {}},
-]
-ALLOWED_CALLS = [
-    {"tool_name": "Write", "tool_input": {"file_path": "/repo/.env", "content": "WEBULL_ENV=paper\n"}},
-    {"tool_name": "Edit", "tool_input": {"file_path": "/repo/docs/ACTIVATION.md",
-                                         "old_string": "x", "new_string": "Live needs `WEBULL_ENV=live` in the shell"}},
-    {"tool_name": "mcp__Webull__get_account_positions", "tool_input": {}},
-    {"tool_name": "mcp__Webull__create_watchlist", "tool_input": {}},
-]
 
 
 def _frontmatter(path: pathlib.Path) -> dict[str, str]:
@@ -87,50 +41,7 @@ def _frontmatter(path: pathlib.Path) -> dict[str, str]:
     return out
 
 
-class TheGuardHoldsOnBothSurfaces(unittest.TestCase):
-    def assertRefused(self, event):
-        out = _run(HOOK, event)
-        self.assertIsNotNone(out, f"let a never-line through: {json.dumps(event)[:90]}")
-        decision = out["hookSpecificOutput"]
-        self.assertEqual(decision["permissionDecision"], "deny")
-        self.assertIn("bl:443", decision["permissionDecisionReason"])
-
-    def test_every_shell_refuses_the_act(self):
-        for tool in SHELLS:
-            for cmd in REFUSED_COMMANDS:
-                with self.subTest(tool=tool, cmd=cmd):
-                    self.assertRefused(_shell(cmd, tool))
-
-    def test_every_shell_lets_the_lookalike_through(self):
-        for tool in SHELLS:
-            for cmd in ALLOWED_COMMANDS:
-                with self.subTest(tool=tool, cmd=cmd):
-                    self.assertIsNone(_run(HOOK, _shell(cmd, tool)))
-
-    def test_file_and_broker_calls(self):
-        for event in REFUSED_CALLS:
-            with self.subTest(event=event["tool_name"]):
-                self.assertRefused(event)
-        for event in ALLOWED_CALLS:
-            with self.subTest(event=event["tool_name"]):
-                self.assertIsNone(_run(HOOK, event))
-
-    def test_bad_input_is_not_a_crash(self):
-        out = subprocess.run([sys.executable, str(HOOK)], input="not json",
-                             capture_output=True, text=True, timeout=10)
-        self.assertEqual((out.returncode, out.stdout), (0, ""))
-
-    def test_the_matcher_reaches_every_tool_the_guard_judges(self):
-        hooks = json.loads((PLUGIN / "hooks" / "hooks.json").read_text())["hooks"]
-        group = next(g for g in hooks["PreToolUse"] if any("never_lines.py" in h["command"] for h in g["hooks"]))
-        for tool in SHELLS + ("Write", "Edit", "MultiEdit", "Read", "mcp__Webull__place_stock_instruction",
-                              "mcp__claude_ai_Webull__revoke_instruction"):
-            with self.subTest(tool=tool):
-                self.assertTrue(re.fullmatch(group["matcher"], tool), f"matcher misses {tool}")
-        for tool in ("WebFetch", "mcp__Supabase__execute_sql", "mcp__github__merge_pull_request"):
-            with self.subTest(tool=tool):
-                self.assertFalse(re.fullmatch(group["matcher"], tool), f"matcher needlessly runs on {tool}")
-
+class TheHooksLoad(unittest.TestCase):
     def test_every_hook_command_names_a_file_the_plugin_ships(self):
         hooks = json.loads((PLUGIN / "hooks" / "hooks.json").read_text())["hooks"]
         for groups in hooks.values():
