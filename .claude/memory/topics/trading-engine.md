@@ -152,3 +152,29 @@ repository.
 **Open threads:**
 - The Mac scanner appends to the signals files without committing them.
 - Dex reinstalls or syncs the Builder plugin in claude.ai and re-pastes the Builder project instructions (docs/COWORK.md, section 3).
+
+## 2026-10-19 — Archived days were setups; the brief crash
+
+**Decisions:**
+- The daily-run backstop fired: neither the 11:00 sweep nor the 12:30 run had fired (GitHub dropped both scheduled runs). It dispatched the run, which built zero cards, and its log showed two defects, fixed the same morning.
+- The engine's own records (kinds `archive` and `funnel`) are dropped where the run reads its signals, so no phase treats them as evidence.
+- The spoken brief reads the halt from the state the run saved, plus the deck's reason.
+- After the fix, the context sweep was dispatched by hand with the market open, so the real run would build on today's screens, not Friday's.
+
+**Facts / preferences:**
+- Proven: an archive row keeps its source's name and has the day as its subject. Five sources archived on one day looked like five sources agreeing on a ticker called `2026-10-01`. 14 of 43 setups were dates, each spending one of 25 chain requests on a 403 from the Chicago Board Options Exchange (CBOE). This happened on every run since the archive began on Sep 13.
+- Proven: the brief read a name bound only inside the staleness loop. It crashed on no-card days, and on card days it announced a halted engine as running (since Oct 16).
+- Proven, dry run on the fix: date setups 14 to 0, chains fetched 9 to 23, structures 5 to 13, cards 0 to 11. Part of the card gain is the market being open.
+- Lesson: a record that rides in the evidence table is evidence to every reader that does not filter by kind. Filter where the evidence is read, not in each reader.
+- Proven: finviz had written nothing since Fri Oct 16 16:52 UTC. Finviz moved the ticker from each row (`stock?t=`) to one `/quote?t=` header above each ticker's block. The parser matched nothing, and the sweep calls a source with no signals "unchanged", not failed. The fixed parser read 135 signals from the live site, against 0 before.
+- Lesson (the second time for this parser): a source that should never be empty must fail loudly when it parses to nothing. A silent zero reads as a quiet market.
+- The real run published 12 cards at 16:49 UTC. All rest on Friday's finviz screens, because that run came before the finviz fix.
+
+**Artifacts:**
+- trading-engine pull request 191 (`155719d`), with `tests/test_the_engines_own_records_are_not_evidence.py` (9 tests; 8 failed before the fix)
+- trading-engine pull request 192 (finviz snapshot markup), with live-recorded fixtures and `tests/test_finviz_reads_the_snapshot_markup.py` (15 tests)
+- hub raw 1916, benchmark 39
+
+**Open threads:**
+- For Dex (a gate decision): `staleness.py` says a card past the 72-hour hard limit "is refused rather than flagged", but nothing refuses it. All 11 dry-run cards rested on Friday's finviz screens.
+- The merged branch `claude/brief-and-archive-rows` is left for the QC lead to delete; this session's proxy refuses branch deletion.
